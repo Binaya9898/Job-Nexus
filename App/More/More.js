@@ -8,9 +8,7 @@ const More = () => {
     const fetchData = async () => {
       try {
         console.log("Fetching");
-        const response = await axios.get(
-          "http://192.168.1.66:8000/api/job-api"
-        );
+        const response = await axios.get("http://127.0.0.1:8000/api/job-api");
         console.log(jobs);
         setJobs(response.data);
         console.log(jobs);
