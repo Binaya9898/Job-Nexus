@@ -11,6 +11,7 @@ import Notification from "../Admin/Notification/More/Notification";
 
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../constants/colors";
+import Postjob from "../Admin/Jobpost/Postjob";
 
 const Tab = createMaterialBottomTabNavigator();
 const color = COLORS.secondary;
@@ -36,7 +37,7 @@ const Employernav = () => {
 
       <Tab.Screen
         name="Post Job"
-        component={Jobs}
+        component={Postjob}
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons name="briefcase-outline" color={"#39B68D"} size={26} />
