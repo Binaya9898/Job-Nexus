@@ -1,16 +1,21 @@
 import { View, Text, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import SERVER from "../../constants/server";
 
 const More = () => {
   const [jobs, setJobs] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("Fetching");
-        const response = await axios.get(
-          "http://192.168.1.66:8000/api/job-api"
-        );
+        const serverUrl = SERVER.primaryUrl + "/job-api";
+        console.log("Result is served by: " + serverUrl);
+        // const response = await axios.get(SERVER.primaryUrl + "/job-api");
+        const response = await axios.get(serverUrl);
+        // const response = await axios.get("http://127.0.0.1:8000/api/job-api");
+
+        // const response = await axios.get(serverUrl);
+
         console.log(jobs);
         setJobs(response.data);
         console.log(jobs);
