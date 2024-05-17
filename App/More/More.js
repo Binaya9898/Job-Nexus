@@ -14,34 +14,31 @@ const More = ({ navigation }) => {
   const data = [
     {
       id: 1,
-      name: "Aboutus",
+      name: "About Us",
       image: "https://img.icons8.com/clouds/100/000000/groups.png",
       count: 124.711,
       destination: "Aboutus",
     },
     {
       id: 2,
-      name: "Housing",
+      name: "Help",
       image: "https://img.icons8.com/color/100/000000/real-estate.png",
       count: 234.722,
+      destination: "Help",
     },
     {
       id: 3,
-      name: "Jobs",
+      name: "FAQ",
       image: "https://img.icons8.com/color/100/000000/find-matching-job.png",
       count: 324.723,
+      destination: "Faq",
     },
     {
       id: 4,
-      name: "Personal",
+      name: "Log Out",
       image: "https://img.icons8.com/clouds/100/000000/employee-card.png",
       count: 154.573,
-    },
-    {
-      id: 5,
-      name: "For sale",
-      image: "https://img.icons8.com/color/100/000000/land-sales.png",
-      count: 124.678,
+      destination: "Logout",
     },
   ];
 
