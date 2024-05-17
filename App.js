@@ -4,6 +4,7 @@ import { Login, Signup, Welcome } from "./screens";
 import Nav from "./Nav/Nav";
 import Employersignup from "./screens/Auth/Employersignup";
 import Employernav from "./Nav/Employernav";
+import Mainmenu from "./App/More/menu/Mainmenu";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,7 +44,7 @@ export default function App() {
           name="Nav"
           component={Nav}
           options={{
-            title: "Nav",
+            headerShown: false,
           }}
         />
         <Stack.Screen

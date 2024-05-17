@@ -11,6 +11,7 @@ import Notification from "../App/Notification/More/Notification";
 
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../constants/colors";
+import Mainmenu from "../App/More/menu/Mainmenu";
 
 const Tab = createMaterialBottomTabNavigator();
 const color = COLORS.secondary;
@@ -79,8 +80,8 @@ const Nav = () => {
       />
 
       <Tab.Screen
-        name="More"
-        component={More}
+        name="Mainmenu"
+        component={Mainmenu}
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons

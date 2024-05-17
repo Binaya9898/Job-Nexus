@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+// More.js
+
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -6,16 +8,16 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  Alert,
 } from "react-native";
+
 const More = ({ navigation }) => {
   const data = [
     {
       id: 1,
-      name: "Comunity",
+      name: "Aboutus",
       image: "https://img.icons8.com/clouds/100/000000/groups.png",
       count: 124.711,
-      destination: "Login",
+      destination: "Aboutus",
     },
     {
       id: 2,
@@ -43,41 +45,40 @@ const More = ({ navigation }) => {
     },
   ];
 
-  const [options, setOptions] = useState(data);
+  const [options, setOptions] = React.useState(data);
 
   const clickEventListener = (item) => {
-    navigation.navigate("Login", item.destination);
+    if (item.destination) {
+      navigation.navigate(item.destination);
+    } else {
+      Alert.alert("No destination specified");
+    }
   };
 
   return (
     <View style={styles.container}>
       <FlatList
         style={styles.contentList}
-        columnWrapperStyle={styles.listContainer}
         data={options}
-        keyExtractor={(item) => {
-          return item.id;
-        }}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() => clickEventListener(item)}
-            >
-              <Image style={styles.image} source={{ uri: item.image }} />
-              <View style={styles.cardContent}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.count}>{item.count}</Text>
-                <TouchableOpacity
-                  style={styles.followButton}
-                  onPress={() => clickEventListener(item)}
-                >
-                  <Text style={styles.followButtonText}>Explore now</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => clickEventListener(item)}
+          >
+            <Image style={styles.image} source={{ uri: item.image }} />
+            <View style={styles.cardContent}>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.count}>{item.count}</Text>
+              <TouchableOpacity
+                style={styles.followButton}
+                onPress={() => clickEventListener(item)}
+              >
+                <Text style={styles.followButtonText}>Explore now</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        )}
       />
     </View>
   );
@@ -88,7 +89,7 @@ export default More;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 50,
     backgroundColor: "#ebf0f7",
   },
   contentList: {
@@ -105,7 +106,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#ebf0f7",
   },
-
   card: {
     shadowColor: "#00000021",
     shadowOffset: {
@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.37,
     shadowRadius: 7.49,
     elevation: 12,
-
     marginLeft: 20,
     marginRight: 20,
     marginTop: 20,
@@ -124,7 +123,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 30,
   },
-
   name: {
     fontSize: 18,
     flex: 1,
