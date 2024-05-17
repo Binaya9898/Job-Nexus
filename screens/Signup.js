@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button";
@@ -26,7 +32,7 @@ const Signup = ({ navigation }) => {
 
   const handleRegisterNow = () => {
     // Navigate to the Login page
-    navigation.navigate('Login');
+    navigation.navigate("Nav");
   };
 
   return (
@@ -81,13 +87,21 @@ const Signup = ({ navigation }) => {
 
           {/* Profile Picture and Resume */}
           <View style={{ flexDirection: "row", marginTop: 20 }}>
-            <TouchableOpacity onPress={handleProfilePictureUpload} style={[styles.fileUpload, { flex: 1, marginRight: 5 }]}>
+            <TouchableOpacity
+              onPress={handleProfilePictureUpload}
+              style={[styles.fileUpload, { flex: 1, marginRight: 5 }]}
+            >
               <Text style={styles.uploadText}>
-                {profilePicture ? "Profile Picture Uploaded" : "Upload Profile Picture *"}
+                {profilePicture
+                  ? "Profile Picture Uploaded"
+                  : "Upload Profile Picture *"}
               </Text>
               <Ionicons name="cloud-upload" size={24} color={COLORS.primary} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleResumeUpload} style={[styles.fileUpload, { flex: 1, marginLeft: 5 }]}>
+            <TouchableOpacity
+              onPress={handleResumeUpload}
+              style={[styles.fileUpload, { flex: 1, marginLeft: 5 }]}
+            >
               <Text style={styles.uploadText}>
                 {resume ? "Resume Uploaded" : "Upload Resume *"}
               </Text>
@@ -114,7 +128,10 @@ const Signup = ({ navigation }) => {
             placeholder="Education"
             placeholderTextColor={COLORS.grey}
             onChangeText={(text) => setEducation(text)}
-            style={[styles.input, { height: 100, textAlignVertical: "top", marginTop: 20 }]}
+            style={[
+              styles.input,
+              { height: 100, textAlignVertical: "top", marginTop: 20 },
+            ]}
             multiline
           />
           <Button
