@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,113 +7,40 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons"; // Import FontAwesome icons
+import { FontAwesome } from "@expo/vector-icons";
+import axios from "axios";
+import SERVER from "../../constants/server";
 
 // Function to generate a random image URL from Lorem Picsum
 const getRandomImage = () => {
-  const width = 50; // Width of the image
-  const height = 50; // Height of the image
-  const randomImageId = Math.floor(Math.random() * 1000); // Generate a random image ID
+  const width = 50;
+  const height = 50;
+  const randomImageId = Math.floor(Math.random() * 1000);
   return `https://picsum.photos/id/${randomImageId}/${width}/${height}`;
 };
 
 export default function Jobs() {
-  const [jobs, setJobs] = useState([
-    {
-      id: 1,
-      title: "Software Engineer",
-      company: "Tech Co.",
-      location: "San Francisco, CA",
-      salary: "$100,000 - $120,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 2,
-      title: "Product Manager",
-      company: "Startup X",
-      location: "New York, NY",
-      salary: "$120,000 - $140,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 3,
-      title: "Data Analyst",
-      company: "Data Corp",
-      location: "Chicago, IL",
-      salary: "$90,000 - $110,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 4,
-      title: "UX Designer",
-      company: "Design Studio",
-      location: "Los Angeles, CA",
-      salary: "$100,000 - $120,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 5,
-      title: "Marketing Manager",
-      company: "Marketing Solutions",
-      location: "Seattle, WA",
-      salary: "$110,000 - $130,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 6,
-      title: "Software Developer",
-      company: "Tech Solutions Inc.",
-      location: "Austin, TX",
-      salary: "$95,000 - $115,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 7,
-      title: "Financial Analyst",
-      company: "Finance Corp",
-      location: "Boston, MA",
-      salary: "$85,000 - $105,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 8,
-      title: "Project Manager",
-      company: "Project Co.",
-      location: "Denver, CO",
-      salary: "$105,000 - $125,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 9,
-      title: "HR Specialist",
-      company: "HR Solutions",
-      location: "Miami, FL",
-      salary: "$80,000 - $100,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    {
-      id: 10,
-      title: "Sales Representative",
-      company: "Sales Corp",
-      location: "San Diego, CA",
-      salary: "$90,000 - $110,000",
-      image: getRandomImage(), // Random image URL
-      isFavorite: false, // Flag to track if the job is favorited
-    },
-    // Add more job objects with isFavorite property if needed
-  ]);
+  const [jobs, setJobs] = useState([]);
+  const [visibleJobs, setVisibleJobs] = useState(8);
+  const [allJobsLoaded, setAllJobsLoaded] = useState(false);
 
-  const [visibleJobs, setVisibleJobs] = useState(8); // Number of jobs initially visible
-  const [allJobsLoaded, setAllJobsLoaded] = useState(false); // Flag to track if all jobs are loaded
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const serverUrl = SERVER.primaryUrl + "/job-api";
+        const response = await axios.get(serverUrl);
+        const jobsWithImages = response.data.map((job) => ({
+          ...job,
+          image: getRandomImage(), // Add random image URL
+          isFavorite: false, // Add isFavorite property
+        }));
+        setJobs(jobsWithImages);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const loadMoreJobs = () => {
     if (visibleJobs + 8 >= jobs.length) {
@@ -136,14 +63,17 @@ export default function Jobs() {
     <View style={styles.jobItem}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.jobDetails}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.company}>{item.company}</Text>
-        <Text style={styles.location}>{item.location}</Text>
+        <Text style={styles.title}>{item.job_title}</Text>
+        <Text style={styles.company}>{item.job_company_name}</Text>
+        <Text style={styles.location}>{item.job_address}</Text>
         <Text style={styles.salary}>{item.salary}</Text>
         <Text style={styles.details}>{item.details}</Text>
       </View>
 
-      <TouchableOpacity style={styles.favoriteButton}>
+      <TouchableOpacity
+        style={styles.favoriteButton}
+        onPress={() => toggleFavorite(item.id)}
+      >
         <FontAwesome
           name={item.isFavorite ? "heart" : "heart-o"}
           size={24}
@@ -159,7 +89,7 @@ export default function Jobs() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={jobs.slice(0, visibleJobs)} // Only display the visible number of jobs
+        data={jobs.slice(0, visibleJobs)}
         renderItem={renderJobItem}
         keyExtractor={(item) => item.id.toString()}
         ListFooterComponent={
@@ -224,11 +154,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     paddingVertical: 10,
     borderRadius: 5,
-    // marginLeft: 10,
-  },
-  favoriteButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
   },
   loadMoreButton: {
     backgroundColor: "#39B68D",
@@ -244,12 +169,14 @@ const styles = StyleSheet.create({
   },
   detailsButton: {
     marginTop: 5,
-    color: "#fff",
     backgroundColor: "#39B68D",
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 5,
     marginVertical: 10,
     alignSelf: "center",
+  },
+  detailsButtonText: {
+    color: "#fff",
   },
 });
