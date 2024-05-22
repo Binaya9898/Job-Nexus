@@ -135,6 +135,8 @@ const styles = {
     height: 50,
     paddingHorizontal: 20,
     marginBottom: 20,
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
 };
 
