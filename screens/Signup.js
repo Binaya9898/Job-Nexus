@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import Button from '../components/Button';
 import COLORS from '../constants/colors';
 
@@ -17,16 +18,16 @@ const Signup = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [cv, setCV] = useState(null);
 
+  const navigation = useNavigation();
+
   const handleProfilePictureUpload = () => {
-    // Logic for profile picture upload
   };
 
   const handleCVUpload = () => {
-    // Logic for CV upload
   };
 
   const handleRegisterNow = () => {
-    // Handle registration submission
+    navigation.navigate('Login');
   };
 
   return (
@@ -95,8 +96,6 @@ const Signup = () => {
             <Text style={styles.uploadText}>{profilePicture ? 'Profile Picture Uploaded' : 'Upload Profile Picture *'}</Text>
             <Ionicons name="cloud-upload" size={24} color={COLORS.primary} />
           </TouchableOpacity>
-
-
 
           <TouchableOpacity onPress={handleCVUpload} style={styles.fileUpload}>
             <Text style={styles.uploadText}>{cv ? 'CV Uploaded' : 'Upload CV *'}</Text>
