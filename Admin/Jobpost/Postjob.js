@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, ScrollView } from "react-native";
+import { View, Text, TextInput, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
@@ -24,20 +24,10 @@ const Postjob = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              marginBottom: 20,
-              color: COLORS.primary,
-              textAlign: "center",
-            }}
-          >
-            Post a Job
-          </Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <View style={styles.card}>
+          <Text style={styles.title}>Post a Job</Text>
 
           <TextInput
             placeholder="Job Title *"
@@ -99,7 +89,7 @@ const Postjob = ({ navigation }) => {
             placeholder="Job Description *"
             placeholderTextColor={COLORS.bright}
             onChangeText={(text) => setDescription(text)}
-            style={[styles.input, { height: 100, textAlignVertical: "top" }]}
+            style={[styles.input, styles.textArea]}
             multiline
           />
           <TextInput
@@ -119,7 +109,7 @@ const Postjob = ({ navigation }) => {
             title="Post Job"
             onPress={handlePostJob}
             filled
-            style={{ marginTop: 20 }}
+            style={styles.button}
           />
         </View>
       </ScrollView>
@@ -127,15 +117,53 @@ const Postjob = ({ navigation }) => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  scrollView: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    width: '90%',
+    backgroundColor: COLORS.light,
+    borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: COLORS.primary,
+    textAlign: "center",
+  },
   input: {
-    borderWidth: 1,
-    borderColor: COLORS.bright,
+    backgroundColor: COLORS.white,
     borderRadius: 10,
     height: 50,
     paddingHorizontal: 20,
     marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
-};
+  textArea: {
+    height: 100,
+    textAlignVertical: "top",
+  },
+  button: {
+    marginTop: 20,
+  },
+});
 
 export default Postjob;

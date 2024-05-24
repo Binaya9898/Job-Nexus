@@ -5,7 +5,6 @@ import { Login, Signup } from "../screens";
 import Profile from "../Admin/Profile/Profile";
 import Home from "../Admin/Home/Home";
 import More from "../Admin/More/More";
-import Jobs from "../Admin/Jobs/Jobs";
 import Favourite from "../Admin/Favourite/Favourite";
 import Notification from "../Admin/Notification/More/Notification";
 
