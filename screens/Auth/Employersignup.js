@@ -12,7 +12,7 @@ import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
 import SERVER from "../../constants/server";
 
-const Employersignup = () => {
+const Employersignup = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -26,6 +26,7 @@ const Employersignup = () => {
 
   const handleRegisterNow = async () => {
     const url = SERVER.primaryUrl + "/employer/save";
+    navigation.navigate("Employernav");
 
     const employerData = {
       firstName,
