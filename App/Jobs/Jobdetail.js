@@ -8,8 +8,9 @@ import {
   ScrollView,
 } from "react-native";
 
-export default function Jobdetail({ route }) {
+export default function JobDetail({ route }) {
   const { job } = route.params;
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -18,15 +19,54 @@ export default function Jobdetail({ route }) {
         </View>
 
         <View style={styles.postContent}>
-          <Text style={styles.postTitle}></Text>
+          <Text style={styles.postTitle}>Job Details</Text>
 
-          <Text style={styles.postDescription}>{job.job_description}</Text>
-
-          <Text style={styles.tags}>
-            Lorem, ipsum, dolor, sit, amet, consectetuer, adipiscing, elit.
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Category: </Text>
+            {job.job_category}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Company: </Text>
+            {job.job_company_name}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Location: </Text>
+            {job.job_address}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Experience: </Text>
+            {job.job_experience}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Salary: </Text>${job.job_min_salary} - $
+            {job.job_max_salary}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Type: </Text>
+            {job.job_type}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Hours: </Text>
+            {job.job_hour}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Status: </Text>
+            {job.job_status}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Contact: </Text>
+            {job.job_contact}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Validity: </Text>
+            {job.job_validity}
+          </Text>
+          <Text style={styles.postDescription}>
+            <Text style={styles.label}>Description: </Text>
+            {job.job_description}
           </Text>
 
-          <Text style={styles.date}>{job.created_at}</Text>
+          <Text style={styles.date}>Posted on: {job.created_at}</Text>
 
           <View style={styles.profile}>
             <Image
@@ -35,9 +75,9 @@ export default function Jobdetail({ route }) {
                 uri: "https://bootdey.com/img/Content/avatar/avatar1.png",
               }}
             />
-
-            <Text style={styles.name}>Johan Doe</Text>
+            <Text style={styles.name}>Company Representative</Text>
           </View>
+
           <TouchableOpacity style={styles.shareButton}>
             <Text style={styles.shareButtonText}>Apply</Text>
           </TouchableOpacity>
@@ -52,7 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    padding: 30,
+    paddingTop: 30,
     alignItems: "center",
     backgroundColor: "#007260",
   },
@@ -60,11 +100,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: "#FFFFFF",
     marginTop: 10,
-  },
-  name: {
-    fontSize: 22,
-    color: "#FFFFFF",
-    fontWeight: "600",
   },
   postContent: {
     flex: 1,
@@ -78,9 +113,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
   },
-  tags: {
-    color: "#007260",
-    marginTop: 10,
+  label: {
+    fontWeight: "bold",
   },
   date: {
     color: "#696969",
@@ -98,7 +132,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   name: {
-    fontSize: 22,
+    fontSize: 16,
     color: "#007260",
     fontWeight: "600",
     alignSelf: "center",
