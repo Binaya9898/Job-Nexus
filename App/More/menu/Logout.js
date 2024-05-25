@@ -1,15 +1,12 @@
 import React from "react";
 import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import COLORS from '../../../constants/colors';
+import COLORS from "../../../constants/colors";
 
 const Logout = ({ visible, onCancel, onConfirm }) => {
   const navigation = useNavigation();
 
   const handleLogout = () => {
-    // Perform logout actions here
-    // For example: clear user session, reset state, etc.
-    // Here, we're just navigating to the "Welcome" screen
     navigation.navigate("Welcome");
   };
 
@@ -19,10 +16,18 @@ const Logout = ({ visible, onCancel, onConfirm }) => {
         <View style={styles.modal}>
           <Text style={styles.title}>Are you sure you want to logout?</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={onCancel} style={[styles.button, styles.cancelButton]}>
+            <TouchableOpacity
+              onPress={onCancel}
+              style={[styles.button, styles.cancelButton]}
+            >
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { onConfirm(); }} style={[styles.button, styles.confirmButton]}>
+            <TouchableOpacity
+              onPress={() => {
+                handleLogout();
+              }}
+              style={[styles.button, styles.confirmButton]}
+            >
               <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
           </View>

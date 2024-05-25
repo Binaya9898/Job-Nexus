@@ -19,7 +19,7 @@ const getRandomImage = () => {
   return `https://picsum.photos/id/${randomImageId}/${width}/${height}`;
 };
 
-export default function Jobs({ navigation }) {
+export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [visibleJobs, setVisibleJobs] = useState(8);
   const [allJobsLoaded, setAllJobsLoaded] = useState(false);
@@ -58,9 +58,7 @@ export default function Jobs({ navigation }) {
       )
     );
   };
-  const handleDetail = (job) => {
-    navigation.navigate("Jobdetail", { job });
-  };
+
   const renderJobItem = ({ item }) => (
     <View style={styles.jobItem}>
       <Image source={{ uri: item.image }} style={styles.image} />
@@ -82,11 +80,8 @@ export default function Jobs({ navigation }) {
           color="red"
         />
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.detailsButton}
-        onPress={() => handleDetail(item)}
-      >
-        <Text style={styles.detailsButtonText}>Details</Text>
+      <TouchableOpacity style={styles.detailsButton}>
+        <Text style={styles.detailsButtonText}>Applications</Text>
       </TouchableOpacity>
     </View>
   );

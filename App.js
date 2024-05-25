@@ -5,6 +5,7 @@ import Nav from "./Nav/Nav";
 import Employersignup from "./screens/Auth/Employersignup";
 import Employernav from "./Nav/Employernav";
 import Mainmenu from "./App/More/menu/Mainmenu";
+import Jobdetail from "./App/Jobs/Jobdetail";
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +53,14 @@ export default function App() {
           component={Employernav}
           options={{
             title: "Employernav",
+          }}
+        />
+
+        <Stack.Screen
+          name="Jobdetail"
+          component={Jobdetail}
+          options={{
+            headerShown: false,
           }}
         />
       </Stack.Navigator>
