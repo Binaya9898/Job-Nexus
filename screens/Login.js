@@ -22,6 +22,7 @@ const Login = ({ navigation }) => {
       navigation.navigate("Nav");
     }, 1000);
   };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -51,7 +52,7 @@ const Login = ({ navigation }) => {
           <Text
             style={{
               fontSize: 16,
-              fontWeight: 400,
+              fontWeight: "400",
               marginVertical: 8,
             }}
           >
@@ -85,7 +86,7 @@ const Login = ({ navigation }) => {
           <Text
             style={{
               fontSize: 16,
-              fontWeight: 400,
+              fontWeight: "400",
               marginVertical: 8,
             }}
           >
@@ -129,6 +130,19 @@ const Login = ({ navigation }) => {
           </View>
         </View>
 
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: COLORS.primary,
+              alignSelf: "flex-end",
+              marginVertical: 8,
+            }}
+          >
+            Forgot Password?
+          </Text>
+        </TouchableOpacity>
+
         <View
           style={{
             flexDirection: "row",
@@ -142,7 +156,7 @@ const Login = ({ navigation }) => {
             color={isChecked ? COLORS.primary : undefined}
           />
 
-          <Text>Remenber Me</Text>
+          <Text>Remember Me</Text>
         </View>
 
         <Button
