@@ -79,7 +79,7 @@ export default function JobDetail({ route }) {
           </View>
 
           <TouchableOpacity style={styles.shareButton}>
-            <Text style={styles.shareButtonText}>Apply</Text>
+            <Text style={styles.shareButtonText}>Applyy</Text>
           </TouchableOpacity>
         </View>
       </View>
