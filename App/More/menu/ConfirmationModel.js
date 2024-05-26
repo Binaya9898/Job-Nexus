@@ -7,7 +7,7 @@ const ConfirmationModal = ({ visible, onCancel, onConfirm }) => {
         <Modal visible={visible} transparent animationType="fade">
             <View style={styles.container}>
                 <View style={styles.modal}>
-                    <Text style={styles.title}>Are you sure you want to logout?</Text>
+                    <Text style={styles.title}>Are you sure you want to logout??</Text>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={onCancel} style={[styles.button, styles.cancelButton]}>
                             <Text style={styles.buttonText}>Cancel</Text>
