@@ -13,7 +13,7 @@ export default class Home extends Component {
             }}
             style={styles.logo}
           />
-          <Text style={styles.headerText}>Job Portall</Text>
+          <Text style={styles.headerText}>Job Portal</Text>
         </View>
         <View style={styles.content}>
           <Text style={styles.title}>Welcome back, Employee!</Text>
