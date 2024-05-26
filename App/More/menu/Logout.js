@@ -3,13 +3,12 @@ import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import COLORS from "../../../constants/colors";
 
-const Logout = ({ visible, onCancel, onConfirm }) => {
+const Logout = ({ visible, onCancel }) => {
   const navigation = useNavigation();
 
   const handleLogout = () => {
     navigation.navigate("Welcome");
   };
-
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.container}>
@@ -23,9 +22,7 @@ const Logout = ({ visible, onCancel, onConfirm }) => {
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {
-                handleLogout();
-              }}
+              onPress={handleLogout}
               style={[styles.button, styles.confirmButton]}
             >
               <Text style={styles.buttonText}>Logout</Text>
@@ -67,7 +64,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   cancelButton: {
-    backgroundColor: COLORS.lightGrey,
+    backgroundColor: COLORS.primary,
   },
   confirmButton: {
     backgroundColor: COLORS.primary,
