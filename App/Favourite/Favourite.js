@@ -9,7 +9,7 @@ export default class Favourite extends Component {
         return (
             <View>
                 <Text>Favourite</Text>
-                <Text>Favourite</Text>
+
             </View>
         )
     }
