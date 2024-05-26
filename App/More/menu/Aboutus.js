@@ -14,6 +14,7 @@ const Aboutus = () => {
           </Text>
           <Text style={styles.paragraph}>
             At our job portal, we strive to provide a seamless and user-friendly experience for both employers and job seekers. Whether you're looking for your next job opportunity or trying to fill a position at your company, we've got you covered.
+            At our job portal, we strive to provide a seamless and user-friendly experience for both employers and job seekers. Whether you're looking for your next job opportunity or trying to fill a position at your company, we've got you covered.
           </Text>
           <Text style={styles.paragraph}>
             Our platform offers a wide range of features, including job search and filtering options, resume uploading, employer profiles, and more. We're constantly working to improve and enhance our services to better serve our users.
