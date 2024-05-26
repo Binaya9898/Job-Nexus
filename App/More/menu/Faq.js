@@ -8,7 +8,7 @@ const Faq = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.content}>
-          <Text style={styles.title}>Frequently Asked Questions</Text>
+          <Text style={styles.title}>Frequently Asked Questionss</Text>
 
           <View style={styles.questionContainer}>
             <Text style={styles.question}>Q: How do I create an account?</Text>
