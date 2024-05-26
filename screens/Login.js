@@ -156,7 +156,7 @@ const Login = ({ navigation }) => {
             color={isChecked ? COLORS.primary : undefined}
           />
 
-          <Text>Remember Me</Text>
+          <Text>Remember Mee</Text>
         </View>
 
         <Button
