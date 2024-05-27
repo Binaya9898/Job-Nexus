@@ -12,6 +12,7 @@ import Notification from "../App/Notification/More/Notification";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../constants/colors";
 import Mainmenu from "../App/More/menu/Mainmenu";
+import Searchh from "../App/Search/Searchh";
 
 const Tab = createMaterialBottomTabNavigator();
 const color = COLORS.secondary;
@@ -78,7 +79,19 @@ const Nav = () => {
           ),
         }}
       />
-
+      <Tab.Screen
+        name="Searchh"
+        component={Searchh}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons
+              name="notifications-outline"
+              color={"#39B68D"}
+              size={26}
+            />
+          ),
+        }}
+      />
       <Tab.Screen
         name="Mainmenu"
         component={Mainmenu}
