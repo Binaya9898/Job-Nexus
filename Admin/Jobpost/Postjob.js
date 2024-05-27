@@ -3,24 +3,60 @@ import { View, Text, TextInput, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
+import SERVER from "../../constants/server";
 
 const Postjob = ({ navigation }) => {
-  const [jobTitle, setJobTitle] = useState("");
-  const [jobCategory, setJobCategory] = useState("");
-  const [address, setAddress] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [experience, setExperience] = useState("");
-  const [maxSalary, setMaxSalary] = useState("");
-  const [minSalary, setMinSalary] = useState("");
-  const [contact, setContact] = useState("");
-  const [validity, setValidity] = useState("");
-  const [description, setDescription] = useState("");
-  const [jobType, setJobType] = useState("");
-  const [jobHour, setJobHour] = useState("");
+  const [job_title, setJobTitle] = useState("");
+  const [job_category, setJobCategory] = useState("");
+  const [job_address, setAddress] = useState("");
+  const [job_company_name, setCompanyName] = useState("");
+  const [job_experience, setExperience] = useState("");
+  const [job_max_salary, setMaxSalary] = useState("");
+  const [job_min_salary, setMinSalary] = useState("");
+  const [job_contact, setContact] = useState("");
+  const [job_validity, setValidity] = useState("");
+  const [job_description, setDescription] = useState("");
+  const [job_type, setJobType] = useState("");
+  const [job_hour, setJobHour] = useState("");
 
   const handlePostJob = () => {
-    // Add job posting logic here
-    navigation.navigate("JobListings"); // Assuming there's a JobListings screen to navigate to
+    const jobData = {
+      job_title,
+      job_category,
+      job_address,
+      job_company_name,
+      job_experience,
+      job_max_salary,
+      job_min_salary,
+      job_slug: job_title.toLowerCase().replace(/ /g, "-"),
+      job_status: "Open",
+      job_contact,
+      job_validity,
+      job_description,
+      job_type,
+      job_hour,
+    };
+    console.log(jobData);
+    fetch(`${SERVER.primaryUrl}/job/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jobData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        navigation.navigate("Success");
+      })
+      .then((json) => {
+        console.log("Job posted successfully", json);
+        navigation.navigate("Success");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -124,11 +160,11 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   card: {
-    width: '90%',
+    width: "90%",
     backgroundColor: COLORS.light,
     borderRadius: 10,
     padding: 20,
