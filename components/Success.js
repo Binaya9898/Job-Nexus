@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -9,9 +9,18 @@ import {
 } from "react-native";
 import COLORS from "../constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
+import Postjob from "../Admin/Jobpost/Postjob";
+import Employernav from "../Nav/Employernav";
 
-const Success = () => {
-  showAlert = () => Alert.alert("Alert", "Button pressed ");
+const Success = ({ navigation }) => {
+  const handleList = () => {
+    navigation.navigate(Postjob);
+  };
+  const handleMore = () => {
+    navigation.navigate(Employernav);
+  };
+
   return (
     <LinearGradient
       style={{
@@ -22,16 +31,22 @@ const Success = () => {
     >
       <View style={styles.container}>
         <Image style={styles.icon} source={require("../assets/tick.png")} />
-        <Text style={styles.title}>Congratulation, your order is accepted</Text>
+        <Text style={styles.title}>Successfully posted job</Text>
         <Text style={styles.description}>
-          Lorem ipsum dolor sit amet, sed te sumo euismod, doming molestiae
-          consetetur nec ne. Cu quem aeterno labores eos
+          Your job has been successfully posted and is now visible to potential
+          candidates.
         </Text>
         <TouchableOpacity
           style={[styles.buttonContainer, styles.loginButton]}
-          onPress={showAlert}
+          onPress={handleList}
         >
-          <Text style={styles.buttonText}>Continue</Text>
+          <Text style={styles.buttonText}>Post More</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.buttonContainer, styles.loginButton]}
+          onPress={handleMore}
+        >
+          <Text style={styles.buttonText}>View List</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>
@@ -43,9 +58,9 @@ export default Success;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EEEEEE",
+    backgroundColor: "#007260",
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: 150,
   },
   icon: {
     width: 120,
@@ -55,12 +70,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: "center",
     marginTop: 22,
-    color: "#5F6D7A",
+    color: "#FFFFFF",
   },
   description: {
     marginTop: 20,
     textAlign: "center",
-    color: "#A9A9A9",
+    color: "#FFFFFF",
     fontSize: 16,
     margin: 40,
   },
@@ -74,10 +89,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   loginButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#FFFFFF",
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "#121212",
     fontSize: 20,
   },
 });
