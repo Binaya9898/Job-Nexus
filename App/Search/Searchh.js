@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   FlatList,
   Image,
 } from "react-native";
@@ -13,10 +12,13 @@ import COLORS from "../../constants/colors";
 import RNPickerSelect from "react-native-picker-select";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const Searchh = () => {
+const Searchh = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
   const [jobs, setJobs] = useState([]);
+  const handleDetail = (job) => {
+    navigation.navigate("Jobdetail", { job });
+  };
 
   const handleSearch = async () => {
     if (selectedOption && searchQuery) {
@@ -56,14 +58,17 @@ const Searchh = () => {
           color="red"
         />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.detailsButton}>
+      <TouchableOpacity
+        style={styles.detailsButton}
+        onPress={() => handleDetail(item)}
+      >
         <Text style={styles.detailsButtonText}>Details</Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Job Search</Text>
       </View>
@@ -95,21 +100,16 @@ const Searchh = () => {
           keyExtractor={(item) => item.id.toString()}
         />
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  picker: {
-    marginVertical: 10,
-    fontSize: 24,
-    borderColor: COLORS.grey,
-    height: 50,
-  },
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: COLORS.white,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
   },
   header: {
     alignItems: "center",
@@ -119,6 +119,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     color: COLORS.primary,
+  },
+  picker: {
+    marginVertical: 10,
+    fontSize: 24,
+    borderColor: COLORS.grey,
+    height: 50,
   },
   content: {},
   input: {
@@ -143,6 +149,7 @@ const styles = StyleSheet.create({
   },
   resultsContainer: {
     marginTop: 20,
+    paddingBottom: 40,
   },
   resultsHeading: {
     fontSize: 20,
