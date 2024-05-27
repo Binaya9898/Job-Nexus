@@ -42,31 +42,7 @@ const Employersignup = ({ navigation }) => {
       employer_description,
       employer_certificate,
     };
-
-    console.log("Sending employer data:", employerData);
-
-    try {
-      const response = await axios.post(url, employerData);
-
-      if (response.status === 200) {
-        console.log("Registration successful");
-        navigation.navigate("Employernav");
-      } else {
-        console.error("Unexpected response status:", response.status);
-      }
-    } catch (error) {
-      if (error.response) {
-        // Server responded with a status other than 2xx
-        console.error("Error response from server:", error.response.data);
-        console.error("Status code:", error.response.status);
-      } else if (error.request) {
-        // No response received from server
-        console.error("No response received:", error.request);
-      } else {
-        // Error setting up the request
-        console.error("Error setting up request:", error.message);
-      }
-    }
+    navigation.navigate("Employernav");
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
