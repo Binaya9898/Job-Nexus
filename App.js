@@ -6,6 +6,8 @@ import Employersignup from "./screens/Auth/Employersignup";
 import Employernav from "./Nav/Employernav";
 import Mainmenu from "./App/More/menu/Mainmenu";
 import Jobdetail from "./App/Jobs/Jobdetail";
+import Success from "./components/Success";
+import Postjob from "./Admin/Jobpost/Postjob";
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +61,21 @@ export default function App() {
         <Stack.Screen
           name="Jobdetail"
           component={Jobdetail}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Success"
+          component={Success}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Postjob"
+          component={Postjob}
           options={{
             headerShown: false,
           }}

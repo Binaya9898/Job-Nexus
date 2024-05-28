@@ -54,16 +54,6 @@ const Employernav = () => {
         }}
       />
 
-      {/* <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="person-outline" color={"#39B68D"} size={26} />
-          ),
-        }}
-      />*/}
-
       <Tab.Screen
         name="Notification"
         component={Notification}

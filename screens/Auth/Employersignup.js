@@ -11,35 +11,38 @@ import { Ionicons } from "@expo/vector-icons";
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
 import SERVER from "../../constants/server";
+import axios from "axios";
 
 const Employersignup = ({ navigation }) => {
-  const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [address, setAddress] = useState("");
-  const [contact, setContact] = useState("");
-  const [companyDescription, setCompanyDescription] = useState("");
-  const [companyProfile, setCompanyProfile] = useState("image1.jpg");
-  const [resume, setResume] = useState("image1.jpg");
+  const [employer_first_name, setFirstName] = useState("");
+  const [employer_middle_name, setMiddleName] = useState("");
+  const [employer_last_name, setLastName] = useState("");
+  const [employer_email, setEmail] = useState("");
+  const [employer_password, setPassword] = useState("");
+  const [employer_address, setAddress] = useState("");
+  const [employer_contact, setContact] = useState("");
+  const [employer_description, setCompanyDescription] = useState("");
+  const [employer_company_name, setCompanyName] = useState("image1.jpg");
+  const [employer_image, setimage] = useState("image1.jpg");
+  const [employer_certificate, setResume] = useState("image1.jpg");
 
   const handleRegisterNow = async () => {
-    const url = SERVER.primaryUrl + "/employer/save";
-    navigation.navigate("Employernav");
+    const url = `${SERVER.primaryUrl}/employer/save`;
 
     const employerData = {
-      firstName,
-      middleName,
-      lastName,
-      email,
-      password,
-      address,
-      contact,
-      companyDescription,
-      companyProfile,
-      resume,
+      employer_email,
+      employer_password,
+      employer_first_name,
+      employer_middle_name,
+      employer_last_name,
+      employer_address,
+      employer_contact,
+      employer_company_name,
+      employer_image,
+      employer_description,
+      employer_certificate,
     };
+    navigation.navigate("Employernav");
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -107,12 +110,18 @@ const Employersignup = ({ navigation }) => {
             onChangeText={(text) => setContact(text)}
             style={styles.input}
           />
+          <TextInput
+            placeholder="Company Name"
+            placeholderTextColor={COLORS.bright}
+            onChangeText={(text) => setCompanyName(text)}
+            style={styles.input}
+          />
           <TouchableOpacity
             // onPress={handleCompanyProfileUpload}
             style={[styles.fileUpload, { marginBottom: 20 }]}
           >
             <Text style={styles.uploadText}>
-              {companyProfile
+              {employer_certificate
                 ? "Company Profile Uploaded"
                 : "Upload Company Profile *"}
             </Text>
@@ -123,7 +132,9 @@ const Employersignup = ({ navigation }) => {
             style={[styles.fileUpload, { marginBottom: 20 }]}
           >
             <Text style={styles.uploadText}>
-              {resume ? "Certificate" : "Certificate of verification *"}
+              {employer_certificate
+                ? "Certificate"
+                : "Certificate of verification *"}
             </Text>
             <Ionicons name="cloud-upload" size={24} color={COLORS.primary} />
           </TouchableOpacity>

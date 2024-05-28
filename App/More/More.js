@@ -66,7 +66,6 @@ const More = ({ navigation }) => {
             <Image style={styles.image} source={{ uri: item.image }} />
             <View style={styles.cardContent}>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.count}>{item.count}</Text>
               <TouchableOpacity
                 style={styles.followButton}
                 onPress={() => clickEventListener(item)}
