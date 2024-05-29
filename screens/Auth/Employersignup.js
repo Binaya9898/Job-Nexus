@@ -41,7 +41,7 @@ const Employersignup = ({ navigation }) => {
       employer_certificate,
     };
     console.log(employerData);
-    fetch("http://192.168.1.66:8000/api/employer/store", {
+    fetch(SERVER.primaryUrl + "/employer/store", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
