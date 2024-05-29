@@ -27,8 +27,6 @@ const Employersignup = ({ navigation }) => {
   const [employer_certificate, setResume] = useState("image1.jpg");
 
   const handleRegisterNow = async () => {
-    const url = `${SERVER.primaryUrl}/employer/save`;
-
     const employerData = {
       employer_email,
       employer_password,
@@ -42,7 +40,27 @@ const Employersignup = ({ navigation }) => {
       employer_description,
       employer_certificate,
     };
-    navigation.navigate("Employernav");
+    console.log(employerData);
+    fetch("http://192.168.1.66:8000/api/employer/store", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(employerData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok " + response.statusText);
+        }
+        return response.json(); // Ensure you are returning response.json()
+      })
+      .then((json) => {
+        console.log("Job posted successfully", json);
+        navigation.navigate("Success");
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
   };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
