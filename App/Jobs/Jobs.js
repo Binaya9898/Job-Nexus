@@ -63,7 +63,10 @@ export default function Jobs({ navigation }) {
   };
   const renderJobItem = ({ item }) => (
     <View style={styles.jobItem}>
-      <Image source={{ uri: item.image }} style={styles.image} />
+      <Image
+        source={{ uri: "http://192.168.1.25:8000/images/hotel/Hotel1.png" }}
+        style={styles.image}
+      />
       <View style={styles.jobDetails}>
         <Text style={styles.title}>{item.job_title}</Text>
         <Text style={styles.company}>{item.job_company_name}</Text>
