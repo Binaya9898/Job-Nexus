@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Createnew = () => {
+const Forgotpw = () => {
   return (
     <View>
-      <Text>Createnew</Text>
+      <Text>Forgotpw</Text>
     </View>
   );
 };
 
-export default Createnew;
+export default Forgotpw;

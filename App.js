@@ -9,6 +9,9 @@ import Jobdetail from "./App/Jobs/Jobdetail";
 import Success from "./components/Success";
 import Postjob from "./Admin/Jobpost/Postjob";
 import Success1 from "./components/Success1";
+import Forgotpw from "./screens/Auth/Forgotpw";
+import Recoverotp from "./screens/Auth/Recoverotp";
+import Createnewpw from "./screens/Auth/Createnewpw";
 
 const Stack = createNativeStackNavigator();
 
@@ -84,6 +87,28 @@ export default function App() {
         <Stack.Screen
           name="Postjob"
           component={Postjob}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Forgotpw"
+          component={Forgotpw}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Recoverotp"
+          component={Recoverotp}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="Createnewpw"
+          component={Createnewpw}
           options={{
             headerShown: false,
           }}

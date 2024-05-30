@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Otpenter = () => {
+const Createnewpw = () => {
   return (
     <View>
-      <Text>Otpenter</Text>
+      <Text>Createnewpw</Text>
     </View>
   );
 };
 
-export default Otpenter;
+export default Createnewpw;

@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Createnew = () => {
+const Recoverotp = () => {
   return (
     <View>
-      <Text>Createnew</Text>
+      <Text>Recoverotp</Text>
     </View>
   );
 };
 
-export default Createnew;
+export default Recoverotp;
