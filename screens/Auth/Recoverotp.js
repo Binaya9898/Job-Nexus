@@ -20,7 +20,8 @@ const Recoverotp = ({ navigation }) => {
     navigation.navigate("ResetPassword");
   };
   const handleResendCode = () => {
-    setAlertVisible(true);
+    // setAlertVisible(true);
+    navigation.navigate("Employernav");
   };
 
   return (
