@@ -6,6 +6,7 @@ import Employersignup from "./screens/Auth/Employersignup";
 import Employernav from "./Nav/Employernav";
 import Mainmenu from "./App/More/menu/Mainmenu";
 import Jobdetail from "./App/Jobs/Jobdetail";
+import Home from "./App/Home/Home";
 import Success from "./components/Success";
 import Postjob from "./Admin/Jobpost/Postjob";
 import Success1 from "./components/Success1";

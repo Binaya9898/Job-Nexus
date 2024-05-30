@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 
 export default class EmployeeNotifications extends Component {
   constructor(props) {
@@ -81,21 +81,23 @@ export default class EmployeeNotifications extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Notifications</Text>
-        {this.state.notifications.map((notification) => (
-          <View key={notification.id} style={styles.notificationContainer}>
-            <View style={styles.notificationContent}>
-              <Text style={styles.message}>{notification.message}</Text>
-              <Text style={styles.date}>{notification.date}</Text>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {this.state.notifications.map((notification) => (
+            <View key={notification.id} style={styles.notificationContainer}>
+              <View style={styles.notificationContent}>
+                <Text style={styles.message}>{notification.message}</Text>
+                <Text style={styles.date}>{notification.date}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => this.deleteNotification(notification.id)}
+              >
+                <Text style={styles.deleteText}>Delete</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => this.deleteNotification(notification.id)}
-            >
-              <Text style={styles.deleteText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-        {this.state.notifications.length === 0 && <Text>No notifications</Text>}
+          ))}
+          {this.state.notifications.length === 0 && <Text>No notifications</Text>}
+        </ScrollView>
       </View>
     );
   }
@@ -114,6 +116,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#007260", // Primary color
     color: "#ffffff",
     padding: 20,
+  },
+  scrollContainer: {
+    paddingBottom: 20,
   },
   notificationContainer: {
     flexDirection: "row",
