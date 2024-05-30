@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
+
 import {
   View,
   Text,
@@ -6,6 +7,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  BackHandler,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import JobDetails from "./JobDetails";
@@ -161,15 +164,6 @@ export default class Home extends Component {
 
     return (
       <ScrollView style={styles.container}>
-        {/* <View style={styles.header}>
-          <Image
-            source={{
-              uri: "https://cdn-icons-png.flaticon.com/512/2298/2298133.png",
-            }}
-            style={styles.logo}
-          />
-          <Text style={styles.headerText}>Job Portal</Text>
-        </View> */}
         <View>
           <Image
             source={{
@@ -177,19 +171,8 @@ export default class Home extends Component {
             }}
             style={styles.banner}
           />
-          {/* <BackButton onPress={() => navigation.goBack()} /> */}
         </View>
-        {/* <View style={styles.content}>
-          <Text style={styles.subtitle}>
-            Explore job opportunities and apply for your dream job.
-          </Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate("Jobs")}
-          >
-            <Text style={styles.buttonText}>Explore Jobs</Text>
-          </TouchableOpacity>
-        </View> */}
+
         <View style={styles.categoriesContainer}>
           <Text style={styles.sectionTitle}>Categories</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -251,15 +234,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
-  // header: {
-  //   flexDirection: "row",
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  //   padding: 20,
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: "#e0e0e0",
-  //   backgroundColor: "#007260", // Primary color
-  // },
+
   logo: {
     width: 40,
     height: 40,

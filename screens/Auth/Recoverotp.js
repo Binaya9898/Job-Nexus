@@ -17,10 +17,11 @@ const Recoverotp = ({ navigation }) => {
 
   const handleVerifyCode = () => {
     // Handle code verification logic
-    navigation.navigate("ResetPassword");
+    navigation.navigate("Createnewpw");
   };
   const handleResendCode = () => {
     // setAlertVisible(true);
+    setCode("");
     navigation.navigate("Employernav");
   };
 
