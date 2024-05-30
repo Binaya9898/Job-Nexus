@@ -1,5 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
-
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,208 +6,116 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  BackHandler,
+  ActivityIndicator,
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import JobDetails from "./JobDetails";
-import BackButton from "../../constants/BackButton";
+import SERVER from "../../constants/server";
 
-export default class Home extends Component {
-  state = {
-    categories: [
-      {
-        id: 1,
-        name: "Design",
-        image: "https://source.unsplash.com/100x100/?design",
-      },
-      {
-        id: 2,
-        name: "IT",
-        image: "https://source.unsplash.com/100x100/?technology",
-      },
-      {
-        id: 3,
-        name: "Marketing",
-        image: "https://source.unsplash.com/100x100/?marketing",
-      },
-      {
-        id: 4,
-        name: "Volunteering",
-        image: "https://source.unsplash.com/100x100/?volunteer",
-      },
-      {
-        id: 5,
-        name: "Teaching",
-        image: "https://source.unsplash.com/100x100/?teaching",
-      },
-      {
-        id: 6,
-        name: "Part Time",
-        image: "https://source.unsplash.com/100x100/?parttime",
-      },
-      {
-        id: 7,
-        name: "Engineering",
-        image: "https://source.unsplash.com/100x100/?engineering",
-      },
-      {
-        id: 8,
-        name: "Medical",
-        image: "https://source.unsplash.com/100x100/?medical",
-      },
-      {
-        id: 9,
-        name: "Video Editing",
-        image: "https://source.unsplash.com/100x100/?videoediting",
-      },
-      {
-        id: 10,
-        name: "Plumber",
-        image: "https://source.unsplash.com/100x100/?plumber",
-      },
-    ],
-    recentJobs: [
-      {
-        id: 1,
-        title: "Software Engineer",
-        company: "ABC Company",
-        location: "New York, NY",
-        description: "Job description for Software Engineer at ABC Company.",
-      },
-      {
-        id: 2,
-        title: "Web Developer",
-        company: "XYZ Tech",
-        location: "San Francisco, CA",
-        description: "Job description for Web Developer at XYZ Tech.",
-      },
-      {
-        id: 3,
-        title: "Data Analyst",
-        company: "PQR Inc.",
-        location: "Austin, TX",
-        description: "Job description for Data Analyst at PQR Inc.",
-      },
-      {
-        id: 4,
-        title: "Marketing Manager",
-        company: "LMN Corp.",
-        location: "Seattle, WA",
-        description: "Job description for Marketing Manager at LMN Corp.",
-      },
-      {
-        id: 5,
-        title: "Sales Associate",
-        company: "OPQ Retail",
-        location: "Los Angeles, CA",
-        description: "Job description for Sales Associate at OPQ Retail.",
-      },
-      {
-        id: 6,
-        title: "Product Manager",
-        company: "GHI Industries",
-        location: "Boston, MA",
-        description: "Job description for Product Manager at GHI Industries.",
-      },
-      {
-        id: 7,
-        title: "Graphic Designer",
-        company: "JKL Media",
-        location: "Chicago, IL",
-        description: "Job description for Graphic Designer at JKL Media.",
-      },
-      {
-        id: 8,
-        title: "Customer Service Rep",
-        company: "MNO Services",
-        location: "Miami, FL",
-        description:
-          "Job description for Customer Service Rep at MNO Services.",
-      },
-      {
-        id: 9,
-        title: "HR Specialist",
-        company: "EFG Solutions",
-        location: "Dallas, TX",
-        description: "Job description for HR Specialist at EFG Solutions.",
-      },
-      {
-        id: 10,
-        title: "IT Support",
-        company: "UVW Corp.",
-        location: "Denver, CO",
-        description: "Job description for IT Support at UVW Corp.",
-      },
-    ],
-    selectedCategory: null,
+const Home = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [jobs, setJobs] = useState([]);
+  const [loadingJobs, setLoadingJobs] = useState(false);
+  const [header, setHeader] = useState("Popular Jobs");
+
+  useEffect(() => {
+    fetchCategories();
+    fetchJobs();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(SERVER.primaryUrl + "/category");
+      const data = await response.json();
+      setCategories(data);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
   };
 
-  handleCategoryPress = (category) => {
-    this.setState({ selectedCategory: category });
+  const fetchJobs = async (categoryTitle = "") => {
+    setLoadingJobs(true);
+    const endpoint = categoryTitle
+      ? SERVER.primaryUrl + `/jobs?job_category=${categoryTitle}`
+      : SERVER.primaryUrl + "/job-api";
+
+    try {
+      const response = await fetch(endpoint);
+      const data = await response.json();
+      setJobs(data);
+      setLoadingJobs(false);
+    } catch (error) {
+      setError(error.message);
+      setLoadingJobs(false);
+    }
   };
 
-  filterJobsByCategory = (category) => {
-    return this.state.recentJobs.filter((job) =>
-      job.title.toLowerCase().includes(category.toLowerCase())
-    );
+  const handleCategoryPress = (category) => {
+    setHeader(category.category_title + " Jobs");
+    fetchJobs(category.category_title);
   };
+  // const handlePopular = () => {
+  //   setHeader("Popular Jobs");
+  //   // fetchJobs();
+  // };
 
-  render() {
-    const { navigation } = this.props;
-    const { categories, recentJobs, selectedCategory } = this.state;
-    const jobsToShow =
-      selectedCategory === null
-        ? recentJobs
-        : this.filterJobsByCategory(selectedCategory);
+  return (
+    <ScrollView style={styles.container}>
+      <View>
+        <Image
+          source={{
+            uri: "https://imagehost9.online-image-editor.com/oie_upload/images/301715538Hi5XVX/jvPeCLteislY.jpg",
+          }}
+          style={styles.banner}
+        />
+      </View>
 
-    return (
-      <ScrollView style={styles.container}>
-        <View>
-          <Image
-            source={{
-              uri: "https://source.unsplash.com/1024x400/?job,office",
-            }}
-            style={styles.banner}
-          />
-        </View>
-
-        <View style={styles.categoriesContainer}>
-          <Text style={styles.sectionTitle}>Categories</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {categories.map((category) => (
-              <TouchableOpacity
-                key={category.id}
-                style={styles.category}
-                onPress={() => this.handleCategoryPress(category.name)}
-              >
-                <Image
-                  source={{ uri: category.image }}
-                  style={styles.categoryImage}
-                />
-                <Text style={styles.categoryText}>{category.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-        <View style={styles.categoryButtons}>
-          <TouchableOpacity
-            style={styles.categoryButton}
-            onPress={() => this.setState({ selectedCategory: null })}
-          >
-            <Text style={styles.categoryButtonText}>Most Recent</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.scrollContainer}>
-          <Text style={styles.sectionTitle}>
-            {selectedCategory ? `${selectedCategory} Jobs` : "Most Recent Jobs"}
-          </Text>
-          {jobsToShow.map((job) => (
+      <View style={styles.categoriesContainer}>
+        <Text style={styles.sectionTitle}>Categories</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {categories.map((category) => (
+            <TouchableOpacity
+              key={category.id}
+              style={styles.category}
+              onPress={() => handleCategoryPress(category)}
+            >
+              <Image
+                source={{
+                  uri:
+                    SERVER.imageUrl +
+                    "/images/category/" +
+                    category.category_image,
+                }}
+                style={styles.categoryImage}
+              />
+              <Text style={styles.categoryText}>{category.category_title}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+      <View style={styles.categoryButtons}>
+        <TouchableOpacity
+          style={styles.categoryButton}
+          // onPress={handlePopular()}
+        >
+          <Text style={styles.categoryButtonText}>Most Recent</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.scrollContainer}>
+        <Text style={styles.sectionTitle}>{header}</Text>
+        {loadingJobs ? (
+          <ActivityIndicator size="large" color="#39B68D" />
+        ) : (
+          jobs.map((job) => (
             <View key={job.id} style={styles.jobContainer}>
               <View style={styles.jobDetails}>
-                <Text style={styles.jobTitle}>{job.title}</Text>
-                <Text style={styles.jobCompany}>{job.company}</Text>
-                <Text style={styles.jobLocation}>{job.location}</Text>
+                <Text style={styles.jobTitle}>{job.job_title}</Text>
+                <Text style={styles.jobCompany}>{job.job_company_name}</Text>
+                <Text style={styles.jobLocation}>{job.job_address}</Text>
               </View>
               <View style={styles.jobActions}>
                 <TouchableOpacity
@@ -222,19 +129,20 @@ export default class Home extends Component {
                 </TouchableOpacity>
               </View>
             </View>
-          ))}
-        </View>
-      </ScrollView>
-    );
-  }
-}
+          ))
+        )}
+      </View>
+    </ScrollView>
+  );
+};
+
+export default Home;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
   },
-
   logo: {
     width: 40,
     height: 40,
@@ -243,7 +151,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#ffffff", // White color for text
+    color: "#ffffff",
   },
   banner: {
     width: "100%",
@@ -260,16 +168,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: "#333333", // Dark text color
+    color: "#333333",
   },
   subtitle: {
     fontSize: 16,
-    color: "#666666", // Medium text color
+    color: "#666666",
     marginBottom: 30,
     textAlign: "center",
   },
   button: {
-    backgroundColor: "#39B68D", // Secondary color
+    backgroundColor: "#39B68D",
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 25,

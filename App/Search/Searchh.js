@@ -24,7 +24,10 @@ const Searchh = ({ navigation }) => {
   const handleSearch = async () => {
     if (selectedOption && searchQuery) {
       const encodedSearchQuery = encodeURIComponent(searchQuery);
-      const apiUrl = `http://192.168.1.20:8000/api/jobs?${selectedOption}=${encodedSearchQuery}`;
+      // const apiUrl = `http://192.168.1.20:8000/api/jobs?${selectedOption}=${encodedSearchQuery}`;
+      const apiUrl =
+        SERVER.primaryUrl + `/jobs?${selectedOption}=${encodedSearchQuery}`;
+      console.log(apiUrl);
 
       try {
         const response = await fetch(apiUrl);
