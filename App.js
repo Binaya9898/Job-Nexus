@@ -8,6 +8,7 @@ import Mainmenu from "./App/More/menu/Mainmenu";
 import Jobdetail from "./App/Jobs/Jobdetail";
 import Success from "./components/Success";
 import Postjob from "./Admin/Jobpost/Postjob";
+import Success1 from "./components/Success1";
 
 const Stack = createNativeStackNavigator();
 
@@ -68,6 +69,13 @@ export default function App() {
         <Stack.Screen
           name="Success"
           component={Success}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Success1"
+          component={Success1}
           options={{
             headerShown: false,
           }}

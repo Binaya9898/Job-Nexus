@@ -54,7 +54,12 @@ const Signup = ({ navigation }) => {
       })
       .then((json) => {
         console.log("Job posted successfully", json);
-        navigation.navigate("Success");
+        navigation.navigate("Success1", {
+          title: "Successfully Registered",
+          description: "Your details has been successfully registered.",
+          navigation1: "Login",
+          buttonText1: "Login",
+        });
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
