@@ -11,7 +11,6 @@ import { Ionicons } from "@expo/vector-icons";
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
 import SERVER from "../../constants/server";
-import axios from "axios";
 
 const Employersignup = ({ navigation }) => {
   const [employer_first_name, setFirstName] = useState("");
@@ -56,7 +55,12 @@ const Employersignup = ({ navigation }) => {
       })
       .then((json) => {
         console.log("Job posted successfully", json);
-        navigation.navigate("Success");
+        navigation.navigate("Success1", {
+          title: "Successfully Registered",
+          description: "Your details has been successfully registered.",
+          navigation1: "Login",
+          buttonText1: "Login",
+        });
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);

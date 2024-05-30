@@ -52,7 +52,14 @@ const Postjob = ({ navigation }) => {
       })
       .then((json) => {
         console.log("Job posted successfully", json);
-        navigation.navigate("Success");
+        navigation.navigate("Success", {
+          title: "Job posted successfully",
+          description: "Your job details has been successfully posted.",
+          navigation2: "Employernav",
+          buttonText1: "View List",
+          navigation2: "Postjob",
+          buttonText2: "Post More",
+        });
       })
       .catch((error) => {
         console.error("Error:", error);

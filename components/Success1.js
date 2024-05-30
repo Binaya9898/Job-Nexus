@@ -4,24 +4,13 @@ import COLORS from "../constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
-const Success = () => {
+const Success1 = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const {
-    title,
-    description,
-    navigation1,
-    navigation2,
-    buttonText1,
-    buttonText2,
-  } = route.params;
+  const { title, description, navigation1, buttonText1 } = route.params;
 
-  const handleList = () => {
+  const handleBtn1 = () => {
     navigation.navigate(navigation1);
-  };
-
-  const handleMore = () => {
-    navigation.navigate(navigation2);
   };
 
   return (
@@ -35,22 +24,16 @@ const Success = () => {
         <Text style={styles.description}>{description}</Text>
         <TouchableOpacity
           style={[styles.buttonContainer, styles.loginButton]}
-          onPress={handleMore}
+          onPress={handleBtn1}
         >
           <Text style={styles.buttonText}>{buttonText1}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonContainer, styles.loginButton]}
-          onPress={handleList}
-        >
-          <Text style={styles.buttonText}>{buttonText2}</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>
   );
 };
 
-export default Success;
+export default Success1;
 
 const styles = StyleSheet.create({
   container: {
