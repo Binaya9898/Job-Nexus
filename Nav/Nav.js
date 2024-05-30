@@ -1,12 +1,8 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import { Login, Signup } from "../screens";
-import Profile from "../App/Profile/Profile";
 import Home from "../App/Home/Home";
-import More from "../App/More/More";
 import Jobs from "../App/Jobs/Jobs";
-import Favourite from "../App/Favourite/Favourite";
 import Notification from "../App/Notification/More/Notification";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -30,6 +26,7 @@ const Nav = () => {
         name="Home"
         component={Home}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="home-outline" color={"#39B68D"} size={26} /> // Corrected icon name
           ),
@@ -64,7 +61,7 @@ const Nav = () => {
             <Ionicons name="person-outline" color={"#39B68D"} size={26} />
           ),
         }}
-      />
+      /> */}
 
       <Tab.Screen
         name="Notification"
@@ -78,17 +75,13 @@ const Nav = () => {
             />
           ),
         }}
-      /> */}
+      />
       <Tab.Screen
-        name="Searchh"
+        name="Search"
         component={Searchh}
         options={{
           tabBarIcon: ({ color }) => (
-            <Ionicons
-              name="notifications-outline"
-              color={"#39B68D"}
-              size={26}
-            />
+            <Ionicons name="search-outline" color={"#39B68D"} size={26} />
           ),
         }}
       />

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import JobDetails from "./JobDetails";
+import BackButton from "../../constants/BackButton";
 
 export default class Home extends Component {
   state = {
@@ -119,7 +120,8 @@ export default class Home extends Component {
         title: "Customer Service Rep",
         company: "MNO Services",
         location: "Miami, FL",
-        description: "Job description for Customer Service Rep at MNO Services.",
+        description:
+          "Job description for Customer Service Rep at MNO Services.",
       },
       {
         id: 9,
@@ -159,7 +161,7 @@ export default class Home extends Component {
 
     return (
       <ScrollView style={styles.container}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <Image
             source={{
               uri: "https://cdn-icons-png.flaticon.com/512/2298/2298133.png",
@@ -167,14 +169,17 @@ export default class Home extends Component {
             style={styles.logo}
           />
           <Text style={styles.headerText}>Job Portal</Text>
+        </View> */}
+        <View>
+          <Image
+            source={{
+              uri: "https://source.unsplash.com/1024x400/?job,office",
+            }}
+            style={styles.banner}
+          />
+          {/* <BackButton onPress={() => navigation.goBack()} /> */}
         </View>
-        <Image
-          source={{
-            uri: "https://source.unsplash.com/1024x400/?job,office",
-          }}
-          style={styles.banner}
-        />
-        <View style={styles.content}>
+        {/* <View style={styles.content}>
           <Text style={styles.subtitle}>
             Explore job opportunities and apply for your dream job.
           </Text>
@@ -184,7 +189,7 @@ export default class Home extends Component {
           >
             <Text style={styles.buttonText}>Explore Jobs</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View style={styles.categoriesContainer}>
           <Text style={styles.sectionTitle}>Categories</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -194,7 +199,10 @@ export default class Home extends Component {
                 style={styles.category}
                 onPress={() => this.handleCategoryPress(category.name)}
               >
-                <Image source={{ uri: category.image }} style={styles.categoryImage} />
+                <Image
+                  source={{ uri: category.image }}
+                  style={styles.categoryImage}
+                />
                 <Text style={styles.categoryText}>{category.name}</Text>
               </TouchableOpacity>
             ))}
@@ -222,9 +230,7 @@ export default class Home extends Component {
               <View style={styles.jobActions}>
                 <TouchableOpacity
                   style={styles.viewButton}
-                  onPress={() =>
-                    navigation.navigate("JobDetails", { job })
-                  }
+                  onPress={() => navigation.navigate("JobDetails", { job })}
                 >
                   <Text style={styles.viewButtonText}>View Details</Text>
                 </TouchableOpacity>
@@ -245,15 +251,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-    backgroundColor: "#007260", // Primary color
-  },
+  // header: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   justifyContent: "center",
+  //   padding: 20,
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: "#e0e0e0",
+  //   backgroundColor: "#007260", // Primary color
+  // },
   logo: {
     width: 40,
     height: 40,
