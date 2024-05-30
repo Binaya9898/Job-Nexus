@@ -11,6 +11,7 @@ import {
 import COLORS from "../../constants/colors";
 import RNPickerSelect from "react-native-picker-select";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import SERVER from "../../constants/server";
 
 const Searchh = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +24,7 @@ const Searchh = ({ navigation }) => {
   const handleSearch = async () => {
     if (selectedOption && searchQuery) {
       const encodedSearchQuery = encodeURIComponent(searchQuery);
-      const apiUrl = `http://192.168.1.66:8000/api/jobs?${selectedOption}=${encodedSearchQuery}`;
+      const apiUrl = `http://192.168.1.20:8000/api/jobs?${selectedOption}=${encodedSearchQuery}`;
 
       try {
         const response = await fetch(apiUrl);

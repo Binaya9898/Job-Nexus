@@ -46,7 +46,7 @@ const Nav = () => {
         }}
       />
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Wishlist"
         component={Favourite}
         options={{
@@ -78,7 +78,7 @@ const Nav = () => {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Searchh"
         component={Searchh}
