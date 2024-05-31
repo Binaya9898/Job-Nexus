@@ -77,7 +77,7 @@ const Nav = () => {
         }}
       />
       <Tab.Screen
-        name="Search"
+        name="Searchh"
         component={Searchh}
         options={{
           tabBarIcon: ({ color }) => (
