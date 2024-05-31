@@ -1,29 +1,23 @@
 import React, { useEffect } from "react";
-import { View, Image, StyleSheet } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import COLORS from "../constants/colors";
+import { View, Text, Image, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const SplashScreen = ({ navigation }) => {
+const SplashScreen = () => {
+    const navigation = useNavigation();
+
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigation.replace("Welcome");
+            navigation.navigate("Welcome");
         }, 3000); // 3 seconds
 
-        return () => clearTimeout(timer);
+        return () => clearTimeout(timer); // Cleanup the timer
     }, [navigation]);
 
     return (
-        <LinearGradient
-            style={styles.container}
-            colors={[COLORS.secondary, COLORS.primary]}
-        >
-            <View style={styles.logoContainer}>
-                <Image
-                    source={require("../assets/tick.png")}
-                    style={styles.logo}
-                />
-            </View>
-        </LinearGradient>
+        <View style={styles.container}>
+            <Image source={require("../assets/splash.png")} style={styles.logo} />
+            <Text style={styles.title}>Welcome to Job Finder</Text>
+        </View>
     );
 };
 
@@ -32,13 +26,17 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-    },
-    logoContainer: {
-        alignItems: "center",
+        backgroundColor: "#fff",
     },
     logo: {
-        width: 200,
-        height: 200,
+        width: 150,
+        height: 150,
+    },
+    title: {
+        marginTop: 20,
+        fontSize: 24,
+        fontWeight: "bold",
+        color: "#333",
     },
 });
 
