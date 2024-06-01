@@ -32,12 +32,12 @@ const Login = ({ navigation }) => {
 
   const handleLogin = (email, password) => {
     console.log(email);
-    if (!validateEmail(email)) {
+    if (validateEmail(email)) {
       Alert.alert("Invalid email", "Please enter a valid email address.");
       return;
     }
 
-    if (!validatePassword(password)) {
+    if (validatePassword(password)) {
       Alert.alert(
         "Invalid password",
         "Password must be 8-16 characters long and include at least one uppercase letter, one symbol, and one number."
