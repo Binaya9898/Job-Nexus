@@ -18,6 +18,7 @@ const Postjob = ({ navigation }) => {
   const [job_description, setDescription] = useState("");
   const [job_type, setJobType] = useState("");
   const [job_hour, setJobHour] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
 
   const handlePostJob = () => {
     const jobData = {
@@ -66,94 +67,133 @@ const Postjob = ({ navigation }) => {
       });
   };
 
+  const renderFields = () => {
+    switch (currentPage) {
+      case 0:
+        return (
+          <>
+            <TextInput
+              placeholder="Job Title *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setJobTitle(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Job Category *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setJobCategory(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Address *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setAddress(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Company Name *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setCompanyName(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Experience Required *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setExperience(text)}
+              style={styles.input}
+            />
+          </>
+        );
+      case 1:
+        return (
+          <>
+            <TextInput
+              placeholder="Minimum Salary *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setMinSalary(text)}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+            <TextInput
+              placeholder="Maximum Salary *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setMaxSalary(text)}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+            <TextInput
+              placeholder="Contact *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setContact(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Validity Period *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setValidity(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Job Description *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setDescription(text)}
+              style={[styles.input, styles.textArea]}
+              multiline
+            />
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <TextInput
+              placeholder="Job Type *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setJobType(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Job Hours *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setJobHour(text)}
+              style={styles.input}
+            />
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.card}>
           <Text style={styles.title}>Post a Job</Text>
-
-          <TextInput
-            placeholder="Job Title *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setJobTitle(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Job Category *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setJobCategory(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Address *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setAddress(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Company Name *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setCompanyName(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Experience Required *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setExperience(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Minimum Salary *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setMinSalary(text)}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <TextInput
-            placeholder="Maximum Salary *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setMaxSalary(text)}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-          <TextInput
-            placeholder="Contact *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setContact(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Validity Period *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setValidity(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Job Description *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setDescription(text)}
-            style={[styles.input, styles.textArea]}
-            multiline
-          />
-          <TextInput
-            placeholder="Job Type *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setJobType(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Job Hours *"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setJobHour(text)}
-            style={styles.input}
-          />
-
-          <Button
-            title="Post Job"
-            onPress={handlePostJob}
-            filled
-            style={styles.button}
-          />
+          {renderFields()}
+          <View style={styles.paginationButtons}>
+            {currentPage > 0 && (
+              <Button
+                title="Previous"
+                onPress={() => setCurrentPage(currentPage - 1)}
+                style={styles.paginationButton}
+              />
+            )}
+            {currentPage < 2 && (
+              <Button
+                title="Next"
+                onPress={() => setCurrentPage(currentPage + 1)}
+                style={styles.paginationButton}
+              />
+            )}
+            {currentPage === 2 && (
+              <Button
+                title="Submit"
+                onPress={handlePostJob}
+                filled
+                style={styles.submitButton}
+              />
+            )}
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -204,7 +244,16 @@ const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: "top",
   },
-  button: {
+  paginationButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  paginationButton: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  submitButton: {
+    flex: 1,
     marginTop: 20,
   },
 });
