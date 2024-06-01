@@ -1,6 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DateTimePicker from "@react-native-community/datetimepicker";
+
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
 import SERVER from "../../constants/server";
@@ -66,7 +75,19 @@ const Postjob = ({ navigation }) => {
         console.error("Error:", error);
       });
   };
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(false);
 
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(false);
+    setDate(currentDate);
+    setValidity(currentDate.toISOString().split("T")[0]); // Set the date in your desired format
+  };
+
+  const showDatepicker = () => {
+    setShow(true);
+  };
   const renderFields = () => {
     switch (currentPage) {
       case 0:
@@ -127,12 +148,20 @@ const Postjob = ({ navigation }) => {
               onChangeText={(text) => setContact(text)}
               style={styles.input}
             />
-            <TextInput
-              placeholder="Validity Period *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setValidity(text)}
-              style={styles.input}
-            />
+            <TouchableOpacity onPress={showDatepicker} style={styles.input}>
+              <Text style={styles.dateText}>
+                {date.toISOString().split("T")[0] || "Validity Period *"}
+              </Text>
+            </TouchableOpacity>
+            {show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode="date"
+                display="default"
+                onChange={onChange}
+              />
+            )}
             <TextInput
               placeholder="Job Description *"
               placeholderTextColor={COLORS.bright}
