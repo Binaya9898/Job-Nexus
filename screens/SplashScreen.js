@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React, { useEffect } from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const SplashScreen = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigation.navigate("Welcome");
+            navigation.navigate('Welcome');
         }, 3000); // 3 seconds
 
         return () => clearTimeout(timer); // Cleanup the timer
@@ -15,8 +15,8 @@ const SplashScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Image source={require("../assets/splash.png")} style={styles.logo} />
-            <Text style={styles.title}>Welcome to Job Finder</Text>
+            <Image source={require('../assets/splash.png')} style={styles.logo} />
+            <Text style={styles.title}>Welcome to Job Necus</Text>
         </View>
     );
 };
@@ -24,9 +24,9 @@ const SplashScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#fff",
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
     },
     logo: {
         width: 150,
@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
     title: {
         marginTop: 20,
         fontSize: 24,
-        fontWeight: "bold",
-        color: "#333",
+        fontWeight: 'bold',
+        color: '#333',
     },
 });
 
