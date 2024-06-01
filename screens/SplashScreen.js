@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import COLORS from '../constants/colors';
 
 const SplashScreen = () => {
     const navigation = useNavigation();
@@ -8,15 +9,15 @@ const SplashScreen = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             navigation.navigate('Welcome');
-        }, 3000); // 3 seconds
+        }, 3000);
 
-        return () => clearTimeout(timer); // Cleanup the timer
+        return () => clearTimeout(timer);
     }, [navigation]);
 
     return (
         <View style={styles.container}>
             <Image source={require('../assets/splash.png')} style={styles.logo} />
-            <Text style={styles.title}>Welcome to Job Necus</Text>
+            <Text style={styles.title}>Welcome to Job Nexus</Text>
         </View>
     );
 };
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: COLORS.primary,
     },
     logo: {
         width: 150,
@@ -34,9 +35,10 @@ const styles = StyleSheet.create({
     },
     title: {
         marginTop: 20,
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 'bold',
-        color: '#333',
+        color: COLORS.white,
+        textAlign: 'center',
     },
 });
 
