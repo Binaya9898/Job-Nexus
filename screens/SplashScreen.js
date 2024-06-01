@@ -1,44 +1,44 @@
-import React, { useEffect } from "react";
-import { View, Image, StyleSheet } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import COLORS from "../constants/colors";
+import React, { useEffect } from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import COLORS from '../constants/colors';
 
-const SplashScreen = ({ navigation }) => {
+const SplashScreen = () => {
+    const navigation = useNavigation();
+
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigation.replace("Welcome");
-        }, 3000); // 3 seconds
+            navigation.navigate('Welcome');
+        }, 3000);
 
         return () => clearTimeout(timer);
     }, [navigation]);
 
     return (
-        <LinearGradient
-            style={styles.container}
-            colors={[COLORS.secondary, COLORS.primary]}
-        >
-            <View style={styles.logoContainer}>
-                <Image
-                    source={require("../assets/tick.png")}
-                    style={styles.logo}
-                />
-            </View>
-        </LinearGradient>
+        <View style={styles.container}>
+            <Image source={require('../assets/splash.png')} style={styles.logo} />
+            <Text style={styles.title}>Welcome to Job Nexus</Text>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    logoContainer: {
-        alignItems: "center",
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.primary,
     },
     logo: {
-        width: 200,
-        height: 200,
+        width: 150,
+        height: 150,
+    },
+    title: {
+        marginTop: 20,
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: COLORS.white,
+        textAlign: 'center',
     },
 });
 
