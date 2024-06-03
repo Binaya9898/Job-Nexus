@@ -15,7 +15,6 @@ import Success1 from "./components/Success1";
 import Forgotpw from "./screens/Auth/Forgotpw";
 import Recoverotp from "./screens/Auth/Recoverotp";
 import Createnewpw from "./screens/Auth/Createnewpw";
-import WithFloatingAction from "./Nav/WithFloatingAction";
 
 const Stack = createNativeStackNavigator();
 

@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import moment from "moment";
 
 export default function JobDetail({ route }) {
   const { job } = route.params;
+  const formattedDate = moment(job.created_at).format("YYYY-MM-DD");
 
   return (
     <ScrollView>
@@ -66,16 +68,20 @@ export default function JobDetail({ route }) {
             {job.job_description}
           </Text>
 
-          <Text style={styles.date}>Posted on: {job.created_at}</Text>
+          <Text style={styles.date}>Posted on: {formattedDate}</Text>
 
           <View style={styles.profile}>
             <Image
               style={styles.avatar}
               source={{
-                uri: "https://bootdey.com/img/Content/avatar/avatar1.png",
+                uri:
+                  job.employer_image ||
+                  "https://bootdey.com/img/Content/avatar/avatar1.png",
               }}
             />
-            <Text style={styles.name}>Company Representative</Text>
+            <Text style={styles.name}>
+              {job.employer_name || "Company Representative"}
+            </Text>
           </View>
 
           <TouchableOpacity style={styles.shareButton}>
