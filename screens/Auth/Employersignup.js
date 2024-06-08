@@ -83,7 +83,7 @@ const Employersignup = ({ navigation }) => {
           </Text>
 
           <View style={{ flexDirection: "row" }}>
-            <TextInput
+            {/* <TextInput
               placeholder="First Name *"
               placeholderTextColor={COLORS.bright}
               onChangeText={(text) => setFirstName(text)}
@@ -97,6 +97,12 @@ const Employersignup = ({ navigation }) => {
             />
             <TextInput
               placeholder="Last Name *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setLastName(text)}
+              style={[styles.input, { flex: 1, marginLeft: 5 }]}
+            /> */}
+            <TextInput
+              placeholder="Full Name *"
               placeholderTextColor={COLORS.bright}
               onChangeText={(text) => setLastName(text)}
               style={[styles.input, { flex: 1, marginLeft: 5 }]}
@@ -120,12 +126,12 @@ const Employersignup = ({ navigation }) => {
             />
           </View>
 
-          <TextInput
+          {/* <TextInput
             placeholder="Address"
             placeholderTextColor={COLORS.bright}
             onChangeText={(text) => setAddress(text)}
             style={styles.input}
-          />
+          /> */}
           <TextInput
             placeholder="Contact"
             placeholderTextColor={COLORS.bright}

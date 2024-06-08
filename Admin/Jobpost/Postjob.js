@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,9 +6,12 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker"; // Ensure correct import
 
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
@@ -17,6 +20,8 @@ import SERVER from "../../constants/server";
 const Postjob = ({ navigation }) => {
   const [job_title, setJobTitle] = useState("");
   const [job_category, setJobCategory] = useState("");
+  const [categories, setCategories] = useState([]); // Initialize as empty array
+  const [loading, setLoading] = useState(true); // State for loading
   const [job_address, setAddress] = useState("");
   const [job_company_name, setCompanyName] = useState("");
   const [job_experience, setExperience] = useState("");
@@ -25,9 +30,34 @@ const Postjob = ({ navigation }) => {
   const [job_contact, setContact] = useState("");
   const [job_validity, setValidity] = useState("");
   const [job_description, setDescription] = useState("");
+  const [job_requirements, setRequirements] = useState("");
   const [job_type, setJobType] = useState("");
   const [job_hour, setJobHour] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+
+  const [date, setDate] = useState(new Date());
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    // Fetch categories when the component mounts
+    fetch(`${SERVER.primaryUrl}/category`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data) {
+          setCategories(data);
+        } else {
+          setCategories([]); // Ensure it is set to an empty array if no data
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching categories:", error);
+        Alert.alert("Error", "Failed to fetch categories.");
+        setLoading(false);
+        setCategories([]); // Ensure it is set to an empty array on error
+      });
+  }, []);
 
   const handlePostJob = () => {
     const jobData = {
@@ -42,6 +72,7 @@ const Postjob = ({ navigation }) => {
       job_status: "Open",
       job_contact,
       job_validity,
+      job_requirements,
       job_description,
       job_type,
       job_hour,
@@ -58,13 +89,12 @@ const Postjob = ({ navigation }) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        // navigation.navigate("Success");
       })
       .then((json) => {
         console.log("Job posted successfully", json);
         navigation.navigate("Success", {
           title: "Job posted successfully",
-          description: "Your job details has been successfully posted.",
+          description: "Your job details have been successfully posted.",
           navigation2: "Employernav",
           buttonText1: "View List",
           navigation2: "Postjob",
@@ -73,10 +103,9 @@ const Postjob = ({ navigation }) => {
       })
       .catch((error) => {
         console.error("Error:", error);
+        Alert.alert("Error", "Failed to post job.");
       });
   };
-  const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -88,7 +117,12 @@ const Postjob = ({ navigation }) => {
   const showDatepicker = () => {
     setShow(true);
   };
+
   const renderFields = () => {
+    if (loading) {
+      return <ActivityIndicator size="large" color={COLORS.primary} />;
+    }
+
     switch (currentPage) {
       case 0:
         return (
@@ -99,12 +133,22 @@ const Postjob = ({ navigation }) => {
               onChangeText={(text) => setJobTitle(text)}
               style={styles.input}
             />
-            <TextInput
-              placeholder="Job Category *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setJobCategory(text)}
-              style={styles.input}
-            />
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={job_category}
+                style={styles.picker}
+                onValueChange={(itemValue) => setJobCategory(itemValue)}
+              >
+                <Picker.Item label="Select Category *" value="" />
+                {categories.map((category) => (
+                  <Picker.Item
+                    key={category.id}
+                    label={category.category_title}
+                    value={category.id}
+                  />
+                ))}
+              </Picker>
+            </View>
             <TextInput
               placeholder="Address *"
               placeholderTextColor={COLORS.bright}
@@ -150,7 +194,7 @@ const Postjob = ({ navigation }) => {
             />
             <TouchableOpacity onPress={showDatepicker} style={styles.input}>
               <Text style={styles.dateText}>
-                {date.toISOString().split("T")[0] || "Validity Period *"}
+                {job_validity || "Validity Period *"}
               </Text>
             </TouchableOpacity>
             {show && (
@@ -166,6 +210,13 @@ const Postjob = ({ navigation }) => {
               placeholder="Job Description *"
               placeholderTextColor={COLORS.bright}
               onChangeText={(text) => setDescription(text)}
+              style={[styles.input, styles.textArea]}
+              multiline
+            />
+            <TextInput
+              placeholder="Job Requirements *"
+              placeholderTextColor={COLORS.bright}
+              onChangeText={(text) => setRequirements(text)}
               style={[styles.input, styles.textArea]}
               multiline
             />
@@ -216,10 +267,9 @@ const Postjob = ({ navigation }) => {
             )}
             {currentPage === 2 && (
               <Button
-                title="Submit"
+                title="Post Job"
                 onPress={handlePostJob}
-                filled
-                style={styles.submitButton}
+                style={styles.paginationButton}
               />
             )}
           </View>
@@ -284,6 +334,26 @@ const styles = StyleSheet.create({
   submitButton: {
     flex: 1,
     marginTop: 20,
+  },
+  pickerContainer: {
+    height: 50,
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    justifyContent: "center",
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  picker: {
+    height: 50,
+    width: "100%",
+    color: COLORS.dark,
+  },
+  dateText: {
+    color: COLORS.dark,
   },
 });
 
