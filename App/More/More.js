@@ -40,6 +40,14 @@ const More = ({ navigation }) => {
       count: 154.573,
       destination: "Logout",
     },
+
+    {
+      id: 5,
+      name: "Favorite",
+      image: "https://img.icons8.com/clouds/100/000000/employee-card.png",
+      count: 154.573,
+      destination: "Favorite",
+    },
   ];
 
   const [options, setOptions] = React.useState(data);
