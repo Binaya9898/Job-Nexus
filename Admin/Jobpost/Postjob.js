@@ -50,6 +50,7 @@ const Postjob = ({ navigation }) => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         // navigation.navigate("Success");
+        // navigation.navigate("Success");
       })
       .then((json) => {
         console.log("Job posted successfully", json);
