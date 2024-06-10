@@ -15,6 +15,7 @@ import Success1 from "./components/Success1";
 import Forgotpw from "./screens/Auth/Forgotpw";
 import Recoverotp from "./screens/Auth/Recoverotp";
 import Createnewpw from "./screens/Auth/Createnewpw";
+import EmployeeSignup from "./screens/Auth/EmployeeSignup";
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,7 @@ export default function App() {
         <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="EmployeeSignup" component={EmployeeSignup} />
         <Stack.Screen name="Employersignup" component={Employersignup} />
         <Stack.Screen name="Nav" component={Nav} />
         <Stack.Screen
