@@ -47,7 +47,7 @@ const EmployeeSignup = ({ navigation }) => {
     };
 
     console.log(employeeData);
-    fetch(SERVER.primaryUrl + "/employee/store", {
+    fetch(SERVER.primaryUrl + "/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
