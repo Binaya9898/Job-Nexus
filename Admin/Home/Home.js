@@ -5,7 +5,6 @@ export default class Home extends Component {
   render() {
     const { navigation } = this.props;
 
-    // Dummy data for job vacancies
     const jobVacancies = [
       { id: 1, title: "Software Engineer", company: "XYZ Corp", location: "New York, NY" },
       { id: 2, title: "Product Manager", company: "ABC Inc", location: "San Francisco, CA" },
@@ -19,19 +18,19 @@ export default class Home extends Component {
       { id: 10, title: "Customer Support", company: "Supportly", location: "Orlando, FL" },
     ];
 
-    // Dummy statistics data
+
     const stats = {
       jobOpenings: jobVacancies.length,
-      applicationsReceived: 120, 
-      totalJobsPosted: 50, 
+      applicationsReceived: 120,
+      totalJobsPosted: 50,
     };
 
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Image source={require('../../assets/hero1.jpg')} style={styles.logo} />
+        {/* <View style={styles.header}>
+          <Image source={require('../../assets/logo.png')} style={styles.logo} />
           <Text style={styles.headerText}>Job Portal</Text>
-        </View>
+        </View> */}
         <ScrollView contentContainerStyle={styles.content}>
           <Image source={require('../../assets/banner.jpg')} style={styles.banner} />
           <View style={styles.statsContainer}>
