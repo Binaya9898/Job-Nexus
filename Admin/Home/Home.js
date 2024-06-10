@@ -4,6 +4,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "rea
 export default class Home extends Component {
   render() {
     const { navigation } = this.props;
+
+    // Dummy data for job vacancies
     const jobVacancies = [
       { id: 1, title: "Software Engineer", company: "XYZ Corp", location: "New York, NY" },
       { id: 2, title: "Product Manager", company: "ABC Inc", location: "San Francisco, CA" },
@@ -17,20 +19,35 @@ export default class Home extends Component {
       { id: 10, title: "Customer Support", company: "Supportly", location: "Orlando, FL" },
     ];
 
+    // Dummy statistics data
+    const stats = {
+      jobOpenings: jobVacancies.length,
+      applicationsReceived: 120, 
+      totalJobsPosted: 50, 
+    };
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image
-            source={require('../../assets/hero1.jpg')}
-            style={styles.logo}
-          />
+          <Image source={require('../../assets/hero1.jpg')} style={styles.logo} />
           <Text style={styles.headerText}>Job Portal</Text>
         </View>
-        <ScrollView style={styles.content}>
-          <Image
-            source={require('../../assets/banner.jpg')}
-            style={styles.banner}
-          />
+        <ScrollView contentContainerStyle={styles.content}>
+          <Image source={require('../../assets/banner.jpg')} style={styles.banner} />
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{stats.jobOpenings}</Text>
+              <Text style={styles.statLabel}>Job Openings</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{stats.applicationsReceived}</Text>
+              <Text style={styles.statLabel}>Applications Received</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statNumber}>{stats.totalJobsPosted}</Text>
+              <Text style={styles.statLabel}>Total Jobs Posted</Text>
+            </View>
+          </View>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate("PostJob")}
@@ -59,9 +76,9 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 30,
     flex: 1,
     backgroundColor: "#ffffff",
+    paddingTop: 30,
   },
   header: {
     flexDirection: "row",
@@ -83,7 +100,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
   },
   banner: {
@@ -92,18 +109,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 20,
-    textAlign: "center",
-    color: "#333333",
   },
-  subtitle: {
-    fontSize: 16,
+  statItem: {
+    alignItems: "center",
+    flex: 1,
+    marginHorizontal: 5,
+    padding: 10,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 10,
+  },
+  statNumber: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#007260",
+  },
+  statLabel: {
+    fontSize: 14,
     color: "#666666",
-    marginBottom: 30,
-    textAlign: "center",
   },
   button: {
     backgroundColor: "#39B68D",

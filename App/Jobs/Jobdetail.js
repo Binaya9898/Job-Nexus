@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,10 +6,41 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Alert, // Import Alert from react-native
 } from "react-native";
+import moment from "moment";
+import SERVER from "../../constants/server";
 
 export default function JobDetail({ route }) {
   const { job } = route.params;
+  const formattedDate = moment(job.created_at).format("YYYY-MM-DD");
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [jobID] = useState(job.id); // Directly use job.id
+  const empId = 10;
+
+  const toggleDescription = () => {
+    setIsDescriptionExpanded(!isDescriptionExpanded);
+  };
+
+  const addToWishlist = async () => {
+    try {
+      const response = await fetch(
+        `${SERVER.primaryUrl}/wishlist/save/${jobID}/${empId}`,
+        {
+          method: "POST",
+        }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add to wishlist");
+      }
+      Alert.alert("Success", "Job added to favorites"); // Use correct method to show success
+
+      return await response.json();
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
+  };
 
   return (
     <ScrollView>
@@ -50,10 +81,6 @@ export default function JobDetail({ route }) {
             {job.job_hour}
           </Text>
           <Text style={styles.postDescription}>
-            <Text style={styles.label}>Status: </Text>
-            {job.job_status}
-          </Text>
-          <Text style={styles.postDescription}>
             <Text style={styles.label}>Contact: </Text>
             {job.job_contact}
           </Text>
@@ -61,25 +88,39 @@ export default function JobDetail({ route }) {
             <Text style={styles.label}>Validity: </Text>
             {job.job_validity}
           </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Description: </Text>
-            {job.job_description}
-          </Text>
 
-          <Text style={styles.date}>Posted on: {job.created_at}</Text>
+          <View>
+            <Text style={styles.label}>Description: </Text>
+            <Text style={styles.postDescription}>
+              {isDescriptionExpanded
+                ? job.job_description
+                : `${job.job_description.substring(0, 100)}...`}
+            </Text>
+            <TouchableOpacity onPress={toggleDescription}>
+              <Text style={styles.toggleText}>
+                {isDescriptionExpanded ? "Show less" : "Show more"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.date}>Posted on: {formattedDate}</Text>
 
           <View style={styles.profile}>
             <Image
               style={styles.avatar}
               source={{
-                uri: "https://bootdey.com/img/Content/avatar/avatar1.png",
+                uri: `${SERVER.imageUrl}/images/employer/profile/${job.image}`,
               }}
             />
-            <Text style={styles.name}>Company Representative</Text>
+            <Text style={styles.name}>{job.empName}</Text>
           </View>
 
           <TouchableOpacity style={styles.shareButton}>
             <Text style={styles.shareButtonText}>Apply</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.shareButton2} onPress={addToWishlist}>
+            <Text style={styles.shareButtonText}>Add to Favorites</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -140,7 +181,7 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     marginTop: 10,
-    height: 45,
+    height: 65,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -150,5 +191,22 @@ const styles = StyleSheet.create({
   shareButtonText: {
     color: "#FFFFFF",
     fontSize: 20,
+    paddingVertical: 10,
+  },
+  shareButton2: {
+    marginTop: 10,
+    marginLeft: 50,
+    height: 65,
+    width: 250,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 30,
+    backgroundColor: "#007260",
+  },
+  toggleText: {
+    color: "#007260",
+    fontWeight: "bold",
+    marginTop: 5,
   },
 });

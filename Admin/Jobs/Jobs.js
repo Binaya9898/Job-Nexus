@@ -51,14 +51,6 @@ export default function Jobs() {
     }
   };
 
-  const toggleFavorite = (id) => {
-    setJobs((prevJobs) =>
-      prevJobs.map((job) =>
-        job.id === id ? { ...job, isFavorite: !job.isFavorite } : job
-      )
-    );
-  };
-
   const renderJobItem = ({ item }) => (
     <View style={styles.jobItem}>
       <Image source={{ uri: item.image }} style={styles.image} />
@@ -70,16 +62,6 @@ export default function Jobs() {
         <Text style={styles.details}>{item.details}</Text>
       </View>
 
-      <TouchableOpacity
-        style={styles.favoriteButton}
-        onPress={() => toggleFavorite(item.id)}
-      >
-        <FontAwesome
-          name={item.isFavorite ? "heart" : "heart-o"}
-          size={24}
-          color="red"
-        />
-      </TouchableOpacity>
       <TouchableOpacity style={styles.detailsButton}>
         <Text style={styles.detailsButtonText}>Applications</Text>
       </TouchableOpacity>

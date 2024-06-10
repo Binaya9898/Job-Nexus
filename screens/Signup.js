@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button";
 import COLORS from "../constants/colors";
 import SERVER from "../constants/server";
+import * as ImagePicker from "expo-image-picker";
 
 const Signup = ({ navigation }) => {
   const [employee_first_name, setFirstName] = useState("");
@@ -23,6 +26,9 @@ const Signup = ({ navigation }) => {
   const [employee_description, setDescription] = useState("");
   const [employee_image, setProfilePicture] = useState("image1.jpg");
   const [employee_cV, setCV] = useState("image2.jpg");
+  const [img, setImg] = useState(
+    `${SERVER.imageUrl}/images/employee/profile/Screenshot_20240602_112945_com.facebook.katana.jpg`
+  );
 
   const handleRegisterNow = () => {
     const employeeData = {
@@ -64,6 +70,48 @@ const Signup = ({ navigation }) => {
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
       });
+
+    const handleCv = () => {};
+    const handleImage = () => {};
+  };
+
+  const handleCv = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setCV(result.assets[0].fileName);
+      console.log("CV URI: ", result.assets[0].fileName);
+
+      Alert.alert("CV selected", "Your CV has been successfully selected.");
+    }
+  };
+
+  const handleImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setProfilePicture(result.assets[0].fileName);
+      console.log("Image URI: ", result.assets[0].fileName);
+      setImg(
+        `${SERVER.imageUrl}/images/employee/profile/${result.assets[0].fileName}`
+      );
+      console.log("total url: " + img);
+
+      Alert.alert(
+        "Image selected",
+        "Your profile image has been successfully selected."
+      );
+    }
   };
 
   return (
@@ -142,12 +190,12 @@ const Signup = ({ navigation }) => {
             />
           </View>
 
-          <TouchableOpacity style={styles.fileUpload}>
+          <TouchableOpacity style={styles.fileUpload} onPress={handleImage}>
             <Text style={styles.uploadText}>Image</Text>
             <Ionicons name="cloud-upload" size={24} color={COLORS.primary} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.fileUpload}>
+          <TouchableOpacity style={styles.fileUpload} onPress={handleCv}>
             <Text style={styles.uploadText}>CV</Text>
             <Ionicons name="cloud-upload" size={24} color={COLORS.primary} />
           </TouchableOpacity>

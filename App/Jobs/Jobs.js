@@ -6,18 +6,10 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import axios from "axios";
 import SERVER from "../../constants/server";
-
-// Function to generate a random image URL from Lorem Picsum
-const getRandomImage = () => {
-  const width = 50;
-  const height = 50;
-  const randomImageId = Math.floor(Math.random() * 1000);
-  return `https://picsum.photos/id/${randomImageId}/${width}/${height}`;
-};
 
 export default function Jobs({ navigation }) {
   const [jobs, setJobs] = useState([]);
@@ -27,13 +19,27 @@ export default function Jobs({ navigation }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const serverUrl = SERVER.primaryUrl + "/job-api";
-        const response = await axios.get(serverUrl);
-        const jobsWithImages = response.data.map((job) => ({
-          ...job,
-          image: getRandomImage(), // Add random image URL
-          isFavorite: false, // Add isFavorite property
-        }));
+        const serverUrl = `${SERVER.primaryUrl}/job/all`;
+        const response = await fetch(serverUrl);
+
+        // Log the response text to see what's being returned
+        const responseText = await response.text();
+        console.log("Response Text:", responseText);
+
+        // Try to parse the response text as JSON
+        const data = JSON.parse(responseText);
+        const jobsWithImages = data.map((job) => {
+          return {
+            ...job,
+            image: job.employer ? job.employer.employer_image : "", // Use category image URL if available
+            isFavorite: false, // Add isFavorite property
+            empName: job.employer
+              ? job.employer.employer_first_name
+              : "Company Representative",
+            empID: job.employer ? job.employer.id : "Noid",
+          };
+        });
+
         setJobs(jobsWithImages);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -51,28 +57,51 @@ export default function Jobs({ navigation }) {
     }
   };
 
-  const toggleFavorite = (id) => {
+  const toggleFavorite = async (id) => {
     setJobs((prevJobs) =>
       prevJobs.map((job) =>
         job.id === id ? { ...job, isFavorite: !job.isFavorite } : job
       )
     );
+    try {
+      const response = await fetch(
+        `${SERVER.primaryUrl}/wishlist/save/${id}/${2}`,
+        {
+          method: "POST",
+        }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to add to wishlist");
+      }
+      Alert.alert("Success", "Job added to favorites"); // Use correct method to show success
+
+      return await response.json();
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
   };
+
   const handleDetail = (job) => {
     navigation.navigate("Jobdetail", { job });
   };
+
   const renderJobItem = ({ item }) => (
     <View style={styles.jobItem}>
       <Image
-        source={{ uri: "http://192.168.1.25:8000/images/hotel/Hotel1.png" }}
+        source={{
+          uri: `${SERVER.imageUrl}/images/employer/profile/${item.image}`,
+        }}
         style={styles.image}
       />
       <View style={styles.jobDetails}>
         <Text style={styles.title}>{item.job_title}</Text>
         <Text style={styles.company}>{item.job_company_name}</Text>
         <Text style={styles.location}>{item.job_address}</Text>
-        <Text style={styles.salary}>{item.salary}</Text>
-        <Text style={styles.details}>{item.details}</Text>
+        <Text style={styles.salary}>
+          {item.job_min_salary} - {item.job_max_salary}
+        </Text>
+        <Text style={styles.details}>{item.job_description}</Text>
       </View>
 
       <TouchableOpacity
@@ -96,6 +125,9 @@ export default function Jobs({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Featured Jobs</Text>
+      </View>
       <FlatList
         data={jobs.slice(0, visibleJobs)}
         renderItem={renderJobItem}
@@ -120,6 +152,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     paddingTop: 60,
+  },
+  headerTitle: {
+    paddingBottom: 25,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
   },
   jobItem: {
     flexDirection: "row",

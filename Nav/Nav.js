@@ -4,7 +4,6 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import Home from "../App/Home/Home";
 import Jobs from "../App/Jobs/Jobs";
 import Notification from "../App/Notification/More/Notification";
-
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../constants/colors";
 import Mainmenu from "../App/More/menu/Mainmenu";
