@@ -5,6 +5,7 @@ import {
   Pressable,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,12 +17,36 @@ import Button from "../components/Button";
 const Login = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    setTimeout(() => {
-      navigation.navigate("Nav");
-    }, 1000);
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Corrected regex for email validation
+    return emailRegex.test(email);
   };
+
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,16}$/;
+    return passwordRegex.test(password);
+  };
+
+  const handleLogin = (email, password) => {
+    console.log(email);
+    if (validateEmail(email)) {
+      Alert.alert("Invalid email", "Please enter a valid email address.");
+      return;
+    }
+
+    if (validatePassword(password)) {
+      Alert.alert(
+        "Invalid password",
+        "Password must be 8-16 characters long and include at least one uppercase letter, one symbol, and one number."
+      );
+      return;
+    }
+    navigation.navigate("Nav");
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -51,7 +76,7 @@ const Login = ({ navigation }) => {
           <Text
             style={{
               fontSize: 16,
-              fontWeight: 400,
+              fontWeight: "400",
               marginVertical: 8,
             }}
           >
@@ -74,6 +99,7 @@ const Login = ({ navigation }) => {
               placeholder="Enter your email address"
               placeholderTextColor={COLORS.black}
               keyboardType="email-address"
+              onChangeText={(text) => setEmail(text)}
               style={{
                 width: "100%",
               }}
@@ -85,7 +111,7 @@ const Login = ({ navigation }) => {
           <Text
             style={{
               fontSize: 16,
-              fontWeight: 400,
+              fontWeight: "400",
               marginVertical: 8,
             }}
           >
@@ -108,6 +134,7 @@ const Login = ({ navigation }) => {
               placeholder="Enter your password"
               placeholderTextColor={COLORS.black}
               secureTextEntry={isPasswordShown}
+              onChangeText={(text) => setPassword(text)}
               style={{
                 width: "100%",
               }}
@@ -129,6 +156,19 @@ const Login = ({ navigation }) => {
           </View>
         </View>
 
+        <TouchableOpacity onPress={() => navigation.navigate("Forgotpw")}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: COLORS.primary,
+              alignSelf: "flex-end",
+              marginVertical: 8,
+            }}
+          >
+            Forgot Password?
+          </Text>
+        </TouchableOpacity>
+
         <View
           style={{
             flexDirection: "row",
@@ -142,13 +182,13 @@ const Login = ({ navigation }) => {
             color={isChecked ? COLORS.primary : undefined}
           />
 
-          <Text>Remenber Me</Text>
+          <Text>Remember Me</Text>
         </View>
 
         <Button
           title="Login"
+          onPress={handleLogin(email, password)}
           filled
-          onPress={handleLogin}
           style={{
             marginTop: 18,
             marginBottom: 4,
@@ -252,7 +292,7 @@ const Login = ({ navigation }) => {
           <Text style={{ fontSize: 16, color: COLORS.black }}>
             Don't have an account ?{" "}
           </Text>
-          <Pressable onPress={() => navigation.navigate("Signup")}>
+          <Pressable onPress={() => navigation.navigate("Employernav")}>
             <Text
               style={{
                 fontSize: 16,

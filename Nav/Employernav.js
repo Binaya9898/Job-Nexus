@@ -5,8 +5,7 @@ import { Login, Signup } from "../screens";
 import Profile from "../Admin/Profile/Profile";
 import Home from "../Admin/Home/Home";
 import More from "../Admin/More/More";
-import Jobs from "../Admin/Jobs/Jobs";
-import Favourite from "../Admin/Favourite/Favourite";
+import Application from "../Admin/Applications/Application";
 import Notification from "../Admin/Notification/More/Notification";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -47,23 +46,13 @@ const Employernav = () => {
 
       <Tab.Screen
         name="Applications"
-        component={Favourite}
+        component={Application}
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons name="heart-outline" color={"#39B68D"} size={26} />
           ),
         }}
       />
-
-      {/* <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="person-outline" color={"#39B68D"} size={26} />
-          ),
-        }}
-      />*/}
 
       <Tab.Screen
         name="Notification"

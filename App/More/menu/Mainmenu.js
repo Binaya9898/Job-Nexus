@@ -7,6 +7,7 @@ import Faq from "./Faq"; // Ensure this path is correct
 import Aboutus from "./Aboutus"; // Ensure this path is correct
 import Help from "./Help"; // Ensure this path is correct
 import Logout from "./Logout"; // Ensure this path is correct
+import FavoriteJobs from "./FavoriteJobs";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ const Mainmenu = () => {
       <Stack.Screen name="Faq" component={Faq} />
       <Stack.Screen name="Aboutus" component={Aboutus} />
       <Stack.Screen name="Logout" component={Logout} />
+      <Stack.Screen name="Favorite" component={FavoriteJobs} />
     </Stack.Navigator>
   );
 };

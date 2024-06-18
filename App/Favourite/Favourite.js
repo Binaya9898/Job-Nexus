@@ -1,154 +1,66 @@
-import React, { Component } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import SERVER from "../../constants/server";
 
-export default class JobPostingForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            jobTitle: '',
-            jobCategory: '',
-            address: '',
-            companyName: '',
-            experience: '',
-            maxSalary: '',
-            minSalary: '',
-            contact: '',
-            validity: '',
-            description: '',
-            jobType: '',
-            jobHour: ''
-        };
-    }
+const Favourite = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
 
-    handlePostJob = () => {
-        // Basic validation, you can add more complex validation as needed
-        if (!this.state.jobTitle || !this.state.jobCategory || !this.state.address || !this.state.companyName) {
-            alert('Please fill out all required fields');
-            return;
+  const handleRegisterNow = async () => {
+    const url = `${SERVER.primaryUrl}/job/save`;
+
+    const jobData = {
+      job_title: "Geceptionist",
+      job_category: "Marketing",
+      job_address: "123 Main Street, Kathmandu",
+      job_company_name: "KTM Consulting",
+      job_experience: "1 year",
+      job_max_salary: 30000,
+      job_min_salary: 15000,
+      job_slug: "receptionist-marketing-ktm-consulting",
+      job_status: "Open",
+      job_contact: "9816188459",
+      job_validity: "2024-05-20",
+      job_description:
+        "This is the job description for a receptionist position at KTM Consulting. The candidate will be responsible for managing the front desk and handling client inquiries.",
+      job_type: "Part Time",
+      job_hour: "1pm-9pm",
+    };
+
+    console.log("Sending job data:", jobData);
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(jobData),
+    })
+      .then((response) => {
+        console.log("Response status:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json();
+      })
+      .then((json) => {
+        console.log("Job registration successful", json);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
-        // Handle posting job data here, you can send this data to your backend or wherever you store it
-        console.log('Posting job:', this.state);
-    }
+  return (
+    <View>
+      <TouchableOpacity onPress={handleRegisterNow}>
+        <Text>Hello</Text>
+      </TouchableOpacity>
+      {loading && <Text>Loading...</Text>}
+    </View>
+  );
+};
 
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.title}>Post a Vacancy</Text>
-                <View style={styles.formContainer}>
-                    <View style={styles.row}>
-                        <TextInput
-                            style={[styles.input, { flex: 2 }]}
-                            placeholder="Job Title"
-                            onChangeText={(text) => this.setState({ jobTitle: text })}
-                        />
-                        <TextInput
-                            style={[styles.input, { flex: 1 }]}
-                            placeholder="Job Category"
-                            onChangeText={(text) => this.setState({ jobCategory: text })}
-                        />
-                        <TextInput
-                            style={[styles.input, { flex: 2 }]}
-                            placeholder="Address"
-                            onChangeText={(text) => this.setState({ address: text })}
-                        />
-                    </View>
-                    <View style={styles.row}>
-                        <TextInput
-                            style={[styles.input, { flex: 2 }]}
-                            placeholder="Company Name"
-                            onChangeText={(text) => this.setState({ companyName: text })}
-                        />
-                        <TextInput
-                            style={[styles.input, { flex: 1 }]}
-                            placeholder="Experience"
-                            onChangeText={(text) => this.setState({ experience: text })}
-                        />
-                        <TextInput
-                            style={[styles.input, { flex: 1 }]}
-                            placeholder="Max Salary"
-                            onChangeText={(text) => this.setState({ maxSalary: text.replace(/[^0-9]/g, '') })} // Accept numbers only
-                            keyboardType="numeric" // Show numeric keyboard
-                        />
-                        <TextInput
-                            style={[styles.input, { flex: 1 }]}
-                            placeholder="Min Salary"
-                            onChangeText={(text) => this.setState({ minSalary: text.replace(/[^0-9]/g, '') })} // Accept numbers only
-                            keyboardType="numeric" // Show numeric keyboard
-                        />
-                    </View>
-                    <View style={styles.row}>
-                        <TextInput
-                            style={[styles.input, { flex: 1 }]}
-                            placeholder="Contact"
-                            onChangeText={(text) => this.setState({ contact: text.replace(/[^0-9]/g, '') })} // Accept numbers only
-                            keyboardType="phone-pad" // Show phone number keyboard
-                        />
-                        <TextInput
-                            style={[styles.input, { flex: 1 }]}
-                            placeholder="Validity (dd-mm-yyyy)"
-                            onChangeText={(text) => this.setState({ validity: text })}
-                        />
-                    </View>
-                    <View style={styles.row}>
-                        <TextInput
-                            style={[styles.input, { flex: 2 }]}
-                            placeholder="Type"
-                            onChangeText={(text) => this.setState({ jobType: text })}
-                        />
-                        <TextInput
-                            style={[styles.input, { flex: 1 }]}
-                            placeholder="Duty Hour"
-                            onChangeText={(text) => this.setState({ jobHour: text })}
-                        />
-                    </View>
-                    <TextInput
-                        style={[styles.input, { height: 100 }]}
-                        placeholder="Job Description"
-                        onChangeText={(text) => this.setState({ description: text })}
-                        multiline={true}
-                    />
-                </View>
-                <Button
-                    title="Post Job"
-                    onPress={this.handlePostJob}
-                />
-            </View>
-        );
-    }
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        padding: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    formContainer: {
-        width: '100%',
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        elevation: 5,
-    },
-    row: {
-        flexDirection: 'row',
-        marginBottom: 10,
-    },
-    input: {
-        flex: 1,
-        height: 40,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        paddingHorizontal: 10,
-        marginBottom: 10,
-        marginRight: 5,
-    },
-});
+export default Favourite;
