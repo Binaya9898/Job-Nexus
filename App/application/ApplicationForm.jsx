@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
@@ -14,22 +13,12 @@ import COLORS from "../../constants/colors"; // Import your colors
 export default function ApplicationForm({ route }) {
   const { job, employeeData } = route.params;
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [contact, setContact] = useState("");
-  const [description, setDescription] = useState("");
-
-  // Populate the form fields once the component mounts
-  useEffect(() => {
-    if (employeeData) {
-      setName(employeeData.employee_name || "name not fetched");
-      setEmail(employeeData.employee_email || "");
-      setAddress(employeeData.employee_address || "");
-      setContact(employeeData.employee_contact || "");
-      setDescription(employeeData.employee_description || "");
-    }
-  }, [employeeData]);
+  const [name] = useState(employeeData?.employee_name || "");
+  const [email] = useState(employeeData?.employee_email || "");
+  const [address] = useState(employeeData?.employee_address || "");
+  const [contact] = useState(employeeData?.employee_contact || "");
+  const [description] = useState(employeeData?.employee_description || "");
+  const [cvUrl] = useState(employeeData?.employee_cv || "");
 
   const handleRegisterNow = () => {
     console.log("Employee ID:", employeeData.user_id);
@@ -39,6 +28,7 @@ export default function ApplicationForm({ route }) {
     console.log("Address:", address);
     console.log("Contact:", contact);
     console.log("Description:", description);
+    console.log("CV URL:", cvUrl);
 
     Alert.alert(
       "Application Submitted",
@@ -49,73 +39,58 @@ export default function ApplicationForm({ route }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              marginBottom: 20,
-              color: COLORS.primary,
-              textAlign: "center",
-            }}
-          >
-            Application Form
-          </Text>
+        <View style={styles.container}>
+          <Text style={styles.header}>Application Confirmation</Text>
 
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <TextInput
-              placeholder="Name"
-              placeholderTextColor={COLORS.grey}
-              value={name}
-              onChangeText={setName}
-              style={[styles.input, { flex: 1, marginRight: 5 }]}
-            />
+          <View style={styles.detailContainer}>
+            <Text style={styles.label}>Full Name:</Text>
+            <Text style={styles.detailText}>{name}</Text>
           </View>
 
-          <TextInput
-            placeholder="Email"
-            placeholderTextColor={COLORS.grey}
-            value={email}
-            style={styles.input}
-            editable={false}
-          />
+          <View style={styles.detailContainer}>
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.detailText}>{email}</Text>
+          </View>
 
-          <TextInput
-            placeholder="Address"
-            placeholderTextColor={COLORS.grey}
-            value={address}
-            onChangeText={setAddress}
-            style={styles.input}
-            multiline
-          />
+          <View style={styles.detailContainer}>
+            <Text style={styles.label}>Address:</Text>
+            <Text style={styles.detailText}>{address}</Text>
+          </View>
 
-          <TextInput
-            placeholder="Contact"
-            placeholderTextColor={COLORS.grey}
-            value={contact}
-            onChangeText={setContact}
-            style={styles.input}
-          />
+          <View style={styles.detailContainer}>
+            <Text style={styles.label}>Contact Number:</Text>
+            <Text style={styles.detailText}>{contact}</Text>
+          </View>
 
-          <TextInput
-            placeholder="Description"
-            placeholderTextColor={COLORS.grey}
-            value={description}
-            onChangeText={setDescription}
-            style={[
-              styles.input,
-              { height: 100, textAlignVertical: "top", marginTop: 20 },
-            ]}
-            multiline
-          />
+          <View style={styles.detailContainer}>
+            <Text style={styles.label}>Brief Description:</Text>
+            <Text style={[styles.detailText, styles.multilineText]}>
+              {description}
+            </Text>
+          </View>
+
+          {cvUrl ? (
+            <View style={styles.detailContainer}>
+              <Text style={styles.label}>Curriculum Vitae (CV):</Text>
+              <TouchableOpacity
+                onPress={() => {} /* Implement CV view action */}
+                style={styles.cvPreview}
+              >
+                <Text style={styles.cvLinkText}>View CV</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+
+          <Text style={styles.note}>
+            Note: If you need to update any information, please update your
+            profile.
+          </Text>
 
           <TouchableOpacity
             style={styles.submitButton}
             onPress={handleRegisterNow}
           >
-            <Text style={styles.submitButtonText}>Submit Application</Text>
+            <Text style={styles.submitButtonText}>Confirm Application</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -124,13 +99,50 @@ export default function ApplicationForm({ route }) {
 }
 
 const styles = StyleSheet.create({
-  input: {
-    borderColor: COLORS.grey,
-    borderWidth: 1,
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: COLORS.primary,
+    textAlign: "center",
+  },
+  detailContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: COLORS.primary,
+  },
+  detailText: {
+    fontSize: 16,
+    color: COLORS.black,
+  },
+  multilineText: {
+    minHeight: 60,
+    textAlignVertical: "top",
+  },
+  cvPreview: {
+    backgroundColor: COLORS.lightGrey,
+    padding: 12,
     borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: "#fff",
+    marginTop: 5,
+  },
+  cvLinkText: {
+    color: COLORS.primary,
+    fontSize: 16,
+    textAlign: "center",
+  },
+  note: {
+    fontSize: 14,
+    color: COLORS.grey,
+    marginTop: 20,
   },
   submitButton: {
     backgroundColor: COLORS.primary,
