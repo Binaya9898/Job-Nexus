@@ -6,20 +6,61 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Alert, // Import Alert from react-native
+  Alert,
 } from "react-native";
 import moment from "moment";
 import SERVER from "../../constants/server";
 
-export default function JobDetail({ route }) {
+export default function JobDetail({ route, navigation }) {
   const { job } = route.params;
   const formattedDate = moment(job.created_at).format("YYYY-MM-DD");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [jobID] = useState(job.id); // Directly use job.id
-  const empId = 10;
+  const empId = "user_004"; // Employee ID; replace with the actual employee ID in a real scenario
 
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
+  };
+
+  const checkEmployeeExists = async () => {
+    try {
+      const response = await fetch(
+        `${SERVER.primaryUrl}/checkEmployee/${empId}`,
+        {
+          method: "GET",
+        }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to check employee");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      Alert.alert("Error", error.message);
+      return null;
+    }
+  };
+  const handleApply = async () => {
+    const employee = await checkEmployeeExists();
+
+    if (employee && employee.exists) {
+      const response = await fetch(`${SERVER.primaryUrl}/employee/${empId}`, {
+        method: "GET",
+      });
+      const employeeData = await response.json();
+
+      if (employeeData) {
+        navigation.navigate("ApplicationForm", {
+          job,
+          employeeData,
+        });
+      } else {
+        Alert.alert("Error", "Failed to fetch employee data.");
+      }
+    } else {
+      Alert.alert("Profile Incomplete", "Please set up your profile first.");
+    }
   };
 
   const addToWishlist = async () => {
@@ -34,8 +75,7 @@ export default function JobDetail({ route }) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to add to wishlist");
       }
-      Alert.alert("Success", "Job added to favorites"); // Use correct method to show success
-
+      Alert.alert("Success", "Job added to favorites");
       return await response.json();
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -115,7 +155,7 @@ export default function JobDetail({ route }) {
             <Text style={styles.name}>{job.empName}</Text>
           </View>
 
-          <TouchableOpacity style={styles.shareButton}>
+          <TouchableOpacity style={styles.shareButton} onPress={handleApply}>
             <Text style={styles.shareButtonText}>Apply</Text>
           </TouchableOpacity>
 
