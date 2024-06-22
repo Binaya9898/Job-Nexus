@@ -313,16 +313,11 @@ const styles = StyleSheet.create({
     height: 50,
     paddingHorizontal: 20,
     marginBottom: 20,
-<<<<<<< HEAD
-    paddingHorizontal: 20,
-    marginBottom: 20,
-=======
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
->>>>>>> 27adb14cd6d30577fe5e2fd20e57f5cf6a6f938a
   },
   textArea: {
     height: 100,

@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   ScrollView,
   Alert,
   Image,
@@ -13,41 +12,41 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
-import SERVER from "../../constants/server";
-import * as ImagePicker from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
+import SERVER from "../../constants/server";
 
 const EmployeeSignup = ({ navigation }) => {
-  const [employee_name, setName] = useState("");
-  const [employee_email, setEmail] = useState("");
-  const [employee_password, setPassword] = useState("");
-  const [employee_contact, setContact] = useState("");
-  const [role, setRole] = useState("employee");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [contact, setContact] = useState("");
+  const [role, setRole] = useState("user");
   const [loading, setLoading] = useState(false);
 
   const handleRegisterNow = () => {
-    if (
-      !employee_name ||
-      !employee_email ||
-      !employee_password ||
-      !employee_contact
-    ) {
+    if (!name || !email || !password || !contact) {
       Alert.alert("Error", "Please fill in all required fields.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match.");
       return;
     }
 
     setLoading(true);
 
     const employeeData = {
-      employee_name,
-      employee_email,
-      employee_password,
-      employee_contact,
+      name,
+      email,
+      password,
+      contact,
       role,
     };
-
     console.log(employeeData);
-    fetch(SERVER.primaryUrl + "/register", {
+
+    fetch(`${SERVER.primaryUrl}/user/save`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,37 +55,19 @@ const EmployeeSignup = ({ navigation }) => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok " + response.statusText);
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();
       })
       .then((json) => {
-        setLoading(false);
-        console.log("Employee registered successfully", json);
-        navigation.navigate("Success1", {
-          title: "Successfully Registered",
-          description: "Your details have been successfully registered.",
-          navigation1: "Login",
-          buttonText1: "Login",
-        });
+        console.log("User Added Successfully", json);
+        Alert.alert("Added Successfully");
+
+        navigation.navigate("Login");
       })
       .catch((error) => {
-        setLoading(false);
-        console.error("There was a problem with the fetch operation:", error);
+        console.error("Error:", error);
+        Alert.alert("Error", "Failed to post job.");
       });
-  };
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setProfileImage(result.uri);
-    }
   };
 
   return (
@@ -104,7 +85,7 @@ const EmployeeSignup = ({ navigation }) => {
           </View>
 
           <View style={styles.container}>
-            <Text style={styles.title}>Employee Registration</Text>
+            <Text style={styles.title}>Job Seeker Registration</Text>
 
             <View style={styles.inputContainer}>
               <Ionicons
@@ -113,7 +94,7 @@ const EmployeeSignup = ({ navigation }) => {
                 color={COLORS.primary}
               />
               <TextInput
-                placeholder="Full Name *"
+                placeholder="Name *"
                 placeholderTextColor={COLORS.grey}
                 onChangeText={(text) => setName(text)}
                 style={styles.input}
@@ -141,6 +122,21 @@ const EmployeeSignup = ({ navigation }) => {
                 placeholder="Password *"
                 placeholderTextColor={COLORS.grey}
                 onChangeText={(text) => setPassword(text)}
+                style={styles.input}
+                secureTextEntry
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+              <TextInput
+                placeholder="Confirm Password *"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setConfirmPassword(text)}
                 style={styles.input}
                 secureTextEntry
               />
