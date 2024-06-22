@@ -9,8 +9,9 @@ import {
   Alert,
 } from "react-native";
 import COLORS from "../../constants/colors"; // Import your colors
+import SERVER from "../../constants/server";
 
-export default function ApplicationForm({ route }) {
+export default function ApplicationForm({ route, navigation }) {
   const { job, employeeData } = route.params;
 
   const [name] = useState(employeeData?.employee_name || "");
@@ -21,19 +22,43 @@ export default function ApplicationForm({ route }) {
   const [cvUrl] = useState(employeeData?.employee_cv || "");
 
   const handleRegisterNow = () => {
-    console.log("Employee ID:", employeeData.user_id);
-    console.log("Job ID:", job.id);
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Address:", address);
-    console.log("Contact:", contact);
-    console.log("Description:", description);
-    console.log("CV URL:", cvUrl);
+    const dataTOSubmit = {
+      applicant_id: employeeData.user_id,
+      job_id: job.id,
+      applicant_description: description,
+    };
+    console.log(dataTOSubmit);
 
-    Alert.alert(
-      "Application Submitted",
-      "Your application has been submitted successfully."
-    );
+    fetch(`${SERVER.primaryUrl}/application/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataTOSubmit),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+      })
+      .then((json) => {
+        console.log("User Added Successfully", json);
+        navigation.navigate("Success1", {
+          title: "Application Submitted Successfully",
+          description:
+            "Your application details have been successfully submitted.",
+          navigation1: "Nav",
+          buttonText1: "View More Jobs",
+        });
+
+        // Alert.alert("Applied Successfully");
+
+        // navigation.navigate("Login");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Alert.alert("Error", "Failed to post job.");
+      });
   };
 
   return (
