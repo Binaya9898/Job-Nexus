@@ -2,11 +2,11 @@
 
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import More from "../More"; // Ensure this path is correct
-import Faq from "./Faq"; // Ensure this path is correct
-import Aboutus from "./Aboutus"; // Ensure this path is correct
-import Help from "./Help"; // Ensure this path is correct
-import Logout from "./Logout"; // Ensure this path is correct
+import More from "../More";
+import Faq from "./Faq";
+import Aboutus from "./Aboutus";
+import Help from "./Help";
+import Logout from "./Logout";
 import FavoriteJobs from "./FavoriteJobs";
 
 const Stack = createNativeStackNavigator();

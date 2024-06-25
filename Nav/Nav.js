@@ -16,9 +16,9 @@ const Nav = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        activeTintColor: "#ffffff", // Color of the active tab
-        inactiveTintColor: "#bfbfbf", // Color of the inactive tabs
-        style: { backgroundColor: "#00ff00" }, // Background color of the tab bar (green in this case)
+        activeTintColor: "#ffffff",
+        inactiveTintColor: "#bfbfbf",
+        style: { backgroundColor: "#00ff00" },
       }}
     >
       <Tab.Screen
@@ -27,7 +27,7 @@ const Nav = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons name="home-outline" color={"#39B68D"} size={26} /> // Corrected icon name
+            <Ionicons name="home-outline" color={"#39B68D"} size={26} />
           ),
         }}
       />
