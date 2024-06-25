@@ -1,186 +1,228 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 
-export default class Home extends Component {
-  render() {
-    const { navigation } = this.props;
+const COLORS = {
+  white: "#FFFFFF",
+  black: "#222222",
+  primary: "#007260",
+  secondary: "#39B68D",
+  grey: "#CCCCCC"
+};
 
-    const jobVacancies = [
-      { id: 1, title: "Software Engineer", company: "XYZ Corp", location: "New York, NY" },
-      { id: 2, title: "Product Manager", company: "ABC Inc", location: "San Francisco, CA" },
-      { id: 3, title: "Data Scientist", company: "DataWorks", location: "Chicago, IL" },
-      { id: 4, title: "UX Designer", company: "Creative Minds", location: "Austin, TX" },
-      { id: 5, title: "Marketing Specialist", company: "MarketGuru", location: "Boston, MA" },
-      { id: 6, title: "HR Manager", company: "HR Solutions", location: "Seattle, WA" },
-      { id: 7, title: "Sales Executive", company: "SalesForce", location: "Denver, CO" },
-      { id: 8, title: "Business Analyst", company: "BizAnalytica", location: "Miami, FL" },
-      { id: 9, title: "DevOps Engineer", company: "Techies", location: "Houston, TX" },
-      { id: 10, title: "Customer Support", company: "Supportly", location: "Orlando, FL" },
-    ];
+const EmployerHomePage = ({ navigation }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeSection, setActiveSection] = useState(null);
 
+  const mockData = {
+    companyName: 'Tech Solutions',
+    companyEmail: 'contact@techsolutions.com',
+    totalApplications: 120,
+    totalJobsPosted: 15,
+    recentApplications: [
+      { id: 1, name: 'John Doe', position: 'IT Teacher', profileImage: '../../assets/hero1.jpg' },
+      { id: 2, name: 'Jane Smith', position: 'IT Teacher', profileImage: '../../assets/hero2.jpg' },
+      { id: 3, name: 'Michael Johnson', position: 'Software Engineer', profileImage: '../../assets/hero3.jpg' },
+      { id: 4, name: 'Emily Davis', position: 'Product Manager', profileImage: '../../assets/hero1.jpg' },
+      { id: 5, name: 'William Brown', position: 'Designer', profileImage: '../../assets/hero2.jpg' },
+    ],
+  };
 
-    const stats = {
-      jobOpenings: jobVacancies.length,
-      applicationsReceived: 120,
-      totalJobsPosted: 50,
-    };
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+  };
 
-    return (
-      <View style={styles.container}>
-        {/* <View style={styles.header}>
-          <Image source={require('../../assets/logo.png')} style={styles.logo} />
-          <Text style={styles.headerText}>Job Portal</Text>
-        </View> */}
-        <ScrollView contentContainerStyle={styles.content}>
-          <Image source={require('../../assets/banner.jpg')} style={styles.banner} />
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{stats.jobOpenings}</Text>
-              <Text style={styles.statLabel}>Job Openings</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{stats.applicationsReceived}</Text>
-              <Text style={styles.statLabel}>Applications Received</Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{stats.totalJobsPosted}</Text>
-              <Text style={styles.statLabel}>Total Jobs Posted</Text>
-            </View>
+  const handleNavigation = (section) => {
+    switch (section) {
+      case 'postedJobs':
+        navigation.navigate('PostJob');
+        break;
+      case 'allApplicants':
+        navigation.navigate('Application');
+        break;
+      default:
+        setActiveSection(section);
+        break;
+    }
+  };
+
+  const renderSectionContent = () => {
+    switch (activeSection) {
+      case 'recentApplicants':
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Recent Applicants</Text>
+            {mockData.recentApplications.map((applicant) => (
+              <View key={applicant.id} style={styles.applicantCard}>
+                <Image source={{ uri: applicant.profileImage }} style={styles.applicantImage} />
+                <View style={styles.applicantInfo}>
+                  <Text style={styles.applicantName}>{applicant.name}</Text>
+                  <Text style={styles.applicantPosition}>{applicant.position}</Text>
+                </View>
+              </View>
+            ))}
           </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate("PostJob")}
-          >
-            <Text style={styles.buttonText}>Post Jobs</Text>
-          </TouchableOpacity>
-          <Text style={styles.sectionTitle}>Job Vacancies</Text>
-          {jobVacancies.map((job) => (
-            <View key={job.id} style={styles.jobContainer}>
-              <Text style={styles.jobTitle}>{job.title}</Text>
-              <Text style={styles.jobCompany}>{job.company}</Text>
-              <Text style={styles.jobLocation}>{job.location}</Text>
-              <TouchableOpacity
-                style={styles.detailsButton}
-                onPress={() => navigation.navigate("JobDetail", { jobId: job.id })}
-              >
-                <Text style={styles.detailsButtonText}>View Details</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </ScrollView>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.welcomeSection}>
+        <Image source={require("../../assets/hero3.jpg")} style={styles.companyLogo} />
+        <Text style={styles.welcomeText}>Hey, {mockData.companyName}</Text>
+        <Text style={styles.emailText}>{mockData.companyEmail}</Text>
       </View>
-    );
-  }
-}
+
+      <View style={styles.dashboardSection}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Total Applications Received</Text>
+          <Text style={styles.cardNumber}>{mockData.totalApplications}</Text>
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Total Jobs Posted</Text>
+          <Text style={styles.cardNumber}>{mockData.totalJobsPosted}</Text>
+        </View>
+      </View>
+
+      <View style={styles.iconContainer}>
+        <TouchableOpacity onPress={() => handleNavigation('Application')}>
+          <Image source={require("../../assets/recent.png")} style={styles.icon} />
+          <Text style={styles.iconText}>Recent Applicants</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigation('postedJobs')}>
+          <Image source={require("../../assets/post.png")} style={styles.icon} />
+          <Text style={styles.iconText}>Posted Jobs</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleNavigation('allApplicants')}>
+          <Image source={require("../../assets/all.png")} style={styles.icon} />
+          <Text style={styles.iconText}>All Applicants</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Search Bar */}
+      <TextInput
+        style={styles.input}
+        onChangeText={handleSearch}
+        value={searchTerm}
+        placeholder="Search by Name, Gender, Job..."
+      />
+
+      {renderSectionContent()}
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
-    paddingTop: 30,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
     padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-    backgroundColor: "#007260",
+    backgroundColor: COLORS.white,
   },
-  logo: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
+  welcomeSection: {
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  headerText: {
+  companyLogo: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  welcomeText: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#ffffff",
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: COLORS.black,
   },
-  content: {
-    flexGrow: 1,
-    padding: 20,
-  },
-  banner: {
-    width: "100%",
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  statItem: {
-    alignItems: "center",
-    flex: 1,
-    marginHorizontal: 5,
-    padding: 10,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 10,
-  },
-  statNumber: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#007260",
-  },
-  statLabel: {
-    fontSize: 14,
-    color: "#666666",
-  },
-  button: {
-    backgroundColor: "#39B68D",
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-    elevation: 3,
-    alignSelf: "center",
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: "#ffffff",
+  emailText: {
     fontSize: 16,
-    fontWeight: "bold",
+    color: COLORS.grey,
+  },
+  dashboardSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  card: {
+    width: '48%',
+    padding: 20,
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  cardTitle: {
+    fontSize: 16,
+    marginBottom: 10,
+    color: COLORS.black,
+  },
+  cardNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  icon: {
+    width: 50,
+    height: 50,
+  },
+  iconText: {
+    textAlign: 'center',
+    marginTop: 5,
+    color: COLORS.black,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 10,
-    color: "#333333",
+    color: COLORS.black,
   },
-  jobContainer: {
-    padding: 15,
-    backgroundColor: "#f9f9f9",
+  applicantCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: COLORS.white,
     borderRadius: 10,
-    marginBottom: 15,
-    elevation: 2,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
+    marginBottom: 10,
   },
-  jobTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#007260",
-  },
-  jobCompany: {
+  applicantName: {
     fontSize: 16,
-    color: "#666666",
+    fontWeight: 'bold',
+    color: COLORS.black,
   },
-  jobLocation: {
+  applicantPosition: {
     fontSize: 14,
-    color: "#999999",
+    color: COLORS.grey,
   },
-  detailsButton: {
-    marginTop: 10,
-    backgroundColor: "#007260",
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    alignSelf: "flex-start",
+  input: {
+    height: 40,
+    marginVertical: 20,
+    borderWidth: 1,
+    padding: 10,
+    borderColor: COLORS.grey,
+    borderRadius: 10,
   },
-  detailsButtonText: {
-    color: "#ffffff",
-    fontSize: 14,
-    fontWeight: "bold",
+  applicantImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  applicantInfo: {
+    marginLeft: 15,
+    flex: 1,
   },
 });
+
+export default EmployerHomePage;
