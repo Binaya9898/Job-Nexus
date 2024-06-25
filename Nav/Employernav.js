@@ -69,7 +69,7 @@ const Employernav = () => {
       />
 
       <Tab.Screen
-        name="More"
+        name="Profile"
         component={More}
         options={{
           tabBarIcon: ({ color }) => (
