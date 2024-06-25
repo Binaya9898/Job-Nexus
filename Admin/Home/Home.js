@@ -9,7 +9,7 @@ const COLORS = {
   grey: "#CCCCCC"
 };
 
-const EmployerHomePage = ({ navigation }) => {
+const Home = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeSection, setActiveSection] = useState(null);
 
@@ -19,11 +19,11 @@ const EmployerHomePage = ({ navigation }) => {
     totalApplications: 120,
     totalJobsPosted: 15,
     recentApplications: [
-      { id: 1, name: 'John Doe', position: 'IT Teacher', profileImage: '../../assets/hero1.jpg' },
-      { id: 2, name: 'Jane Smith', position: 'IT Teacher', profileImage: '../../assets/hero2.jpg' },
-      { id: 3, name: 'Michael Johnson', position: 'Software Engineer', profileImage: '../../assets/hero3.jpg' },
-      { id: 4, name: 'Emily Davis', position: 'Product Manager', profileImage: '../../assets/hero1.jpg' },
-      { id: 5, name: 'William Brown', position: 'Designer', profileImage: '../../assets/hero2.jpg' },
+      { id: 1, name: 'John Doe', position: 'IT Teacher', profileImage: require('../../assets/hero1.jpg') },
+      { id: 2, name: 'Jane Smith', position: 'IT Teacher', profileImage: require('../../assets/hero2.jpg') },
+      { id: 3, name: 'Michael Johnson', position: 'Software Engineer', profileImage: require('../../assets/hero3.jpg') },
+      { id: 4, name: 'Emily Davis', position: 'Product Manager', profileImage: require('../../assets/hero1.jpg') },
+      { id: 5, name: 'William Brown', position: 'Designer', profileImage: require('../../assets/hero2.jpg') },
     ],
   };
 
@@ -34,10 +34,10 @@ const EmployerHomePage = ({ navigation }) => {
   const handleNavigation = (section) => {
     switch (section) {
       case 'postedJobs':
-        navigation.navigate('PostJob');
+        navigation.navigate('Postjob');
         break;
       case 'allApplicants':
-        navigation.navigate('Application');
+        navigation.navigate('Applications');
         break;
       default:
         setActiveSection(section);
@@ -53,7 +53,7 @@ const EmployerHomePage = ({ navigation }) => {
             <Text style={styles.sectionTitle}>Recent Applicants</Text>
             {mockData.recentApplications.map((applicant) => (
               <View key={applicant.id} style={styles.applicantCard}>
-                <Image source={{ uri: applicant.profileImage }} style={styles.applicantImage} />
+                <Image source={applicant.profileImage} style={styles.applicantImage} />
                 <View style={styles.applicantInfo}>
                   <Text style={styles.applicantName}>{applicant.name}</Text>
                   <Text style={styles.applicantPosition}>{applicant.position}</Text>
@@ -87,21 +87,20 @@ const EmployerHomePage = ({ navigation }) => {
       </View>
 
       <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => handleNavigation('Application')}>
+        <TouchableOpacity onPress={() => handleNavigation('recentApplicants')}>
           <Image source={require("../../assets/recent.png")} style={styles.icon} />
           <Text style={styles.iconText}>Recent Applicants</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigation('postedJobs')}>
+        <TouchableOpacity onPress={() => handleNavigation('Postjob')}>
           <Image source={require("../../assets/post.png")} style={styles.icon} />
           <Text style={styles.iconText}>Posted Jobs</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleNavigation('allApplicants')}>
+        <TouchableOpacity onPress={() => handleNavigation('Application')}>
           <Image source={require("../../assets/all.png")} style={styles.icon} />
           <Text style={styles.iconText}>All Applicants</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
       <TextInput
         style={styles.input}
         onChangeText={handleSearch}
@@ -225,4 +224,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EmployerHomePage;
+export default Home;
