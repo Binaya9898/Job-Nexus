@@ -3,212 +3,208 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
   ScrollView,
+  Alert,
+  Image,
+  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
+import { LinearGradient } from "expo-linear-gradient";
 import SERVER from "../../constants/server";
 
-const Employersignup = ({ navigation }) => {
-  const [employer_first_name, setFirstName] = useState("");
-  const [employer_middle_name, setMiddleName] = useState("");
-  const [employer_last_name, setLastName] = useState("");
-  const [employer_email, setEmail] = useState("");
-  const [employer_password, setPassword] = useState("");
-  const [employer_address, setAddress] = useState("");
-  const [employer_contact, setContact] = useState("");
-  const [employer_description, setCompanyDescription] = useState("");
-  const [employer_company_name, setCompanyName] = useState("image1.jpg");
-  const [employer_image, setimage] = useState("image1.jpg");
-  const [employer_certificate, setResume] = useState("image1.jpg");
+const EmployerSignup = ({ navigation }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [contact, setContact] = useState("");
+  const [role, setRole] = useState("admin");
+  const [loading, setLoading] = useState(false);
 
-  const handleRegisterNow = async () => {
-    const employerData = {
-      employer_email,
-      employer_password,
-      employer_first_name,
-      employer_middle_name,
-      employer_last_name,
-      employer_address,
-      employer_contact,
-      employer_company_name,
-      employer_image,
-      employer_description,
-      employer_certificate,
+  const handleRegisterNow = () => {
+    if (!name || !email || !password || !contact) {
+      Alert.alert("Error", "Please fill in all required fields.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+
+    const employeeData = {
+      name,
+      email,
+      password,
+      contact,
+      role,
     };
-    console.log(employerData);
-    fetch(SERVER.primaryUrl + "/employer/store", {
+    console.log(employeeData);
+
+    fetch(`${SERVER.primaryUrl}/user/save`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(employerData),
+      body: JSON.stringify(employeeData),
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok " + response.statusText);
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json(); // Ensure you are returning response.json()
       })
       .then((json) => {
-        console.log("Job posted successfully", json);
-        navigation.navigate("Success1", {
-          title: "Successfully Registered",
-          description: "Your details has been successfully registered.",
-          navigation1: "Login",
-          buttonText1: "Login",
-        });
+        console.log("User Added Successfully", json);
+        Alert.alert("Added Successfully");
+
+        navigation.navigate("Login");
       })
       .catch((error) => {
-        console.error("There was a problem with the fetch operation:", error);
+        console.error("Error:", error);
+        Alert.alert("Error", "Failed to post job.");
       });
   };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: "bold",
-              marginBottom: 20,
-              color: COLORS.primary,
-              textAlign: "center",
-            }}
-          >
-            Employer Registration
-          </Text>
-
-          <View style={{ flexDirection: "row" }}>
-            {/* <TextInput
-              placeholder="First Name *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setFirstName(text)}
-              style={[styles.input, { flex: 1, marginRight: 5 }]}
-            />
-            <TextInput
-              placeholder="Middle Name"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setMiddleName(text)}
-              style={[styles.input, { flex: 1, marginHorizontal: 5 }]}
-            />
-            <TextInput
-              placeholder="Last Name *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setLastName(text)}
-              style={[styles.input, { flex: 1, marginLeft: 5 }]}
-            /> */}
-            <TextInput
-              placeholder="Full Name *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setLastName(text)}
-              style={[styles.input, { flex: 1, marginLeft: 5 }]}
+        <LinearGradient
+          colors={[COLORS.primary, COLORS.secondary]}
+          style={styles.gradientBackground}
+        >
+          <View style={{ alignItems: "center", marginVertical: 20 }}>
+            <Image
+              source={require("../../assets/logo.png")}
+              style={styles.logo}
             />
           </View>
 
-          <View style={{ flexDirection: "row", marginTop: 20 }}>
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setEmail(text)}
-              style={[styles.input, { flex: 1, marginRight: 5 }]}
-              keyboardType="email-address"
-            />
-            <TextInput
-              placeholder="Password *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setPassword(text)}
-              style={[styles.input, { flex: 1, marginLeft: 5 }]}
-              secureTextEntry
+          <View style={styles.container}>
+            <Text style={styles.title}>Employeer Registration</Text>
+
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="person-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+              <TextInput
+                placeholder="Name *"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setName(text)}
+                style={styles.input}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Ionicons name="mail-outline" size={24} color={COLORS.primary} />
+              <TextInput
+                placeholder="Email *"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setEmail(text)}
+                style={styles.input}
+                keyboardType="email-address"
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+              <TextInput
+                placeholder="Password *"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setPassword(text)}
+                style={styles.input}
+                secureTextEntry
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="lock-closed-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+              <TextInput
+                placeholder="Confirm Password *"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setConfirmPassword(text)}
+                style={styles.input}
+                secureTextEntry
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Ionicons name="call-outline" size={24} color={COLORS.primary} />
+              <TextInput
+                placeholder="Contact"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setContact(text)}
+                style={styles.input}
+              />
+            </View>
+
+            <Button
+              title={loading ? "Registering..." : "Register Now"}
+              onPress={handleRegisterNow}
+              filled
+              disabled={loading}
+              style={{ marginTop: 20 }}
             />
           </View>
-
-          {/* <TextInput
-            placeholder="Address"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setAddress(text)}
-            style={styles.input}
-          /> */}
-          <TextInput
-            placeholder="Contact"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setContact(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Company Name"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setCompanyName(text)}
-            style={styles.input}
-          />
-          <TouchableOpacity
-            // onPress={handleCompanyProfileUpload}
-            style={[styles.fileUpload, { marginBottom: 20 }]}
-          >
-            <Text style={styles.uploadText}>
-              {employer_certificate
-                ? "Company Profile Uploaded"
-                : "Upload Company Profile *"}
-            </Text>
-            <Ionicons name="cloud-upload" size={24} color={COLORS.primary} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            // onPress={handleResumeUpload}
-            style={[styles.fileUpload, { marginBottom: 20 }]}
-          >
-            <Text style={styles.uploadText}>
-              {employer_certificate
-                ? "Certificate"
-                : "Certificate of verification *"}
-            </Text>
-            <Ionicons name="cloud-upload" size={24} color={COLORS.primary} />
-          </TouchableOpacity>
-          <TextInput
-            placeholder="Company Description"
-            placeholderTextColor={COLORS.bright}
-            onChangeText={(text) => setCompanyDescription(text)}
-            style={[styles.input, { height: 100 }]}
-            multiline
-          />
-
-          <Button
-            title="Register Now"
-            onPress={handleRegisterNow}
-            filled
-            style={{ marginTop: 20 }}
-          />
-        </View>
+        </LinearGradient>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-const styles = {
-  input: {
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-    borderRadius: 10,
-    height: 50,
-    paddingHorizontal: 20,
-    marginBottom: 20,
+const styles = StyleSheet.create({
+  gradientBackground: {
+    flex: 1,
   },
-  fileUpload: {
+  logo: {
+    width: 250,
+    height: 250,
+    resizeMode: "contain",
+  },
+  container: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    backgroundColor: COLORS.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    flex: 1,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: COLORS.primary,
+    textAlign: "center",
+  },
+
+  inputContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: COLORS.primary,
+    borderColor: COLORS.grey,
     borderRadius: 10,
     height: 50,
-    paddingHorizontal: 20,
-    backgroundColor: COLORS.lightGrey,
+    paddingHorizontal: 15,
+    marginBottom: 20,
   },
-  uploadText: {
-    color: COLORS.primary,
+  input: {
+    flex: 1,
+    marginLeft: 10,
   },
-};
+});
 
-export default Employersignup;
+export default EmployerSignup;

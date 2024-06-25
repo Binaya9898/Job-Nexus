@@ -16,6 +16,7 @@ import Forgotpw from "./screens/Auth/Forgotpw";
 import Recoverotp from "./screens/Auth/Recoverotp";
 import Createnewpw from "./screens/Auth/Createnewpw";
 import EmployeeSignup from "./screens/Auth/EmployeeSignup";
+import ApplicationForm from "./App/application/ApplicationForm";
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +46,7 @@ export default function App() {
         <Stack.Screen name="Forgotpw" component={Forgotpw} />
         <Stack.Screen name="Recoverotp" component={Recoverotp} />
         <Stack.Screen name="Createnewpw" component={Createnewpw} />
+        <Stack.Screen name="ApplicationForm" component={ApplicationForm} />
       </Stack.Navigator>
     </NavigationContainer>
   );
