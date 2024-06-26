@@ -6,160 +6,175 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
-  Dimensions,
   Modal,
   ScrollView,
+  Dimensions,
 } from "react-native";
+import COLORS from '../../constants/colors';
+
+
+const jobs = [
+  { id: 1, title: "Senior Developer", logo: "../../assets/hero1.jpg", description: "Develop and maintain web applications.", location: "New York, NY" },
+  { id: 2, title: "Junior Developer", logo: "https://example.com/logo2.png", description: "Assist in the development of web applications.", location: "San Francisco, CA" },
+  { id: 3, title: "Project Manager", logo: "https://example.com/logo3.png", description: "Manage software development projects.", location: "Austin, TX" },
+  { id: 4, title: "UX Designer", logo: "https://example.com/logo4.png", description: "Design user interfaces and experiences.", location: "Seattle, WA" },
+  { id: 5, title: "Data Scientist", logo: "https://example.com/logo5.png", description: "Analyze and interpret complex data.", location: "Boston, MA" },
+];
+
+const applicants = [
+  {
+    id: 1,
+    name: "Mark Doe",
+    position: "CEO",
+    appliedFor: "Senior Developer",
+    image: "https://bootdey.com/img/Content/avatar/avatar7.png",
+    about:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+  },
+  {
+    id: 2,
+    name: "John Doe",
+    position: "CTO",
+    appliedFor: "Junior Developer",
+    image: "https://bootdey.com/img/Content/avatar/avatar1.png",
+    about:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+  },
+  {
+    id: 3,
+    name: "Jane Doe",
+    position: "Project Manager",
+    appliedFor: "Project Manager",
+    image: "https://bootdey.com/img/Content/avatar/avatar6.png",
+    about:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+  },
+  {
+    id: 4,
+    name: "Emily Doe",
+    position: "UX Designer",
+    appliedFor: "UX Designer",
+    image: "https://bootdey.com/img/Content/avatar/avatar5.png",
+    about:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+  },
+  {
+    id: 5,
+    name: "Michael Doe",
+    position: "Data Scientist",
+    appliedFor: "Data Scientist",
+    image: "https://bootdey.com/img/Content/avatar/avatar4.png",
+    about:
+      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
+  },
+];
 
 const Application = () => {
-  const data = [
-    {
-      id: 1,
-      name: "Mark Doe",
-      position: "CEO",
-      image: "https://bootdey.com/img/Content/avatar/avatar7.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 2,
-      name: "John Doe",
-      position: "CTO",
-      image: "https://bootdey.com/img/Content/avatar/avatar1.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 3,
-      name: "Clark Man",
-      position: "Creative designer",
-      image: "https://bootdey.com/img/Content/avatar/avatar6.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 4,
-      name: "Jaden Boor",
-      position: "Front-end dev",
-      image: "https://bootdey.com/img/Content/avatar/avatar5.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 5,
-      name: "Srick Tree",
-      position: "Backend-end dev",
-      image: "https://bootdey.com/img/Content/avatar/avatar4.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 6,
-      name: "John Doe",
-      position: "Creative designer",
-      image: "https://bootdey.com/img/Content/avatar/avatar3.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 7,
-      name: "John Doe",
-      position: "Manager",
-      image: "https://bootdey.com/img/Content/avatar/avatar2.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 8,
-      name: "John Doe",
-      position: "IOS dev",
-      image: "https://bootdey.com/img/Content/avatar/avatar1.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 9,
-      name: "John Doe",
-      position: "Web dev",
-      image: "https://bootdey.com/img/Content/avatar/avatar4.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-    {
-      id: 10,
-      name: "John Doe",
-      position: "Analyst",
-      image: "https://bootdey.com/img/Content/avatar/avatar7.png",
-      about:
-        "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.",
-    },
-  ];
-
-  const [users, setUsers] = useState(data);
+  const [selectedJob, setSelectedJob] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [userSelected, setUserSelected] = useState([]);
+  const [userSelected, setUserSelected] = useState(null);
 
   const selectUser = (user) => {
     setUserSelected(user);
     setModalVisible(true);
   };
+
+  const handleAccept = () => {
+    alert(`Accepted ${userSelected.name}`);
+    setModalVisible(false);
+  };
+
+  const handleReject = () => {
+    alert(`Rejected ${userSelected.name}`);
+    setModalVisible(false);
+  };
+
+  const renderJobItem = ({ item }) => (
+    <TouchableOpacity style={styles.jobCard} onPress={() => setSelectedJob(item)}>
+      <View style={styles.jobCardContent}>
+        <Image style={styles.jobLogo} source={{ uri: item.logo }} />
+        <View style={styles.jobInfo}>
+          <Text style={styles.jobTitle}>{item.title}</Text>
+          <Text style={styles.jobDescription}>{item.description}</Text>
+          <Text style={styles.jobLocation}>{item.location}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const renderApplicantItem = ({ item }) => (
+    <TouchableOpacity style={styles.card} onPress={() => selectUser(item)}>
+      <Image style={styles.image} source={{ uri: item.image }} />
+      <View style={styles.cardContent}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.position}>{item.position}</Text>
+        <Text style={styles.appliedFor}>Applied for: {item.appliedFor}</Text>
+        <TouchableOpacity style={styles.profileButton} onPress={() => selectUser(item)}>
+          <Text style={styles.profileButtonText}>View Profile</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const filteredApplicants = applicants.filter(
+    (applicant) => applicant.appliedFor === selectedJob?.title
+  );
+
   return (
     <View style={styles.container}>
-      <FlatList
-        style={styles.userList}
-        columnWrapperStyle={styles.listContainer}
-        data={users}
-        keyExtractor={(item) => {
-          return item.id;
-        }}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              style={styles.card}
-              onPress={() => selectUser(item)}
-            >
-              <Image style={styles.image} source={{ uri: item.image }} />
-              <View style={styles.cardContent}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.position}>{item.position}</Text>
-                <TouchableOpacity
-                  style={styles.followButton}
-                  onPress={() => selectUser(item)}
-                >
-                  <Text style={styles.followButtonText}>Profile</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />
+      {selectedJob ? (
+        <>
+          <TouchableOpacity onPress={() => setSelectedJob(null)} style={styles.backButton}>
+            <Text style={styles.backButtonText}>Back to Jobs</Text>
+          </TouchableOpacity>
+          <Text style={styles.header}>Applicants for {selectedJob.title}</Text>
+          <FlatList
+            style={styles.userList}
+            contentContainerStyle={styles.listContainer}
+            data={filteredApplicants}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderApplicantItem}
+          />
+        </>
+      ) : (
+        <>
+          <Text style={styles.header}>Job Listings</Text>
+          <FlatList
+            style={styles.jobList}
+            contentContainerStyle={styles.listContainer}
+            data={jobs}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={renderJobItem}
+          />
+        </>
+      )}
 
       <Modal
-        animationType={"fade"}
+        animationType="slide"
         transparent={true}
-        onRequestClose={() => setModalVisible(false)}
         visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.popupOverlay}>
           <View style={styles.popup}>
-            <View style={styles.popupContent}>
-              <ScrollView contentContainerStyle={styles.modalInfo}>
-                <Image
-                  style={styles.image}
-                  source={{ uri: userSelected.image }}
-                />
-                <Text style={styles.name}>{userSelected.name}</Text>
-                <Text style={styles.position}>{userSelected.position}</Text>
-                <Text style={styles.about}>{userSelected.about}</Text>
-              </ScrollView>
-            </View>
+            <ScrollView contentContainerStyle={styles.modalInfo}>
+              {userSelected && (
+                <>
+                  <Image style={styles.modalImage} source={{ uri: userSelected.image }} />
+                  <Text style={styles.name}>{userSelected.name}</Text>
+                  <Text style={styles.position}>{userSelected.position}</Text>
+                  <Text style={styles.about}>{userSelected.about}</Text>
+                </>
+              )}
+            </ScrollView>
             <View style={styles.popupButtons}>
-              <TouchableOpacity
-                onPress={() => {
-                  setModalVisible(false);
-                }}
-                style={styles.btnClose}
-              >
+              <TouchableOpacity onPress={handleAccept} style={[styles.btnAction, styles.btnAccept]}>
+                <Text style={styles.txtAction}>Accept</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleReject} style={[styles.btnAction, styles.btnReject]}>
+                <Text style={styles.txtAction}>Reject</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.btnClose}>
                 <Text style={styles.txtClose}>Close</Text>
               </TouchableOpacity>
             </View>
@@ -176,41 +191,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-    backgroundColor: "#eeeeee",
+    backgroundColor: COLORS.grey,
+    paddingHorizontal: 10,
   },
   header: {
-    backgroundColor: "#00CED1",
-    height: 200,
+    fontSize: 24,
+    fontWeight: "bold",
+    color: COLORS.primary,
+    textAlign: "center",
+    marginVertical: 10,
   },
-  headerContent: {
-    padding: 30,
-    alignItems: "center",
+  jobList: {
     flex: 1,
-  },
-  detailContent: {
-    top: 80,
-    height: 500,
-    width: Dimensions.get("screen").width - 90,
-    marginHorizontal: 30,
-    flexDirection: "row",
-    position: "absolute",
-    backgroundColor: "#ffffff",
   },
   userList: {
     flex: 1,
   },
-  cardContent: {
-    marginLeft: 20,
-    marginTop: 10,
+  listContainer: {
+    justifyContent: "space-between",
   },
-  image: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+  jobCard: {
+    padding: 20,
+    marginVertical: 10,
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    elevation: 5,
   },
-
+  jobTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: COLORS.black,
+    textAlign: "center",
+  },
   card: {
-    shadowColor: "#00000021",
+    shadowColor: COLORS.black,
     shadowOffset: {
       width: 0,
       height: 6,
@@ -218,90 +232,114 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.37,
     shadowRadius: 7.49,
     elevation: 12,
-
     marginVertical: 10,
-    marginHorizontal: 20,
-    backgroundColor: "white",
-    flexBasis: "46%",
+    backgroundColor: COLORS.white,
+    flexBasis: "48%",
     padding: 10,
     flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 8,
   },
-
+  cardContent: {
+    marginLeft: 20,
+    justifyContent: "center",
+    flex: 1,
+  },
+  image: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+  },
   name: {
     fontSize: 18,
-    flex: 1,
-    alignSelf: "center",
-    color: "#008080",
+    color: COLORS.primary,
     fontWeight: "bold",
   },
   position: {
     fontSize: 14,
-    flex: 1,
-    alignSelf: "center",
-    color: "#696969",
+    color: COLORS.black,
   },
-  about: {
-    marginHorizontal: 10,
+  appliedFor: {
+    fontSize: 14,
+    color: COLORS.black,
   },
-
-  followButton: {
+  profileButton: {
     marginTop: 10,
     height: 35,
-    width: 100,
+    width: 120,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 30,
-    backgroundColor: "#00BFFF",
+    backgroundColor: COLORS.secondary,
   },
-  followButtonText: {
-    color: "#FFFFFF",
-    fontSize: 20,
+  profileButtonText: {
+    color: COLORS.white,
+    fontSize: 16,
   },
-  /************ modals ************/
-  popup: {
-    backgroundColor: "white",
-    marginTop: 80,
-    marginHorizontal: 20,
-    borderRadius: 7,
+  backButton: {
+    marginBottom: 10,
+  },
+  backButtonText: {
+    color: COLORS.secondary,
+    fontSize: 16,
+    textAlign: "center",
   },
   popupOverlay: {
-    backgroundColor: "#00000057",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     flex: 1,
-    marginTop: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  popup: {
+    backgroundColor: COLORS.white,
+    marginHorizontal: 20,
+    borderRadius: 7,
+    padding: 20,
   },
   popupContent: {
-    //alignItems: 'center',
     margin: 5,
     height: 250,
-  },
-  popupHeader: {
-    marginBottom: 45,
   },
   popupButtons: {
     marginTop: 15,
     flexDirection: "row",
     borderTopWidth: 1,
-    borderColor: "#eee",
+    borderColor: COLORS.grey,
     justifyContent: "center",
   },
-  popupButton: {
-    flex: 1,
-    marginVertical: 16,
-  },
-  btnClose: {
+  btnAction: {
     flex: 1,
     height: 40,
-    backgroundColor: "#20b2aa",
     padding: 5,
     alignItems: "center",
     justifyContent: "center",
+    marginHorizontal: 5,
+    borderRadius: 5,
+  },
+  btnAccept: {
+    backgroundColor: COLORS.primary,
+  },
+  btnReject: {
+    backgroundColor: "#FF0000",
+  },
+  btnClose: {
+    backgroundColor: COLORS.secondary,
+  },
+  txtAction: {
+    color: COLORS.white,
+  },
+  txtClose: {
+    color: COLORS.white,
   },
   modalInfo: {
     alignItems: "center",
     justifyContent: "center",
   },
-  txtClose: {
-    color: "white",
+  modalImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 15,
   },
 });
