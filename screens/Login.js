@@ -13,6 +13,7 @@ import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
+import SERVER from "../constants/server";
 
 const Login = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -20,31 +21,36 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Corrected regex for email validation
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,16}$/;
-    return passwordRegex.test(password);
-  };
-
   const handleLogin = (email, password) => {
-    console.log(email);
-    if (validateEmail(email)) {
-      Alert.alert("Invalid email", "Please enter a valid email address.");
-      return;
-    }
+    const loginData = {
+      email,
+      password,
+    };
 
-    if (validatePassword(password)) {
-      Alert.alert(
-        "Invalid password",
-        "Password must be 8-16 characters long and include at least one uppercase letter, one symbol, and one number."
-      );
-      return;
-    }
-    navigation.navigate("Nav");
+    // console.log(loginData);
+    // fetch(`${SERVER.secondaryUrl}/login`, {
+    fetch("http://192.168.0.105:8000/api/login/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+      })
+      .then((data) => {
+        console.log("User Added Successfully", data);
+        Alert.alert("Added Successfully");
+
+        navigation.navigate("Login");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Alert.alert("Error", "Failed to post job.");
+      });
   };
 
   return (
@@ -187,7 +193,7 @@ const Login = ({ navigation }) => {
 
         <Button
           title="Login"
-          onPress={handleLogin(email, password)}
+          onPress={() => handleLogin(email, password)}
           filled
           style={{
             marginTop: 18,
