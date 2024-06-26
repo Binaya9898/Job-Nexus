@@ -1,22 +1,31 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
+// Update the path accordingly
+import COLORS from '../../constants/colors';
 
 const More = () => {
   const [companyInfo, setCompanyInfo] = useState({
     name: "Encoders",
-    email: "econders.com",
+    email: "info@encoders.com",
     website: "https://encoders.com",
     about: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    contact: "1234567890",
+    contact: "123-456-7890",
     size: "100",
     founded: "2000",
     services: "Service 1, Service 2, Service 3",
+    logo: require('../../assets/all.png'),
   });
 
   const [editing, setEditing] = useState(false);
+  const [logMessage, setLogMessage] = useState('');
 
   const handleEdit = () => {
     setEditing(!editing);
+    if (!editing) {
+      setLogMessage('Editing company profile...');
+    } else {
+      setLogMessage('');
+    }
   };
 
   const handleChange = (key, value) => {
@@ -24,15 +33,18 @@ const More = () => {
   };
 
   const handleUpdate = () => {
-    // Implement update logic here (e.g., send data to server)
     setEditing(false);
-    // Show confirmation message or navigate to another screen
+    setLogMessage('Company profile updated successfully!');
+    setTimeout(() => setLogMessage(''), 3000);
   };
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>Company Profile</Text>
+        {companyInfo.logo && (
+          <Image source={companyInfo.logo} style={styles.logo} />
+        )}
         <View style={styles.field}>
           <Text style={styles.label}>Name:</Text>
           {editing ? (
@@ -47,7 +59,15 @@ const More = () => {
         </View>
         <View style={styles.field}>
           <Text style={styles.label}>Email:</Text>
-          <Text style={styles.text}>{companyInfo.email}</Text>
+          {editing ? (
+            <TextInput
+              style={styles.input}
+              value={companyInfo.email}
+              onChangeText={(text) => handleChange("email", text)}
+            />
+          ) : (
+            <Text style={styles.text}>{companyInfo.email}</Text>
+          )}
         </View>
         <View style={styles.field}>
           <Text style={styles.label}>Website:</Text>
@@ -126,6 +146,7 @@ const More = () => {
         <TouchableOpacity style={styles.button} onPress={editing ? handleUpdate : handleEdit}>
           <Text style={styles.buttonText}>{editing ? "Update" : "Edit"}</Text>
         </TouchableOpacity>
+        {logMessage ? <Text style={styles.log}>{logMessage}</Text> : null}
       </ScrollView>
     </View>
   );
@@ -134,50 +155,73 @@ const More = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.white,
     padding: 20,
   },
   scrollView: {
     flexGrow: 1,
     justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+    color: COLORS.primary,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
   },
   field: {
     marginBottom: 15,
+    width: '100%',
   },
   label: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
+    color: COLORS.secondary,
+    textAlign: 'center',
   },
   text: {
     fontSize: 16,
+    color: COLORS.black,
+    textAlign: 'center',
   },
   input: {
     fontSize: 16,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: COLORS.grey,
     borderRadius: 5,
     padding: 8,
+    color: COLORS.black,
+    width: '100%',
+    textAlign: 'center',
   },
   textArea: {
     height: 100,
     textAlignVertical: "top",
   },
   button: {
-    backgroundColor: "#007bff",
+    backgroundColor: COLORS.primary,
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
+    marginTop: 20,
+    width: '100%',
   },
   buttonText: {
-    color: "#fff",
+    color: COLORS.white,
     fontSize: 16,
+  },
+  log: {
+    marginTop: 20,
+    textAlign: 'center',
+    color: COLORS.primary,
   },
 });
 
