@@ -14,11 +14,11 @@ import COLORS from '../../constants/colors';
 
 
 const jobs = [
-  { id: 1, title: "Senior Developer", logo: "../../assets/hero1.jpg", description: "Develop and maintain web applications.", location: "New York, NY" },
-  { id: 2, title: "Junior Developer", logo: "https://example.com/logo2.png", description: "Assist in the development of web applications.", location: "San Francisco, CA" },
-  { id: 3, title: "Project Manager", logo: "https://example.com/logo3.png", description: "Manage software development projects.", location: "Austin, TX" },
-  { id: 4, title: "UX Designer", logo: "https://example.com/logo4.png", description: "Design user interfaces and experiences.", location: "Seattle, WA" },
-  { id: 5, title: "Data Scientist", logo: "https://example.com/logo5.png", description: "Analyze and interpret complex data.", location: "Boston, MA" },
+  { id: 1, title: "Senior Developer" },
+  { id: 2, title: "Junior Developer" },
+  { id: 3, title: "Project Manager" },
+  { id: 4, title: "UX Designer" },
+  { id: 5, title: "Data Scientist" },
 ];
 
 const applicants = [
