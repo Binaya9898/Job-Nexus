@@ -1,345 +1,248 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  FlatList,
-  Modal,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatList, Button, Alert } from 'react-native';
 import COLORS from '../../constants/colors';
 
-
 const jobs = [
-  { id: 1, title: "Senior Developer" },
-  { id: 2, title: "Junior Developer" },
-  { id: 3, title: "Project Manager" },
-  { id: 4, title: "UX Designer" },
-  { id: 5, title: "Data Scientist" },
+  { id: '1', title: 'Assistant Compliance', company: 'A Highly Reputed Construction Company', location: 'Kathmandu' },
+  { id: '2', title: 'Senior SEO Specialist', company: 'Outpace', location: 'Kathmandu' },
+  { id: '3', title: 'Project Officer', company: 'PRACTICAL ACTION', location: 'Dhangadhi' },
+  { id: '4', title: 'REQUEST FOR PROPOSAL', company: 'Lutheran World Relief', location: 'Lalitpur' },
+  { id: '5', title: 'Expression of Interest', company: 'dZi Foundation', location: 'Lalitpur' },
+  { id: '6', title: 'Auditor', company: 'PP Pradhan & Co.', location: 'Lalitpur' },
+  { id: '7', title: 'Project Manager (SIK)', company: 'World Vision International Nepal', location: 'Bardibas' },
+  { id: '8', title: 'REQUEST FOR PROPOSAL', company: 'World Vision International Nepal', location: 'Jumla' },
+  { id: '9', title: 'Communications Officer', company: 'United Mission to Nepal', location: 'Kathmandu' },
+  { id: '10', title: 'Finance and Administration Officer', company: 'PRACTICAL ACTION', location: 'Kathmandu' },
 ];
 
-const applicants = [
-  {
-    id: 1,
-    name: "Mark Doe",
-    position: "CEO",
-    appliedFor: "Senior Developer",
-    image: "https://bootdey.com/img/Content/avatar/avatar7.png",
-    about:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
-  },
-  {
-    id: 2,
-    name: "John Doe",
-    position: "CTO",
-    appliedFor: "Junior Developer",
-    image: "https://bootdey.com/img/Content/avatar/avatar1.png",
-    about:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
-  },
-  {
-    id: 3,
-    name: "Jane Doe",
-    position: "Project Manager",
-    appliedFor: "Project Manager",
-    image: "https://bootdey.com/img/Content/avatar/avatar6.png",
-    about:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
-  },
-  {
-    id: 4,
-    name: "Emily Doe",
-    position: "UX Designer",
-    appliedFor: "UX Designer",
-    image: "https://bootdey.com/img/Content/avatar/avatar5.png",
-    about:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
-  },
-  {
-    id: 5,
-    name: "Michael Doe",
-    position: "Data Scientist",
-    appliedFor: "Data Scientist",
-    image: "https://bootdey.com/img/Content/avatar/avatar4.png",
-    about:
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.",
-  },
+const mockApplicants = [
+  { id: '1', name: 'John Doe', email: 'john@example.com', profileImage: require('../../assets/hero1.jpg') },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com', profileImage: require('../../assets/hero2.jpg') },
+  { id: '3', name: 'Michael Johnson', email: 'michael@example.com', profileImage: require('../../assets/hero3.jpg') },
+  { id: '4', name: 'Emily Davis', email: 'emily@example.com', profileImage: require('../../assets/hero1.jpg') },
+  { id: '5', name: 'William Brown', email: 'william@example.com', profileImage: require('../../assets/hero2.jpg') },
 ];
 
-const Application = () => {
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [userSelected, setUserSelected] = useState(null);
+const Home = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeJob, setActiveJob] = useState(null);
+  const [activeApplicant, setActiveApplicant] = useState(null);
 
-  const selectUser = (user) => {
-    setUserSelected(user);
-    setModalVisible(true);
+  const handleSearch = (text) => {
+    setSearchTerm(text);
   };
 
   const handleAccept = () => {
-    alert(`Accepted ${userSelected.name}`);
-    setModalVisible(false);
+    Alert.alert('Application Accepted', `${activeApplicant.name} has been accepted for the position.`);
+    setActiveApplicant(null);
   };
 
   const handleReject = () => {
-    alert(`Rejected ${userSelected.name}`);
-    setModalVisible(false);
+    Alert.alert('Application Rejected', `${activeApplicant.name} has been rejected for the position.`);
+    setActiveApplicant(null);
   };
 
   const renderJobItem = ({ item }) => (
-    <TouchableOpacity style={styles.jobCard} onPress={() => setSelectedJob(item)}>
-      <View style={styles.jobCardContent}>
-        <Image style={styles.jobLogo} source={{ uri: item.logo }} />
-        <View style={styles.jobInfo}>
-          <Text style={styles.jobTitle}>{item.title}</Text>
-          <Text style={styles.jobDescription}>{item.description}</Text>
-          <Text style={styles.jobLocation}>{item.location}</Text>
-        </View>
+    <TouchableOpacity onPress={() => setActiveJob(item)}>
+      <View style={styles.jobCard}>
+        <Text style={styles.jobTitle}>{item.title}</Text>
+        <Text style={styles.jobCompany}>{item.company}</Text>
+        <Text style={styles.jobLocation}>{item.location}</Text>
       </View>
     </TouchableOpacity>
   );
 
   const renderApplicantItem = ({ item }) => (
-    <TouchableOpacity style={styles.card} onPress={() => selectUser(item)}>
-      <Image style={styles.image} source={{ uri: item.image }} />
-      <View style={styles.cardContent}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.position}>{item.position}</Text>
-        <Text style={styles.appliedFor}>Applied for: {item.appliedFor}</Text>
-        <TouchableOpacity style={styles.profileButton} onPress={() => selectUser(item)}>
-          <Text style={styles.profileButtonText}>View Profile</Text>
+    <TouchableOpacity onPress={() => setActiveApplicant(item)}>
+      <View style={styles.applicantCard}>
+        <Image source={item.profileImage} style={styles.applicantImage} />
+        <View style={styles.applicantInfo}>
+          <Text style={styles.applicantName}>{item.name}</Text>
+          <Text style={styles.applicantEmail}>{item.email}</Text>
+        </View>
+        <TouchableOpacity onPress={() => setActiveApplicant(item)}>
+          <Text style={styles.viewProfileText}>View Profile</Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
 
-  const filteredApplicants = applicants.filter(
-    (applicant) => applicant.appliedFor === selectedJob?.title
+  const renderJobList = () => (
+    <FlatList
+      data={jobs.filter(job => job.title.toLowerCase().includes(searchTerm.toLowerCase()))}
+      keyExtractor={item => item.id}
+      renderItem={renderJobItem}
+      contentContainerStyle={styles.jobList}
+    />
+  );
+
+  const renderApplicantList = () => (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={() => setActiveJob(null)}>
+        <Text style={styles.backButton}>Back to Jobs</Text>
+      </TouchableOpacity>
+      <Text style={styles.title}>Applicants for {activeJob.title}</Text>
+      <FlatList
+        data={mockApplicants}
+        keyExtractor={item => item.id}
+        renderItem={renderApplicantItem}
+        contentContainerStyle={styles.applicantList}
+      />
+    </View>
+  );
+
+  const renderApplicantProfile = () => (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={() => setActiveApplicant(null)}>
+        <Text style={styles.backButton}>Back to Applicants</Text>
+      </TouchableOpacity>
+      <Image source={activeApplicant.profileImage} style={styles.profileImage} />
+      <Text style={styles.name}>{activeApplicant.name}</Text>
+      <Text style={styles.email}>{activeApplicant.email}</Text>
+      <Text style={styles.phone}>Phone: 123-456-7890</Text>
+      <Text style={styles.experience}>Experience: 5 years</Text>
+      <Text style={styles.skills}>Skills: React Native, JavaScript, HTML, CSS</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={[styles.button, { backgroundColor: COLORS.primary }]} onPress={handleAccept}>
+          <Text style={styles.buttonText}>Accept</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: COLORS.secondary }]} onPress={handleReject}>
+          <Text style={styles.buttonText}>Reject</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, { backgroundColor: COLORS.grey }]} onPress={() => setActiveApplicant(null)}>
+          <Text style={styles.buttonText}>Close</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 
   return (
-    <View style={styles.container}>
-      {selectedJob ? (
-        <>
-          <TouchableOpacity onPress={() => setSelectedJob(null)} style={styles.backButton}>
-            <Text style={styles.backButtonText}>Back to Jobs</Text>
-          </TouchableOpacity>
-          <Text style={styles.header}>Applicants for {selectedJob.title}</Text>
-          <FlatList
-            style={styles.userList}
-            contentContainerStyle={styles.listContainer}
-            data={filteredApplicants}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderApplicantItem}
-          />
-        </>
-      ) : (
-        <>
-          <Text style={styles.header}>Job Listings</Text>
-          <FlatList
-            style={styles.jobList}
-            contentContainerStyle={styles.listContainer}
-            data={jobs}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderJobItem}
-          />
-        </>
-      )}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.popupOverlay}>
-          <View style={styles.popup}>
-            <ScrollView contentContainerStyle={styles.modalInfo}>
-              {userSelected && (
-                <>
-                  <Image style={styles.modalImage} source={{ uri: userSelected.image }} />
-                  <Text style={styles.name}>{userSelected.name}</Text>
-                  <Text style={styles.position}>{userSelected.position}</Text>
-                  <Text style={styles.about}>{userSelected.about}</Text>
-                </>
-              )}
-            </ScrollView>
-            <View style={styles.popupButtons}>
-              <TouchableOpacity onPress={handleAccept} style={[styles.btnAction, styles.btnAccept]}>
-                <Text style={styles.txtAction}>Accept</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleReject} style={[styles.btnAction, styles.btnReject]}>
-                <Text style={styles.txtAction}>Reject</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.btnClose}>
-                <Text style={styles.txtClose}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          onChangeText={handleSearch}
+          value={searchTerm}
+          placeholder="Search by Name, Gender, Job..."
+        />
+      </View>
+      {activeApplicant ? renderApplicantProfile() : activeJob ? renderApplicantList() : renderJobList()}
+    </ScrollView>
   );
 };
-
-export default Application;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
-    backgroundColor: COLORS.grey,
-    paddingHorizontal: 10,
+    padding: 20,
+    backgroundColor: COLORS.white,
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: COLORS.primary,
-    textAlign: "center",
-    marginVertical: 10,
+  inputContainer: {
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    padding: 10,
+    borderColor: COLORS.grey,
+    borderRadius: 10,
   },
   jobList: {
-    flex: 1,
-  },
-  userList: {
-    flex: 1,
-  },
-  listContainer: {
-    justifyContent: "space-between",
+    paddingBottom: 20,
   },
   jobCard: {
-    padding: 20,
-    marginVertical: 10,
+    padding: 15,
+    marginBottom: 10,
     backgroundColor: COLORS.white,
     borderRadius: 10,
-    elevation: 5,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
   },
   jobTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: COLORS.black,
-    textAlign: "center",
   },
-  card: {
-    shadowColor: COLORS.black,
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-    elevation: 12,
-    marginVertical: 10,
+  jobCompany: {
+    fontSize: 14,
+    color: COLORS.grey,
+  },
+  jobLocation: {
+    fontSize: 14,
+    color: COLORS.grey,
+  },
+  applicantList: {
+    paddingBottom: 20,
+  },
+  applicantCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    marginBottom: 10,
     backgroundColor: COLORS.white,
-    flexBasis: "48%",
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    borderRadius: 8,
+    borderRadius: 10,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 3,
   },
-  cardContent: {
-    marginLeft: 20,
-    justifyContent: "center",
+  applicantImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  applicantInfo: {
+    marginLeft: 15,
     flex: 1,
   },
-  image: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+  applicantName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.black,
+  },
+  applicantEmail: {
+    fontSize: 14,
+    color: COLORS.grey,
+  },
+  viewProfileText: {
+    color: COLORS.primary,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignSelf: 'center',
+    marginVertical: 20,
   },
   name: {
-    fontSize: 18,
-    color: COLORS.primary,
-    fontWeight: "bold",
-  },
-  position: {
-    fontSize: 14,
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
     color: COLORS.black,
   },
-  appliedFor: {
-    fontSize: 14,
-    color: COLORS.black,
-  },
-  profileButton: {
-    marginTop: 10,
-    height: 35,
-    width: 120,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 30,
-    backgroundColor: COLORS.secondary,
-  },
-  profileButtonText: {
-    color: COLORS.white,
+  email: {
     fontSize: 16,
+    textAlign: 'center',
+    color: COLORS.grey,
+  },
+  phone: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: COLORS.grey,
+
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
   },
   backButton: {
+    fontSize: 16,
+    color: COLORS.primary,
     marginBottom: 10,
   },
-  backButtonText: {
-    color: COLORS.secondary,
-    fontSize: 16,
-    textAlign: "center",
-  },
-  popupOverlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  popup: {
-    backgroundColor: COLORS.white,
-    marginHorizontal: 20,
-    borderRadius: 7,
-    padding: 20,
-  },
-  popupContent: {
-    margin: 5,
-    height: 250,
-  },
-  popupButtons: {
-    marginTop: 15,
-    flexDirection: "row",
-    borderTopWidth: 1,
-    borderColor: COLORS.grey,
-    justifyContent: "center",
-  },
-  btnAction: {
-    flex: 1,
-    height: 40,
-    padding: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 5,
-    borderRadius: 5,
-  },
-  btnAccept: {
-    backgroundColor: COLORS.primary,
-  },
-  btnReject: {
-    backgroundColor: "#FF0000",
-  },
-  btnClose: {
-    backgroundColor: COLORS.secondary,
-  },
-  txtAction: {
-    color: COLORS.white,
-  },
-  txtClose: {
-    color: COLORS.white,
-  },
-  modalInfo: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  modalImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 15,
-  },
 });
+
+export default Home;
