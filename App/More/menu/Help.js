@@ -9,9 +9,10 @@ const EmployeeProfile = () => {
 
   const employee = {
     name: "John Doe",
+    company: "ABC Company",
     email: "john.doe@example.com",
     contact: "+1 123-456-7890",
-    profileImage: "https://i.pinimg.com/1200x/a3/7b/e5/a37be5b9709175f1527761157463ec38.jpg",
+    profileImage: "https://source.unsplash.com/100x100/?person",
     jobExperiences: [
       { title: "Software Engineer", company: "Tech Solutions Inc", duration: "2018 - Present" },
       { title: "Junior Developer", company: "DevTeam LLC", duration: "2016 - 2018" },
