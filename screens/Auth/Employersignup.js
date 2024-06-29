@@ -53,16 +53,18 @@ const EmployerSignup = ({ navigation }) => {
       },
       body: JSON.stringify(employeeData),
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-      })
-      .then((json) => {
-        console.log("User Added Successfully", json);
+      .then((response) => response.json()) // Parse the JSON response
+      .then((data) => {
+        setLoading(false);
+        console.log("User Added Successfully", data);
         Alert.alert("Added Successfully");
 
-        navigation.navigate("Login");
+        // Extract user_id from the response data
+        const { id } = data;
+        console.log("Id should be: " + id);
+
+        // Pass user_id to CompleteProfile
+        navigation.navigate("CompleteEmployerProfile", { id });
       })
       .catch((error) => {
         console.error("Error:", error);

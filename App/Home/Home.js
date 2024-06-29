@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -8,22 +8,55 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  RefreshControl,
+  FlatList,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import SERVER from "../../constants/server";
 
-const Home = () => {
+const windowWidth = Dimensions.get("window").width;
+
+const Home = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
   const [header, setHeader] = useState("Popular Jobs");
+  const [refreshing, setRefreshing] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const flatListRef = useRef(null);
+
+  const images = [
+    "https://img.freepik.com/premium-psd/business-we-are-hiring-employee-job-web-banner-youtube-thumbnail-template_364164-429.jpg",
+    "https://static.vecteezy.com/system/resources/previews/011/779/507/original/modern-job-hiring-cover-banner-design-template-for-company-corporate-business-vector.jpg",
+    "https://scontent.fpkr1-1.fna.fbcdn.net/v/t39.30808-6/379736870_10211164406064053_8252452471977935330_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=sFZC3v84beMQ7kNvgF3HL1U&_nc_ht=scontent.fpkr1-1.fna&oh=00_AYDKtfEZIZbfkOhAWXd6CPBMai2XaqAKlhntye6075Oegw&oe=66853F67",
+    "https://scontent.fpkr1-1.fna.fbcdn.net/v/t39.30808-6/306522810_772068317476400_8046709574095023760_n.png?_nc_cat=107&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=TRqCXUaVhdYQ7kNvgEXiCsr&_nc_ht=scontent.fpkr1-1.fna&oh=00_AYA4f-988q4GfTF-tiPQEYf7jhtlZrZN7spJuY52rKhuZQ&oe=66854AB9",
+    "https://scontent.fpkr1-1.fna.fbcdn.net/v/t39.30808-6/278169784_655866435763256_8112774658174511941_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=86c6b0&_nc_ohc=SxVAEoHLjGwQ7kNvgHc5P-Y&_nc_ht=scontent.fpkr1-1.fna&oh=00_AYDZc5jBvmdvh-3FjiB7f8IlWMS-Q0rTt1b4U2vpcxMPqg&oe=6685382C",
+  ];
 
   useEffect(() => {
     fetchCategories();
     fetchJobs();
+
+    const intervalId = setInterval(() => {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 3000);
+
+    return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({
+        animated: true,
+        index: currentIndex,
+      });
+    }
+  }, [currentIndex]);
 
   const fetchCategories = async () => {
     try {
@@ -58,19 +91,32 @@ const Home = () => {
     setHeader(category.category_title + " Jobs");
     fetchJobs(category.category_title);
   };
-  // const handlePopular = () => {
-  //   setHeader("Popular Jobs");
-  //   // fetchJobs();
-  // };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchCategories();
+    await fetchJobs();
+    setRefreshing(false);
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      <View>
-        <Image
-          source={{
-            uri: "https://imagehost9.online-image-editor.com/oie_upload/images/301715538Hi5XVX/jvPeCLteislY.jpg",
-          }}
-          style={styles.banner}
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <View style={styles.bannerContainer}>
+        <FlatList
+          ref={flatListRef}
+          data={images}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <Image source={{ uri: item }} style={styles.banner} />
+          )}
         />
       </View>
 
@@ -97,6 +143,7 @@ const Home = () => {
           ))}
         </ScrollView>
       </View>
+
       <View style={styles.categoryButtons}>
         <TouchableOpacity
           style={styles.categoryButton}
@@ -105,6 +152,7 @@ const Home = () => {
           <Text style={styles.categoryButtonText}>Most Recent</Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.scrollContainer}>
         <Text style={styles.sectionTitle}>{header}</Text>
         {loadingJobs ? (
@@ -140,8 +188,16 @@ export default Home;
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 10,
     flex: 1,
     backgroundColor: "#ffffff",
+  },
+  bannerContainer: {
+    height: 250,
+  },
+  banner: {
+    width: windowWidth,
+    height: 250,
   },
   logo: {
     width: 40,
@@ -152,11 +208,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#ffffff",
-  },
-  banner: {
-    width: "100%",
-    height: 200,
-    marginBottom: 20,
   },
   content: {
     justifyContent: "center",

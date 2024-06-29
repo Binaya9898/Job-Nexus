@@ -44,7 +44,6 @@ const EmployeeSignup = ({ navigation }) => {
       contact,
       role,
     };
-    console.log(employeeData);
 
     fetch(`${SERVER.primaryUrl}/user/save`, {
       method: "POST",
@@ -53,20 +52,23 @@ const EmployeeSignup = ({ navigation }) => {
       },
       body: JSON.stringify(employeeData),
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-      })
-      .then((json) => {
-        console.log("User Added Successfully", json);
+      .then((response) => response.json()) // Parse the JSON response
+      .then((data) => {
+        setLoading(false);
+        console.log("User Added Successfully", data);
         Alert.alert("Added Successfully");
 
-        navigation.navigate("Login");
+        // Extract user_id from the response data
+        const { id } = data;
+        console.log("Id should be: " + id);
+
+        // Pass user_id to CompleteProfile
+        navigation.navigate("CompleteProfile", { id });
       })
       .catch((error) => {
+        setLoading(false);
         console.error("Error:", error);
-        Alert.alert("Error", "Failed to post job.");
+        Alert.alert("Error", "Failed to register user.");
       });
   };
 

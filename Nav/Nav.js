@@ -8,11 +8,12 @@ import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../constants/colors";
 import Mainmenu from "../App/More/menu/Mainmenu";
 import Searchh from "../App/Search/Searchh";
+import MyApplications from "../App/Notification/MyApplication";
 
 const Tab = createMaterialBottomTabNavigator();
 const color = COLORS.secondary;
 
-const Nav = () => {
+const Nav = ({ route }) => {
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -33,7 +34,7 @@ const Nav = () => {
       />
 
       <Tab.Screen
-        name="Jobs"
+        name={route}
         component={Jobs}
         options={{
           tabBarIcon: ({ color }) => (
@@ -63,8 +64,8 @@ const Nav = () => {
       /> */}
 
       <Tab.Screen
-        name="Notification"
-        component={Notification}
+        name="Applications"
+        component={MyApplications}
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons

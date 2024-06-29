@@ -17,6 +17,10 @@ import Recoverotp from "./screens/Auth/Recoverotp";
 import Createnewpw from "./screens/Auth/Createnewpw";
 import EmployeeSignup from "./screens/Auth/EmployeeSignup";
 import ApplicationForm from "./App/application/ApplicationForm";
+import CompleteProfileScreen from "./App/Profile/CompleteProfileScreen";
+import JobDetails from "./App/Home/JobDetails";
+import CompleteProfile from "./screens/Auth/CompleteProfile";
+import CompleteEmployerProfile from "./screens/Auth/CompleteEmployerProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -47,6 +51,16 @@ export default function App() {
         <Stack.Screen name="Recoverotp" component={Recoverotp} />
         <Stack.Screen name="Createnewpw" component={Createnewpw} />
         <Stack.Screen name="ApplicationForm" component={ApplicationForm} />
+        <Stack.Screen name="JobDetails" component={JobDetails} />
+        <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+        <Stack.Screen
+          name="CompleteEmployerProfile"
+          component={CompleteEmployerProfile}
+        />
+        <Stack.Screen
+          name="CompleteProfileScreen"
+          component={CompleteProfileScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

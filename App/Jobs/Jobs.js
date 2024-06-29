@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import SERVER from "../../constants/server";
@@ -15,46 +17,58 @@ export default function Jobs({ navigation }) {
   const [jobs, setJobs] = useState([]);
   const [visibleJobs, setVisibleJobs] = useState(8);
   const [allJobsLoaded, setAllJobsLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const serverUrl = `${SERVER.primaryUrl}/job/all`;
+      const response = await fetch(serverUrl);
+
+      // Log the response text to see what's being returned
+      const responseText = await response.text();
+      // console.log("Response Text:", responseText);
+
+      // Try to parse the response text as JSON
+      const data = JSON.parse(responseText);
+      const jobsWithImages = data.map((job) => ({
+        ...job,
+        image: job.employer ? job.employer.employer_image : "",
+        isFavorite: false, // Add isFavorite property
+        empName: job.employer
+          ? job.employer.employer_first_name
+          : "Company Representative",
+        empID: job.employer ? job.employer.id : "Noid",
+      }));
+
+      setJobs(jobsWithImages);
+      setAllJobsLoaded(jobsWithImages.length <= visibleJobs);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [visibleJobs]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const serverUrl = `${SERVER.primaryUrl}/job/all`;
-        const response = await fetch(serverUrl);
-
-        // Log the response text to see what's being returned
-        const responseText = await response.text();
-        console.log("Response Text:", responseText);
-
-        // Try to parse the response text as JSON
-        const data = JSON.parse(responseText);
-        const jobsWithImages = data.map((job) => {
-          return {
-            ...job,
-            image: job.employer ? job.employer.employer_image : "", // Use category image URL if available
-            isFavorite: false, // Add isFavorite property
-            empName: job.employer
-              ? job.employer.employer_first_name
-              : "Company Representative",
-            empID: job.employer ? job.employer.id : "Noid",
-          };
-        });
-
-        setJobs(jobsWithImages);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const loadMoreJobs = () => {
-    if (visibleJobs + 8 >= jobs.length) {
+    if (visibleJobs + 3 >= jobs.length) {
       setVisibleJobs(jobs.length);
       setAllJobsLoaded(true);
     } else {
-      setVisibleJobs(visibleJobs + 8);
+      setVisibleJobs(visibleJobs + 3);
     }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
   };
 
   const toggleFavorite = async (id) => {
@@ -83,7 +97,9 @@ export default function Jobs({ navigation }) {
   };
 
   const handleDetail = (job) => {
+    console.log(job);
     navigation.navigate("Jobdetail", { job });
+    // navigation.navigate("JobDetail", { job });
   };
 
   const renderJobItem = ({ item }) => (
@@ -101,25 +117,25 @@ export default function Jobs({ navigation }) {
         <Text style={styles.salary}>
           {item.job_min_salary} - {item.job_max_salary}
         </Text>
-        <Text style={styles.details}>{item.job_description}</Text>
       </View>
-
-      <TouchableOpacity
-        style={styles.favoriteButton}
-        onPress={() => toggleFavorite(item.id)}
-      >
-        <FontAwesome
-          name={item.isFavorite ? "heart" : "heart-o"}
-          size={24}
-          color="red"
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.detailsButton}
-        onPress={() => handleDetail(item)}
-      >
-        <Text style={styles.detailsButtonText}>Details</Text>
-      </TouchableOpacity>
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          onPress={() => toggleFavorite(item.id)}
+        >
+          <FontAwesome
+            name={item.isFavorite ? "heart" : "heart-o"}
+            size={24}
+            color="red"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.detailsButton}
+          onPress={() => handleDetail(item)}
+        >
+          <Text style={styles.detailsButtonText}>Details</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -128,21 +144,28 @@ export default function Jobs({ navigation }) {
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Featured Jobs</Text>
       </View>
-      <FlatList
-        data={jobs.slice(0, visibleJobs)}
-        renderItem={renderJobItem}
-        keyExtractor={(item) => item.id.toString()}
-        ListFooterComponent={
-          !allJobsLoaded ? (
-            <TouchableOpacity
-              style={styles.loadMoreButton}
-              onPress={loadMoreJobs}
-            >
-              <Text style={styles.loadMoreButtonText}>Load More</Text>
-            </TouchableOpacity>
-          ) : null
-        }
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#007260" />
+      ) : (
+        <FlatList
+          data={jobs.slice(0, visibleJobs)}
+          renderItem={renderJobItem}
+          keyExtractor={(item) => item.id.toString()}
+          ListFooterComponent={
+            !allJobsLoaded ? (
+              <TouchableOpacity
+                style={styles.loadMoreButton}
+                onPress={loadMoreJobs}
+              >
+                <Text style={styles.loadMoreButtonText}>Load More</Text>
+              </TouchableOpacity>
+            ) : null
+          }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
+      )}
     </View>
   );
 }
@@ -152,27 +175,37 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     paddingTop: 60,
+    backgroundColor: "#f9f9f9",
+  },
+  header: {
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    marginBottom: 10,
   },
   headerTitle: {
-    paddingBottom: 25,
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "black",
+    color: "#007260",
     textAlign: "center",
   },
   jobItem: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
   },
   image: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 80,
+    height: 60,
+    borderRadius: 8,
     marginRight: 15,
   },
   jobDetails: {
@@ -181,6 +214,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
   },
   company: {
     color: "#555",
@@ -195,15 +230,17 @@ const styles = StyleSheet.create({
   },
   details: {
     marginTop: 5,
+    color: "#666",
+  },
+  actions: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   favoriteButton: {
-    backgroundColor: "white",
-    paddingHorizontal: 25,
-    paddingVertical: 10,
-    borderRadius: 5,
+    marginBottom: 10,
   },
   loadMoreButton: {
-    backgroundColor: "#39B68D",
+    backgroundColor: "#007260",
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 5,
@@ -215,15 +252,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   detailsButton: {
-    marginTop: 5,
-    backgroundColor: "#39B68D",
+    backgroundColor: "#007260",
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 5,
     borderRadius: 5,
-    marginVertical: 10,
-    alignSelf: "center",
   },
   detailsButtonText: {
     color: "#fff",
+    fontWeight: "bold",
   },
 });

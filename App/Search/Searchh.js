@@ -18,7 +18,7 @@ const Searchh = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [jobs, setJobs] = useState([]);
   const handleDetail = (job) => {
-    navigation.navigate("Jobdetail", { job });
+    navigation.navigate("JobDetails", { job });
   };
 
   const handleSearch = async () => {

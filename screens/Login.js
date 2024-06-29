@@ -13,6 +13,7 @@ import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
+import SERVER from "../constants/server";
 
 const Login = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -20,31 +21,50 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Corrected regex for email validation
-    return emailRegex.test(email);
-  };
+  const handleLogin = async (email, password) => {
+    const loginData = {
+      email,
+      password,
+    };
 
-  const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,16}$/;
-    return passwordRegex.test(password);
-  };
-
-  const handleLogin = (email, password) => {
-    console.log(email);
-    if (validateEmail(email)) {
-      Alert.alert("Invalid email", "Please enter a valid email address.");
-      return;
-    }
-
-    if (validatePassword(password)) {
-      Alert.alert(
-        "Invalid password",
-        "Password must be 8-16 characters long and include at least one uppercase letter, one symbol, and one number."
+    try {
+      const response = await fetch(
+        "http://192.168.0.100:8000/api/login/mobile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        }
       );
-      return;
+
+      // Check if the response is okay
+      if (!response.ok) {
+        const errorData = await response.json(); // Get additional error details
+        throw new Error(
+          `HTTP error! Status: ${response.status} - ${errorData.message}`
+        );
+      }
+
+      // Parse the response data
+      const data = await response.json();
+
+      console.log("Login Successful", data); // Log user data on successful login
+      Alert.alert("Login Successful", "You have been logged in successfully");
+
+      // You can save the token or user data here if needed
+      // For example, save to AsyncStorage or context
+
+      navigation.navigate("Forgotpw", { user: data.user }); // Navigate to the next screen with user data
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert(
+        "Login Failed",
+        error.message ||
+          "Failed to login. Please check your credentials and try again."
+      );
     }
-    navigation.navigate("Nav");
   };
 
   return (
@@ -187,7 +207,7 @@ const Login = ({ navigation }) => {
 
         <Button
           title="Login"
-          onPress={handleLogin(email, password)}
+          onPress={() => handleLogin(email, password)}
           filled
           style={{
             marginTop: 18,

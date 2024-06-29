@@ -14,35 +14,71 @@ import SERVER from "../../constants/server";
 export default function ApplicationForm({ route, navigation }) {
   const { job, employeeData } = route.params;
 
-  const [name] = useState(employeeData?.employee_name || "");
-  const [email] = useState(employeeData?.employee_email || "");
-  const [address] = useState(employeeData?.employee_address || "");
-  const [contact] = useState(employeeData?.employee_contact || "");
-  const [description] = useState(employeeData?.employee_description || "");
-  const [cvUrl] = useState(employeeData?.employee_cv || "");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [contact, setContact] = useState("");
+  const [description, setDescription] = useState("");
+  const [cvUrl, setCvUrl] = useState("");
+  const [loading, setLoading] = useState(true); // State to manage loading state
+
+  useEffect(() => {
+    // Fetch employee details from API
+    const fetchEmployeeData = async () => {
+      try {
+        const response = await fetch(
+          `${SERVER.primaryUrl}/employee/${employeeData.user_id}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched Employee Data:", data);
+
+        // Update state with fetched data
+        setName(data.user.name || "");
+        setEmail(data.user.email || "");
+        setAddress(data.employee_address || "");
+        setContact(data.user.contact || "");
+        setDescription(data.employee_description || "");
+        setCvUrl(data.employee_cv || "");
+        setLoading(false); // Set loading to false once data is fetched
+      } catch (error) {
+        console.error("Error fetching employee data:", error);
+        setLoading(false); // Handle error and set loading to false
+        Alert.alert("Error", "Failed to fetch employee details.");
+      }
+    };
+
+    if (employeeData) {
+      fetchEmployeeData(); // Call fetch function if employeeData exists
+    }
+  }, [employeeData]);
 
   const handleRegisterNow = () => {
-    const dataTOSubmit = {
-      applicant_id: employeeData.user_id,
+    const dataToSubmit = {
+      user_id: employeeData.user_id,
       job_id: job.id,
       applicant_description: description,
+      applicant_status: "pending",
     };
-    console.log(dataTOSubmit);
 
     fetch(`${SERVER.primaryUrl}/application/save`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(dataTOSubmit),
+      body: JSON.stringify(dataToSubmit),
     })
       .then((response) => {
         if (!response.ok) {
+          console.log(dataToSubmit);
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json(); // Assuming you want to handle response JSON
       })
       .then((json) => {
-        console.log("User Added Successfully", json);
+        console.log("Application Submitted Successfully", json);
         navigation.navigate("Success1", {
           title: "Application Submitted Successfully",
           description:
@@ -50,16 +86,20 @@ export default function ApplicationForm({ route, navigation }) {
           navigation1: "Nav",
           buttonText1: "View More Jobs",
         });
-
-        // Alert.alert("Applied Successfully");
-
-        // navigation.navigate("Login");
       })
       .catch((error) => {
         console.error("Error:", error);
-        Alert.alert("Error", "Failed to post job.");
+        Alert.alert("Error", "Failed to submit application.");
       });
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -179,5 +219,10 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: "#fff",
     fontSize: 18,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
