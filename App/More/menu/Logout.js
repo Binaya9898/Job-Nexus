@@ -1,83 +1,64 @@
-import React from "react";
-import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import COLORS from "../../../constants/colors";
 
-const Logout = ({ visible, onCancel }) => {
+const LogoutScreen = () => {
   const navigation = useNavigation();
 
-  const handleLogout = () => {
-    navigation.navigate("Welcome");
+  const handleCancel = () => {
+    // Handle cancel button press to close the container
+    navigation.goBack(); // Navigate back to the previous screen
   };
 
-  const handleCancel = () => {
-    onCancel(); // Call onCancel provided as prop to close the modal
+  const handleLogout = () => {
+    // Handle logout button press to navigate to Welcome page
+    navigation.navigate('Welcome'); // Navigate to Welcome screen
   };
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.container}>
-        <View style={styles.modal}>
-          <Text style={styles.title}>Are you sure you want to logout?</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              onPress={handleCancel}
-              style={[styles.button, styles.cancelButton]}
-            >
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleLogout}
-              style={[styles.button, styles.confirmButton]}
-            >
-              <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
+    <View style={styles.container}>
+      <Text style={styles.title}>Logout</Text>
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: COLORS.secondary }]}
+        onPress={handleCancel}
+      >
+        <Text style={styles.buttonText}>Cancel</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: COLORS.primary }]}
+        onPress={handleLogout}
+      >
+        <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: COLORS.white,
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: "center",
-    color: COLORS.primary,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+    color: COLORS.black,
   },
   button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  cancelButton: {
-    backgroundColor: COLORS.primary,
-  },
-  confirmButton: {
-    backgroundColor: COLORS.primary,
+    width: 200,
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginVertical: 10,
+    alignItems: 'center',
   },
   buttonText: {
+    fontSize: 18,
     color: COLORS.white,
-    fontSize: 16,
   },
 });
 
-export default Logout;
+export default LogoutScreen;
