@@ -1,11 +1,13 @@
-import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import SERVER from "../../constants/server";
 
 const Favourite = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const handleRegisterNow = async () => {
+    setLoading(true);
+
     const url = `${SERVER.primaryUrl}/job/save`;
 
     const jobData = {
@@ -28,39 +30,63 @@ const Favourite = ({ navigation }) => {
 
     console.log("Sending job data:", jobData);
 
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(jobData),
-    })
-      .then((response) => {
-        console.log("Response status:", response.status);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((json) => {
-        console.log("Job registration successful", json);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      })
-      .finally(() => {
-        setLoading(false);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(jobData),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const json = await response.json();
+      console.log("Job registration successful", json);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <View>
-      <TouchableOpacity onPress={handleRegisterNow}>
-        <Text>Hello</Text>
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.button} onPress={handleRegisterNow} disabled={loading}>
+        <Text style={styles.buttonText}>Register Now</Text>
       </TouchableOpacity>
-      {loading && <Text>Loading...</Text>}
+      {loading && (
+        <ActivityIndicator size="large" color="#39B68D" style={styles.activityIndicator} />
+      )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  button: {
+    backgroundColor: "#007260",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  activityIndicator: {
+    marginTop: 20,
+  },
+});
 
 export default Favourite;
