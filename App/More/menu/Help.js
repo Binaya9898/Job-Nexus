@@ -10,11 +10,20 @@ const EmployeeProfile = () => {
     name: "John Doe",
     company: "ABC Company",
     email: "john.doe@example.com",
-    profileImage: "https://i.pinimg.com/1200x/a3/7b/e5/a37be5b9709175f1527761157463ec38.jpg",
-    workExperience: "5 years",
+    profileImage: "https://source.unsplash.com/100x100/?person",
+    jobExperiences: [
+      { title: "Software Engineer", company: "Tech Solutions Inc", duration: "2018 - Present" },
+      { title: "Junior Developer", company: "DevTeam LLC", duration: "2016 - 2018" },
+    ],
     education: "Bachelor's in Computer Science",
-    participation: "Active member of tech community",
-    training: "Certified in Agile methodologies",
+    participation: [
+      "Active member of local tech meetup group",
+      "Organizer of hackathons",
+    ],
+    training: [
+      "Certified in Agile methodologies",
+      "Advanced JavaScript training",
+    ],
     linkedin: "https://www.linkedin.com/johndoe",
     facebook: "https://www.facebook.com/johndoe",
   };
@@ -43,14 +52,24 @@ const EmployeeProfile = () => {
           <Text style={styles.email}>{employee.email}</Text>
         </TouchableOpacity>
         <View style={styles.detailsContainer}>
-          <Text style={styles.detailLabel}>Work Experience:</Text>
-          <Text style={styles.detailText}>{employee.workExperience}</Text>
-          <Text style={styles.detailLabel}>Education:</Text>
+          <Text style={styles.sectionTitle}>Job Experiences</Text>
+          {employee.jobExperiences.map((exp, index) => (
+            <View key={index} style={styles.experienceItem}>
+              <Text style={styles.experienceTitle}>{exp.title}</Text>
+              <Text style={styles.experienceCompany}>{exp.company}</Text>
+              <Text style={styles.experienceDuration}>{exp.duration}</Text>
+            </View>
+          ))}
+          <Text style={styles.sectionTitle}>Education</Text>
           <Text style={styles.detailText}>{employee.education}</Text>
-          <Text style={styles.detailLabel}>Participation:</Text>
-          <Text style={styles.detailText}>{employee.participation}</Text>
-          <Text style={styles.detailLabel}>Training:</Text>
-          <Text style={styles.detailText}>{employee.training}</Text>
+          <Text style={styles.sectionTitle}>Participation</Text>
+          {employee.participation.map((item, index) => (
+            <Text key={index} style={styles.detailText}>{item}</Text>
+          ))}
+          <Text style={styles.sectionTitle}>Training</Text>
+          {employee.training.map((item, index) => (
+            <Text key={index} style={styles.detailText}>{item}</Text>
+          ))}
         </View>
         <View style={styles.socialContainer}>
           <TouchableOpacity onPress={() => handleSocialMediaPress(employee.linkedin)}>
@@ -126,14 +145,30 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignSelf: "stretch",
     paddingHorizontal: 20,
-    textAlign: "center",
   },
-  detailLabel: {
-    fontSize: 16,
+  sectionTitle: {
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 10,
     color: "#333",
     textAlign: "center",
+  },
+  experienceItem: {
+    marginBottom: 15,
+    alignItems: "center",
+  },
+  experienceTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  experienceCompany: {
+    fontSize: 14,
+    color: "#666",
+  },
+  experienceDuration: {
+    fontSize: 14,
+    color: "#999",
   },
   detailText: {
     fontSize: 16,
