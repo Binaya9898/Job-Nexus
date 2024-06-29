@@ -1,33 +1,24 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons'; // Assuming FontAwesome for social media icons
 
 const EmployeeProfile = () => {
   const navigation = useNavigation();
-  const window = Dimensions.get('window');
 
   const employee = {
     name: "John Doe",
-    company: "ABC Company",
     email: "john.doe@example.com",
-    contact: "+1 123-456-7890",
-    profileImage: "https://source.unsplash.com/100x100/?person",
-    jobExperiences: [
-      { title: "Software Engineer", company: "Tech Solutions Inc", duration: "2018 - Present" },
-      { title: "Junior Developer", company: "DevTeam LLC", duration: "2016 - 2018" },
-    ],
-    education: "Bachelor's in Computer Science",
-    participation: [
-      "Active member of local tech meetup group",
-      "Organizer of hackathons",
-    ],
-    training: [
-      "Certified in Agile methodologies",
-      "Advanced JavaScript training",
-    ],
+    contactNumber: "+1234567890",
+    profileImage: require('../../../assets/hero1.jpg'), // Replace with your profile image path
     linkedin: "https://www.linkedin.com/johndoe",
     facebook: "https://www.facebook.com/johndoe",
+    details: [
+      { label: "Work Experience", text: "5 years", date: "2017 - Present" },
+      { label: "Education", text: "Bachelor's in Computer Science", date: "2013 - 2017" },
+      { label: "Participation", text: "Active member of tech community", date: "Ongoing" },
+      { label: "Training", text: "Certified in Agile methodologies", date: "2020" },
+    ],
   };
 
   const handleEmailPress = () => {
@@ -45,33 +36,19 @@ const EmployeeProfile = () => {
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: employee.profileImage }} style={styles.profileImage} />
-        </View>
+        <Image source={employee.profileImage} style={styles.profileImage} />
         <Text style={styles.name}>{employee.name}</Text>
-        <Text style={styles.company}>{employee.company}</Text>
-        <TouchableOpacity style={styles.emailContainer} onPress={handleEmailPress}>
-          <Text style={styles.email}>{employee.email}</Text>
+        <TouchableOpacity style={styles.contactContainer} onPress={handleEmailPress}>
+          <Text style={styles.contact}>{employee.email}</Text>
+          <Text style={styles.contact}>{employee.contactNumber}</Text>
         </TouchableOpacity>
-        <Text style={styles.contact}>{employee.contact}</Text>
         <View style={styles.detailsContainer}>
-          <Text style={styles.sectionTitle}>Work Experience</Text>
-          {employee.jobExperiences.map((exp, index) => (
-            <View key={index} style={styles.experienceItem}>
-              <Text style={styles.experienceTitle}>{exp.title}</Text>
-              <Text style={styles.experienceCompany}>{exp.company}</Text>
-              <Text style={styles.experienceDuration}>{exp.duration}</Text>
+          {employee.details.map((detail, index) => (
+            <View key={index} style={styles.detailItem}>
+              <Text style={styles.detailLabel}>{detail.label}</Text>
+              <Text style={styles.detailText}>{detail.text}</Text>
+              <Text style={styles.dateText}>{detail.date}</Text>
             </View>
-          ))}
-          <Text style={styles.sectionTitle}>Education</Text>
-          <Text style={styles.detailText}>{employee.education}</Text>
-          <Text style={styles.sectionTitle}>Participation</Text>
-          {employee.participation.map((item, index) => (
-            <Text key={index} style={styles.detailText}>{item}</Text>
-          ))}
-          <Text style={styles.sectionTitle}>Training</Text>
-          {employee.training.map((item, index) => (
-            <Text key={index} style={styles.detailText}>{item}</Text>
           ))}
         </View>
         <View style={styles.socialContainer}>
@@ -96,15 +73,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#f9f9f9",
-    padding: 20,
   },
   profileContainer: {
     backgroundColor: "#ffffff",
+    padding: 20,
     borderRadius: 10,
     alignItems: "center",
-    width: '100%',
-    maxWidth: 500, // Max width for the profile container
-    padding: 20,
+    width: '70%',
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -114,82 +89,59 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  imageContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
   },
   name: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 5,
+    marginBottom: 10,
     textAlign: "center",
   },
-  company: {
-    fontSize: 16,
-    color: "#999",
-    marginBottom: 5,
-    textAlign: "center",
-  },
-  emailContainer: {
-    marginBottom: 5,
-  },
-  email: {
-    fontSize: 16,
-    color: "#39B68D",
-    textDecorationLine: "underline",
-    textAlign: "center",
+  contactContainer: {
+    marginBottom: 20,
+    alignItems: "center",
   },
   contact: {
     fontSize: 16,
-    color: "#666",
-    marginBottom: 10,
+    color: "#39B68D",
     textAlign: "center",
   },
   detailsContainer: {
     marginTop: 20,
     alignSelf: "stretch",
+    paddingHorizontal: 20,
+    textAlign: "center",
   },
-  sectionTitle: {
-    fontSize: 18,
+  detailItem: {
+    marginBottom: 15,
+  },
+  detailLabel: {
+    fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 5,
     color: "#333",
     textAlign: "center",
   },
-  experienceItem: {
-    marginBottom: 15,
-    alignItems: "center",
-  },
-  experienceTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  experienceCompany: {
-    fontSize: 14,
-    color: "#666",
-  },
-  experienceDuration: {
-    fontSize: 14,
-    color: "#999",
-  },
   detailText: {
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 5,
     color: "#666",
+    textAlign: "center",
+  },
+  dateText: {
+    fontSize: 14,
+    color: "#999",
     textAlign: "center",
   },
   socialContainer: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
-    marginBottom: 10,
   },
   socialIcon: {
     marginHorizontal: 10,
@@ -199,7 +151,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
-    marginTop: 10,
+    marginTop: 20,
   },
   buttonText: {
     color: "#ffffff",
