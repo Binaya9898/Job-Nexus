@@ -108,7 +108,7 @@ const getStatusStyle = (status) => {
     case "pending":
       return { backgroundColor: COLORS.warning };
     case "accepted":
-      return { backgroundColor: COLORS.success };
+      return { backgroundColor: COLORS.complete };
     case "rejected":
       return { backgroundColor: COLORS.danger };
     default:

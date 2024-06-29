@@ -6,7 +6,7 @@ const COLORS = {
   primary: "#007260",
   secondary: "#39B68D",
   grey: "#CCCCCC",
-  success: "#A7FADF",
+  complete: "#A7FADF",
   danger: "#FDCDCD",
   warning: "#FBF4BA",
 };
