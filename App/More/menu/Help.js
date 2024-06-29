@@ -10,6 +10,7 @@ const EmployeeProfile = () => {
     name: "John Doe",
     company: "ABC Company",
     email: "john.doe@example.com",
+    contact: "+1 123-456-7890",
     profileImage: "https://source.unsplash.com/100x100/?person",
     jobExperiences: [
       { title: "Software Engineer", company: "Tech Solutions Inc", duration: "2018 - Present" },
@@ -51,8 +52,9 @@ const EmployeeProfile = () => {
         <TouchableOpacity style={styles.emailContainer} onPress={handleEmailPress}>
           <Text style={styles.email}>{employee.email}</Text>
         </TouchableOpacity>
+        <Text style={styles.contact}>{employee.contact}</Text>
         <View style={styles.detailsContainer}>
-          <Text style={styles.sectionTitle}>Job Experiences</Text>
+          <Text style={styles.sectionTitle}>Work Experience</Text>
           {employee.jobExperiences.map((exp, index) => (
             <View key={index} style={styles.experienceItem}>
               <Text style={styles.experienceTitle}>{exp.title}</Text>
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     width: '90%',
+    maxWidth: 400, // Max width for the profile container
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -129,16 +132,22 @@ const styles = StyleSheet.create({
   company: {
     fontSize: 16,
     color: "#999",
-    marginBottom: 15,
+    marginBottom: 5,
     textAlign: "center",
   },
   emailContainer: {
-    marginBottom: 20,
+    marginBottom: 5,
   },
   email: {
     fontSize: 16,
     color: "#39B68D",
     textDecorationLine: "underline",
+    textAlign: "center",
+  },
+  contact: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 10,
     textAlign: "center",
   },
   detailsContainer: {
@@ -180,6 +189,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
+    marginBottom: 10,
   },
   socialIcon: {
     marginHorizontal: 10,
@@ -189,7 +199,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
-    marginTop: 20,
+    marginTop: 10,
   },
   buttonText: {
     color: "#ffffff",
