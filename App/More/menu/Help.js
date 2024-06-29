@@ -1,22 +1,30 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons'; // Assuming FontAwesome for social media icons
 
 const EmployeeProfile = () => {
   const navigation = useNavigation();
 
   const employee = {
     name: "John Doe",
-    jobTitle: "Software Engineer",
     company: "ABC Company",
     email: "john.doe@example.com",
-    bio:
-      "Experienced software engineer with a passion for developing innovative programs that expedite the efficiency and effectiveness of organizational success.",
-    profileImage: "https://source.unsplash.com/100x100/?person",
+    profileImage: "https://i.pinimg.com/1200x/a3/7b/e5/a37be5b9709175f1527761157463ec38.jpg",
+    workExperience: "5 years",
+    education: "Bachelor's in Computer Science",
+    participation: "Active member of tech community",
+    training: "Certified in Agile methodologies",
+    linkedin: "https://www.linkedin.com/johndoe",
+    facebook: "https://www.facebook.com/johndoe",
   };
 
   const handleEmailPress = () => {
     Linking.openURL(`mailto:${employee.email}`);
+  };
+
+  const handleSocialMediaPress = (url) => {
+    Linking.openURL(url);
   };
 
   const handleEditProfile = () => {
@@ -26,19 +34,34 @@ const EmployeeProfile = () => {
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
-        <Image source={{ uri: employee.profileImage }} style={styles.profileImage} />
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: employee.profileImage }} style={styles.profileImage} />
+        </View>
         <Text style={styles.name}>{employee.name}</Text>
-        <Text style={styles.jobTitle}>{employee.jobTitle}</Text>
         <Text style={styles.company}>{employee.company}</Text>
         <TouchableOpacity style={styles.emailContainer} onPress={handleEmailPress}>
           <Text style={styles.email}>{employee.email}</Text>
         </TouchableOpacity>
-        <Text style={styles.bio}>{employee.bio}</Text>
-        <TouchableOpacity style={styles.button} onPress={handleEmailPress}>
-          <Text style={styles.buttonText}>Contact Employee</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-          <Text style={styles.editButtonText}>Edit Profile</Text>
+        <View style={styles.detailsContainer}>
+          <Text style={styles.detailLabel}>Work Experience:</Text>
+          <Text style={styles.detailText}>{employee.workExperience}</Text>
+          <Text style={styles.detailLabel}>Education:</Text>
+          <Text style={styles.detailText}>{employee.education}</Text>
+          <Text style={styles.detailLabel}>Participation:</Text>
+          <Text style={styles.detailText}>{employee.participation}</Text>
+          <Text style={styles.detailLabel}>Training:</Text>
+          <Text style={styles.detailText}>{employee.training}</Text>
+        </View>
+        <View style={styles.socialContainer}>
+          <TouchableOpacity onPress={() => handleSocialMediaPress(employee.linkedin)}>
+            <FontAwesome name="linkedin" size={30} color="#0077B5" style={styles.socialIcon} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleSocialMediaPress(employee.facebook)}>
+            <FontAwesome name="facebook-square" size={30} color="#4267B2" style={styles.socialIcon} />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
+          <Text style={styles.buttonText}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -68,22 +91,19 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  imageContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
   profileImage: {
     width: 120,
     height: 120,
     borderRadius: 60,
-    marginBottom: 20,
   },
   name: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 5,
-    textAlign: "center",
-  },
-  jobTitle: {
-    fontSize: 18,
-    color: "#666",
     marginBottom: 5,
     textAlign: "center",
   },
@@ -102,34 +122,41 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     textAlign: "center",
   },
-  bio: {
+  detailsContainer: {
+    marginTop: 20,
+    alignSelf: "stretch",
+    paddingHorizontal: 20,
+    textAlign: "center",
+  },
+  detailLabel: {
     fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#333",
+    textAlign: "center",
+  },
+  detailText: {
+    fontSize: 16,
+    marginBottom: 10,
     color: "#666",
     textAlign: "center",
-    paddingHorizontal: 20,
-    marginBottom: 20,
+  },
+  socialContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  socialIcon: {
+    marginHorizontal: 10,
   },
   button: {
     backgroundColor: "#007260",
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
-    marginTop: 10,
+    marginTop: 20,
   },
   buttonText: {
-    color: "#ffffff",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  editButton: {
-    backgroundColor: "#39B68D",
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  editButtonText: {
     color: "#ffffff",
     fontSize: 18,
     fontWeight: "bold",
