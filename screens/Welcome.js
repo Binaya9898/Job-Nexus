@@ -143,7 +143,7 @@ const Welcome = ({ navigation }) => {
 
           <Button
             title="Job Seeker"
-            onPress={() => navigation.navigate("Nav")}
+            onPress={() => navigation.navigate("EmployeeSignup")}
             style={{
               marginTop: 22,
               width: "100%",
