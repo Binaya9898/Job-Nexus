@@ -20,6 +20,7 @@ import ApplicationForm from "./App/application/ApplicationForm";
 import CompleteProfileScreen from "./App/Profile/CompleteProfileScreen";
 import JobDetails from "./App/Home/JobDetails";
 import CompleteProfile from "./screens/Auth/CompleteProfile";
+import CompleteEmployerProfile from "./screens/Auth/CompleteEmployerProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +53,10 @@ export default function App() {
         <Stack.Screen name="ApplicationForm" component={ApplicationForm} />
         <Stack.Screen name="JobDetails" component={JobDetails} />
         <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+        <Stack.Screen
+          name="CompleteEmployerProfile"
+          component={CompleteEmployerProfile}
+        />
         <Stack.Screen
           name="CompleteProfileScreen"
           component={CompleteProfileScreen}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,11 +9,15 @@ import {
 } from "react-native";
 import BackButton from "../../constants/BackButton";
 
-// Ensure you have the correct path to your image
-// const forgotPasswordImage = require("./assets/images/forgot_password.png");
-
-const Forgotpw = ({ navigation }) => {
+const Forgotpw = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    // Set the email from the passed user data if available
+    if (route.params?.user?.id) {
+      setEmail(route.params.user.id);
+    }
+  }, [route.params?.user?.email]);
 
   const handleRecoverPassword = () => {
     // Handle password recovery logic
@@ -23,14 +27,13 @@ const Forgotpw = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <BackButton onPress={() => navigation.goBack()} />
-      {/* <Image source={forgotPasswordImage} style={styles.image} /> */}
       <Image
         source={{
           uri: "https://assets-global.website-files.com/6414ce4dcbfbc306cd05cebb/6414ce4dcbfbc3387605dc9f_SOC2-Banner-800x357_short.gif",
-        }} // Replace with your actual image URL
+        }}
         style={styles.image}
       />
-      <Text style={styles.header}>Forgot Password</Text>
+      <Text style={styles.header}>{email}</Text>
       <Text style={styles.subHeader}>
         Enter the email address associated with your account.
       </Text>
@@ -53,7 +56,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 40,
     paddingHorizontal: 20,
-
     backgroundColor: "#fff",
   },
   image: {

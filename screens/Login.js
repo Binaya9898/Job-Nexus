@@ -21,38 +21,50 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (email, password) => {
-    navigation.navigate("Nav");
-
+  const handleLogin = async (email, password) => {
     const loginData = {
       email,
       password,
     };
 
-    // console.log(loginData);
-    // fetch(`${SERVER.secondaryUrl}/login`, {
-    fetch("http://192.168.0.105:8000/api/login/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginData),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+    try {
+      const response = await fetch(
+        "http://192.168.0.100:8000/api/login/mobile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
         }
-      })
-      .then((data) => {
-        console.log("User Added Successfully", data);
-        Alert.alert("Added Successfully");
+      );
 
-        navigation.navigate("Login");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        Alert.alert("Error", "Failed to post job.");
-      });
+      // Check if the response is okay
+      if (!response.ok) {
+        const errorData = await response.json(); // Get additional error details
+        throw new Error(
+          `HTTP error! Status: ${response.status} - ${errorData.message}`
+        );
+      }
+
+      // Parse the response data
+      const data = await response.json();
+
+      console.log("Login Successful", data); // Log user data on successful login
+      Alert.alert("Login Successful", "You have been logged in successfully");
+
+      // You can save the token or user data here if needed
+      // For example, save to AsyncStorage or context
+
+      navigation.navigate("Forgotpw", { user: data.user }); // Navigate to the next screen with user data
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert(
+        "Login Failed",
+        error.message ||
+          "Failed to login. Please check your credentials and try again."
+      );
+    }
   };
 
   return (

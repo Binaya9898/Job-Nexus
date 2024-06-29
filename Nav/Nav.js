@@ -13,7 +13,7 @@ import MyApplications from "../App/Notification/MyApplication";
 const Tab = createMaterialBottomTabNavigator();
 const color = COLORS.secondary;
 
-const Nav = () => {
+const Nav = ({ route }) => {
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -34,7 +34,7 @@ const Nav = () => {
       />
 
       <Tab.Screen
-        name="Jobs"
+        name={route}
         component={Jobs}
         options={{
           tabBarIcon: ({ color }) => (
