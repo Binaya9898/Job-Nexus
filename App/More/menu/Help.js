@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, ScrollView } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons'; // Assuming FontAwesome for social media icons
 
@@ -42,60 +42,66 @@ const EmployeeProfile = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.profileContainer}>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: employee.profileImage }} style={styles.profileImage} />
-        </View>
-        <Text style={styles.name}>{employee.name}</Text>
-        <Text style={styles.company}>{employee.company}</Text>
-        <TouchableOpacity style={styles.emailContainer} onPress={handleEmailPress}>
-          <Text style={styles.email}>{employee.email}</Text>
-        </TouchableOpacity>
-        <Text style={styles.contact}>{employee.contact}</Text>
-        <View style={styles.detailsContainer}>
-          <Text style={styles.sectionTitle}>Work Experience</Text>
-          {employee.jobExperiences.map((exp, index) => (
-            <View key={index} style={styles.experienceItem}>
-              <Text style={styles.experienceTitle}>{exp.title}</Text>
-              <Text style={styles.experienceCompany}>{exp.company}</Text>
-              <Text style={styles.experienceDuration}>{exp.duration}</Text>
-            </View>
-          ))}
-          <Text style={styles.sectionTitle}>Education</Text>
-          <Text style={styles.detailText}>{employee.education}</Text>
-          <Text style={styles.sectionTitle}>Participation</Text>
-          {employee.participation.map((item, index) => (
-            <Text key={index} style={styles.detailText}>{item}</Text>
-          ))}
-          <Text style={styles.sectionTitle}>Training</Text>
-          {employee.training.map((item, index) => (
-            <Text key={index} style={styles.detailText}>{item}</Text>
-          ))}
-        </View>
-        <View style={styles.socialContainer}>
-          <TouchableOpacity onPress={() => handleSocialMediaPress(employee.linkedin)}>
-            <FontAwesome name="linkedin" size={30} color="#0077B5" style={styles.socialIcon} />
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.container}>
+        <View style={styles.profileContainer}>
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: employee.profileImage }} style={styles.profileImage} />
+          </View>
+          <Text style={styles.name}>{employee.name}</Text>
+          <Text style={styles.company}>{employee.company}</Text>
+          <TouchableOpacity style={styles.emailContainer} onPress={handleEmailPress}>
+            <Text style={styles.email}>{employee.email}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleSocialMediaPress(employee.facebook)}>
-            <FontAwesome name="facebook-square" size={30} color="#4267B2" style={styles.socialIcon} />
+          <Text style={styles.contact}>{employee.contact}</Text>
+          <View style={styles.detailsContainer}>
+            <Text style={styles.sectionTitle}>Work Experience</Text>
+            {employee.jobExperiences.map((exp, index) => (
+              <View key={index} style={styles.experienceItem}>
+                <Text style={styles.experienceTitle}>{exp.title}</Text>
+                <Text style={styles.experienceCompany}>{exp.company}</Text>
+                <Text style={styles.experienceDuration}>{exp.duration}</Text>
+              </View>
+            ))}
+            <Text style={styles.sectionTitle}>Education</Text>
+            <Text style={styles.detailText}>{employee.education}</Text>
+            <Text style={styles.sectionTitle}>Participation</Text>
+            {employee.participation.map((item, index) => (
+              <Text key={index} style={styles.detailText}>{item}</Text>
+            ))}
+            <Text style={styles.sectionTitle}>Training</Text>
+            {employee.training.map((item, index) => (
+              <Text key={index} style={styles.detailText}>{item}</Text>
+            ))}
+          </View>
+          <View style={styles.socialContainer}>
+            <TouchableOpacity onPress={() => handleSocialMediaPress(employee.linkedin)}>
+              <FontAwesome name="linkedin" size={30} color="#0077B5" style={styles.socialIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleSocialMediaPress(employee.facebook)}>
+              <FontAwesome name="facebook-square" size={30} color="#4267B2" style={styles.socialIcon} />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
+            <Text style={styles.buttonText}>Edit Profile</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
-          <Text style={styles.buttonText}>Edit Profile</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    backgroundColor: "#f9f9f9",
+    padding: 20,
+    minHeight: '100%', // Ensure the content takes up at least the full height of the screen
+  },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f9f9f9",
-    padding: 20,
   },
   profileContainer: {
     backgroundColor: "#ffffff",
