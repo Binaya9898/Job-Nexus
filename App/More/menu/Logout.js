@@ -9,6 +9,11 @@ const Logout = ({ visible, onCancel }) => {
   const handleLogout = () => {
     navigation.navigate("Welcome");
   };
+
+  const handleCancel = () => {
+    onCancel(); // Call onCancel provided as prop to close the modal
+  };
+
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.container}>
@@ -16,7 +21,7 @@ const Logout = ({ visible, onCancel }) => {
           <Text style={styles.title}>Are you sure you want to logout?</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              onPress={onCancel}
+              onPress={handleCancel}
               style={[styles.button, styles.cancelButton]}
             >
               <Text style={styles.buttonText}>Cancel</Text>
