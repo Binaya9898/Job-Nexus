@@ -21,47 +21,50 @@ import CompleteProfileScreen from "./App/Profile/CompleteProfileScreen";
 import JobDetails from "./App/Home/JobDetails";
 import CompleteProfile from "./screens/Auth/CompleteProfile";
 import CompleteEmployerProfile from "./screens/Auth/CompleteEmployerProfile";
+import { UserProvider } from "./constants/UserContext";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="SplashScreen"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="Welcome" component={Welcome} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} />
-        <Stack.Screen name="EmployeeSignup" component={EmployeeSignup} />
-        <Stack.Screen name="Employersignup" component={Employersignup} />
-        <Stack.Screen name="Nav" component={Nav} />
-        <Stack.Screen
-          name="Employernav"
-          component={Employernav}
-          options={{ title: "Employernav" }}
-        />
-        <Stack.Screen name="Jobdetail" component={Jobdetail} />
-        <Stack.Screen name="Success" component={Success} />
-        <Stack.Screen name="Success1" component={Success1} />
-        <Stack.Screen name="Postjob" component={Postjob} />
-        <Stack.Screen name="Forgotpw" component={Forgotpw} />
-        <Stack.Screen name="Recoverotp" component={Recoverotp} />
-        <Stack.Screen name="Createnewpw" component={Createnewpw} />
-        <Stack.Screen name="ApplicationForm" component={ApplicationForm} />
-        <Stack.Screen name="JobDetails" component={JobDetails} />
-        <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
-        <Stack.Screen
-          name="CompleteEmployerProfile"
-          component={CompleteEmployerProfile}
-        />
-        <Stack.Screen
-          name="CompleteProfileScreen"
-          component={CompleteProfileScreen}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="SplashScreen"
+          screenOptions={{ headerShown: false }}
+        >
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="Welcome" component={Welcome} />
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
+          <Stack.Screen name="EmployeeSignup" component={EmployeeSignup} />
+          <Stack.Screen name="Employersignup" component={Employersignup} />
+          <Stack.Screen name="Nav" component={Nav} />
+          <Stack.Screen
+            name="Employernav"
+            component={Employernav}
+            options={{ title: "Employernav" }}
+          />
+          <Stack.Screen name="Jobdetail" component={Jobdetail} />
+          <Stack.Screen name="Success" component={Success} />
+          <Stack.Screen name="Success1" component={Success1} />
+          <Stack.Screen name="Postjob" component={Postjob} />
+          <Stack.Screen name="Forgotpw" component={Forgotpw} />
+          <Stack.Screen name="Recoverotp" component={Recoverotp} />
+          <Stack.Screen name="Createnewpw" component={Createnewpw} />
+          <Stack.Screen name="ApplicationForm" component={ApplicationForm} />
+          <Stack.Screen name="JobDetails" component={JobDetails} />
+          <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
+          <Stack.Screen
+            name="CompleteEmployerProfile"
+            component={CompleteEmployerProfile}
+          />
+          <Stack.Screen
+            name="CompleteProfileScreen"
+            component={CompleteProfileScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import SERVER from "../../constants/server";
-
+import { UserContext } from "../../constants/UserContext";
 const windowWidth = Dimensions.get("window").width;
 
 const Home = ({ navigation }) => {
@@ -27,6 +27,7 @@ const Home = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
+  const { userData } = useContext(UserContext);
 
   const images = [
     "https://img.freepik.com/premium-psd/business-we-are-hiring-employee-job-web-banner-youtube-thumbnail-template_364164-429.jpg",
@@ -121,7 +122,7 @@ const Home = ({ navigation }) => {
       </View>
 
       <View style={styles.categoriesContainer}>
-        <Text style={styles.sectionTitle}>Categories</Text>
+        <Text style={styles.sectionTitle}>Top Categories</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {categories.map((category) => (
             <TouchableOpacity

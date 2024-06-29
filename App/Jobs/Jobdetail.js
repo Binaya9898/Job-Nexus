@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,7 @@ import {
 import moment from "moment";
 import { FontAwesome } from "@expo/vector-icons";
 import SERVER from "../../constants/server";
+import { UserContext } from "../../constants/UserContext";
 
 // Static image URL for fallback
 const fallbackImageUrl =
@@ -21,7 +22,8 @@ export default function JobDetail({ route, navigation }) {
   const formattedDate = moment(job.created_at).format("YYYY-MM-DD");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const jobID = job.id;
-  const empId = "2"; // Replace with actual employee ID in a real scenario
+  const { userData } = useContext(UserContext);
+  const empId = userData.user.id; // Replace with actual employee ID in a real scenario
   // const employerImage = job.employer.employer_image; // Assuming the structure is job.employer.employer_image
 
   const toggleDescription = () => {
