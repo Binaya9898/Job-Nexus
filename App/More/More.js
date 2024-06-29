@@ -16,28 +16,24 @@ const More = ({ navigation }) => {
       id: 1,
       name: "About Us",
       image: "https://img.icons8.com/clouds/100/000000/groups.png",
-      count: 124.711,
       destination: "Aboutus",
     },
     {
       id: 2,
       name: "Help",
       image: "https://img.icons8.com/color/100/000000/real-estate.png",
-      count: 234.722,
       destination: "Help",
     },
     {
       id: 3,
       name: "FAQ",
       image: "https://img.icons8.com/color/100/000000/find-matching-job.png",
-      count: 324.723,
       destination: "Faq",
     },
     {
       id: 4,
       name: "Log Out",
       image: "https://img.icons8.com/clouds/100/000000/employee-card.png",
-      count: 154.573,
       destination: "Logout",
     },
 
@@ -45,8 +41,14 @@ const More = ({ navigation }) => {
       id: 5,
       name: "Favorite",
       image: "https://img.icons8.com/clouds/100/000000/employee-card.png",
-      count: 154.573,
       destination: "Favorite",
+    },
+
+    {
+      id: 6,
+      name: "Profile",
+      image: "https://img.icons8.com/clouds/100/000000/employee-card.png",
+      destination: "Profile",
     },
   ];
 

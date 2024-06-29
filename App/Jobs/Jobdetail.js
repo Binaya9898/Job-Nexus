@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,17 +9,33 @@ import {
   Alert,
 } from "react-native";
 import moment from "moment";
+import { FontAwesome } from "@expo/vector-icons";
 import SERVER from "../../constants/server";
+
+// Static image URL for fallback
+const fallbackImageUrl =
+  "https://w7.pngwing.com/pngs/17/3/png-transparent-businessperson-animated-film-cartoon-business-hand-people-businessman.png";
 
 export default function JobDetail({ route, navigation }) {
   const { job } = route.params;
   const formattedDate = moment(job.created_at).format("YYYY-MM-DD");
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [jobID] = useState(job.id); // Directly use job.id
-  const empId = "user_004"; // Employee ID; replace with the actual employee ID in a real scenario
+  const jobID = job.id;
+  const empId = "2"; // Replace with actual employee ID in a real scenario
+  // const employerImage = job.employer.employer_image; // Assuming the structure is job.employer.employer_image
 
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
+  };
+
+  // Function to handle displaying fallback image if employerImage is null or undefined
+  const getEmployerImageUri = () => {
+    console.log(job.employer.employer_image);
+    if (job.employer.employer_image) {
+      return `${SERVER.imageUrl}/images/employer/profile/${job.employer.employer_image}`;
+    } else {
+      return fallbackImageUrl; // Use fallback image URL
+    }
   };
 
   const checkEmployeeExists = async () => {
@@ -30,17 +46,24 @@ export default function JobDetail({ route, navigation }) {
           method: "GET",
         }
       );
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to check employee");
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new TypeError("Oops, we haven't got JSON!");
+      }
+
       const data = await response.json();
       return data;
     } catch (error) {
-      Alert.alert("Error", error.message);
+      console.error("Error checking employee:", error);
       return null;
     }
   };
+
   const handleApply = async () => {
     const employee = await checkEmployeeExists();
 
@@ -48,6 +71,11 @@ export default function JobDetail({ route, navigation }) {
       const response = await fetch(`${SERVER.primaryUrl}/employee/${empId}`, {
         method: "GET",
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const employeeData = await response.json();
 
       if (employeeData) {
@@ -59,7 +87,7 @@ export default function JobDetail({ route, navigation }) {
         Alert.alert("Error", "Failed to fetch employee data.");
       }
     } else {
-      Alert.alert("Profile Incomplete", "Please set up your profile first.");
+      navigation.navigate("CompleteProfileScreen"); // Navigate to profile complete screen if profile is incomplete
     }
   };
 
@@ -71,10 +99,11 @@ export default function JobDetail({ route, navigation }) {
           method: "POST",
         }
       );
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to add to wishlist");
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
       Alert.alert("Success", "Job added to favorites");
       return await response.json();
     } catch (error) {
@@ -83,84 +112,87 @@ export default function JobDetail({ route, navigation }) {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{job.job_title}</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>{job.job_title}</Text>
+      </View>
+
+      <View style={styles.postContent}>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Category:</Text>
+            <Text style={styles.info}>{job.job_category}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Company:</Text>
+            <Text style={styles.info}>{job.job_company_name}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Location:</Text>
+            <Text style={styles.info}>{job.job_address}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Experience:</Text>
+            <Text style={styles.info}>{job.job_experience}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Salary:</Text>
+            <Text style={styles.info}>
+              ${job.job_min_salary} - ${job.job_max_salary}
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Type:</Text>
+            <Text style={styles.info}>{job.job_type}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Hours:</Text>
+            <Text style={styles.info}>{job.job_hour}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Contact:</Text>
+            <Text style={styles.info}>{job.job_contact}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Validity:</Text>
+            <Text style={styles.info}>{job.job_validity}</Text>
+          </View>
         </View>
 
-        <View style={styles.postContent}>
-          <Text style={styles.postTitle}>Job Details</Text>
-
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Category: </Text>
-            {job.job_category}
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.label}>Description:</Text>
+          <Text style={styles.description}>
+            {isDescriptionExpanded
+              ? job.job_description
+              : `${job.job_description.substring(0, 100)}...`}
           </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Company: </Text>
-            {job.job_company_name}
-          </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Location: </Text>
-            {job.job_address}
-          </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Experience: </Text>
-            {job.job_experience}
-          </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Salary: </Text>${job.job_min_salary} - $
-            {job.job_max_salary}
-          </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Type: </Text>
-            {job.job_type}
-          </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Hours: </Text>
-            {job.job_hour}
-          </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Contact: </Text>
-            {job.job_contact}
-          </Text>
-          <Text style={styles.postDescription}>
-            <Text style={styles.label}>Validity: </Text>
-            {job.job_validity}
-          </Text>
-
-          <View>
-            <Text style={styles.label}>Description: </Text>
-            <Text style={styles.postDescription}>
-              {isDescriptionExpanded
-                ? job.job_description
-                : `${job.job_description.substring(0, 100)}...`}
+          <TouchableOpacity onPress={toggleDescription}>
+            <Text style={styles.toggleText}>
+              {isDescriptionExpanded ? "Show less" : "Show more"}
             </Text>
-            <TouchableOpacity onPress={toggleDescription}>
-              <Text style={styles.toggleText}>
-                {isDescriptionExpanded ? "Show less" : "Show more"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.date}>Posted on: {formattedDate}</Text>
-
-          <View style={styles.profile}>
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: `${SERVER.imageUrl}/images/employer/profile/${job.image}`,
-              }}
-            />
-            <Text style={styles.name}>{job.empName}</Text>
-          </View>
-
-          <TouchableOpacity style={styles.shareButton} onPress={handleApply}>
-            <Text style={styles.shareButtonText}>Apply</Text>
           </TouchableOpacity>
+        </View>
 
-          <TouchableOpacity style={styles.shareButton2} onPress={addToWishlist}>
-            <Text style={styles.shareButtonText}>Add to Favorites</Text>
+        <View style={styles.employerContainer}>
+          <Image
+            style={styles.employerImage}
+            source={{
+              uri: getEmployerImageUri(),
+            }}
+          />
+          <Text style={styles.employerName}>
+            {job.employer.employer_company_name}
+          </Text>
+        </View>
+
+        <View style={styles.actionsContainer}>
+          <TouchableOpacity style={styles.actionButton} onPress={handleApply}>
+            <FontAwesome name="check-circle" size={24} color="#007260" />
+            <Text style={styles.actionButtonText}>Apply</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionButton} onPress={addToWishlist}>
+            <FontAwesome name="heart" size={24} color="#007260" />
+            <Text style={styles.actionButtonText}>Add to Favorites</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -170,83 +202,112 @@ export default function JobDetail({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    backgroundColor: "#f9f9f9",
+    paddingVertical: 20,
   },
   header: {
-    paddingTop: 30,
-    alignItems: "center",
     backgroundColor: "#007260",
+    paddingVertical: 20,
+    alignItems: "center",
   },
   headerTitle: {
-    fontSize: 30,
-    color: "#FFFFFF",
-    marginTop: 10,
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
   },
   postContent: {
-    flex: 1,
-    padding: 30,
+    paddingHorizontal: 20,
   },
-  postTitle: {
-    fontSize: 26,
-    fontWeight: "600",
+  infoContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
-  postDescription: {
-    fontSize: 16,
-    marginTop: 10,
+  infoRow: {
+    flexDirection: "row",
+    marginBottom: 10,
   },
   label: {
     fontWeight: "bold",
+    width: 100,
   },
-  date: {
-    color: "#696969",
-    marginTop: 10,
+  info: {
+    flex: 1,
   },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 4,
-    borderColor: "#007260",
+  descriptionContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
-  profile: {
-    flexDirection: "row",
-    marginTop: 20,
-  },
-  name: {
-    fontSize: 16,
-    color: "#007260",
-    fontWeight: "600",
-    alignSelf: "center",
-    marginLeft: 10,
-  },
-  shareButton: {
-    marginTop: 10,
-    height: 65,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 30,
-    backgroundColor: "#007260",
-  },
-  shareButtonText: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    paddingVertical: 10,
-  },
-  shareButton2: {
-    marginTop: 10,
-    marginLeft: 50,
-    height: 65,
-    width: 250,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 30,
-    backgroundColor: "#007260",
+  description: {
+    lineHeight: 20,
+    marginBottom: 10,
   },
   toggleText: {
     color: "#007260",
     fontWeight: "bold",
-    marginTop: 5,
+  },
+  employerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  employerImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  employerName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  actionsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  actionButton: {
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    borderRadius: 30,
+    borderWidth: 1,
+    borderColor: "#007260",
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  actionButtonText: {
+    color: "#007260",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 10,
   },
 });

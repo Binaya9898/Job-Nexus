@@ -22,6 +22,8 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const handleLogin = (email, password) => {
+    navigation.navigate("Nav");
+
     const loginData = {
       email,
       password,
