@@ -23,7 +23,7 @@ const mockApplicants = [
   { id: '5', name: 'William Brown', email: 'william@example.com', profileImage: require('../../assets/hero2.jpg') },
 ];
 
-const Home = () => {
+const Home = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeJob, setActiveJob] = useState(null);
   const [activeApplicant, setActiveApplicant] = useState(null);
@@ -60,7 +60,7 @@ const Home = () => {
           <Text style={styles.applicantName}>{item.name}</Text>
           <Text style={styles.applicantEmail}>{item.email}</Text>
         </View>
-        <TouchableOpacity onPress={() => setActiveApplicant(item)}>
+        <TouchableOpacity onPress={() => navigation.navigate('EmployeeProfile', { applicant: item })}>
           <Text style={styles.viewProfileText}>View Profile</Text>
         </TouchableOpacity>
       </View>
@@ -231,7 +231,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: COLORS.grey,
-
   },
   buttonContainer: {
     flexDirection: 'row',

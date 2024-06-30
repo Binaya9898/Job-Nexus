@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons'; // Assuming FontAwesome for social media icons
+import { FontAwesome } from '@expo/vector-icons';
 
 const EmployeeProfile = () => {
     const navigation = useNavigation();
@@ -10,7 +10,7 @@ const EmployeeProfile = () => {
         name: "John Doe",
         email: "john.doe@example.com",
         contactNumber: "+1234567890",
-        profileImage: require('../../assets'), // Replace with your profile image path
+        profileImage: require('../../assets/hero1.jpg'),
         linkedin: "https://www.linkedin.com/johndoe",
         facebook: "https://www.facebook.com/johndoe",
         details: [
@@ -31,6 +31,11 @@ const EmployeeProfile = () => {
 
     const handleEditProfile = () => {
         navigation.navigate('EditProfile', { employee });
+    };
+
+    const handleUpdateProfile = () => {
+        // Add your update profile functionality here
+        console.log("Update Profile Pressed");
     };
 
     return (
@@ -59,9 +64,14 @@ const EmployeeProfile = () => {
                         <FontAwesome name="facebook-square" size={30} color="#4267B2" style={styles.socialIcon} />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
-                    <Text style={styles.buttonText}>Edit Profile</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
+                        <Text style={styles.buttonText}>Edit Profile</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
+                        <Text style={styles.buttonText}>Update Profile</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -146,12 +156,16 @@ const styles = StyleSheet.create({
     socialIcon: {
         marginHorizontal: 10,
     },
+    buttonContainer: {
+        flexDirection: "row",
+        marginTop: 20,
+    },
     button: {
         backgroundColor: "#007260",
         paddingVertical: 12,
         paddingHorizontal: 30,
         borderRadius: 8,
-        marginTop: 20,
+        marginHorizontal: 10,
     },
     buttonText: {
         color: "#ffffff",
