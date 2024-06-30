@@ -10,7 +10,7 @@ const EmployeeProfile = () => {
         name: "John Doe",
         email: "john.doe@example.com",
         contactNumber: "+1234567890",
-        profileImage: require('../../../assets/hero1.jpg'), // Replace with your profile image path
+        profileImage: require('../../assets'), // Replace with your profile image path
         linkedin: "https://www.linkedin.com/johndoe",
         facebook: "https://www.facebook.com/johndoe",
         details: [
