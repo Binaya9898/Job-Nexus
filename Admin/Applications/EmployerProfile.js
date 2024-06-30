@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Linking } from "react-
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 
-const EmployeeProfile = () => {
+const EmployerProfile = () => {
     const navigation = useNavigation();
 
     const employee = {
-        name: "John Doe",
+        name: "Akriti CHapgain",
         email: "john.doe@example.com",
         contactNumber: "+1234567890",
         profileImage: require('../../assets/hero1.jpg'),
@@ -18,6 +18,8 @@ const EmployeeProfile = () => {
             { label: "Education", text: "Bachelor's in Computer Science", date: "2013 - 2017" },
             { label: "Participation", text: "Active member of tech community", date: "Ongoing" },
             { label: "Training", text: "Certified in Agile methodologies", date: "2020" },
+            { label: "sjjdkadjka", text: "Certified in Agile methodologies", date: "2020" },
+
         ],
     };
 
@@ -29,17 +31,22 @@ const EmployeeProfile = () => {
         Linking.openURL(url);
     };
 
-    const handleEditProfile = () => {
-        navigation.navigate('Accept', { employee });
+    const handleAcceptProfile = () => {
+        // Add your accept profile functionality here
+        console.log("Accept Candidate");
     };
 
     const handleRejectProfile = () => {
-        // Add your update profile functionality here
+        // Add your reject profile functionality here
         console.log("Reject Candidate");
     };
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                <FontAwesome name="arrow-left" size={24} color="#007260" />
+                <Text style={styles.backButtonText}>Back</Text>
+            </TouchableOpacity>
             <View style={styles.profileContainer}>
                 <Image source={employee.profileImage} style={styles.profileImage} />
                 <Text style={styles.name}>{employee.name}</Text>
@@ -65,10 +72,10 @@ const EmployeeProfile = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
+                    <TouchableOpacity style={styles.button} onPress={handleAcceptProfile}>
                         <Text style={styles.buttonText}>Accept</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
+                    <TouchableOpacity style={[styles.button, { backgroundColor: "#D9534F" }]} onPress={handleRejectProfile}>
                         <Text style={styles.buttonText}>Reject</Text>
                     </TouchableOpacity>
                 </View>
@@ -83,6 +90,18 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#f9f9f9",
+    },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        position: 'absolute',
+        top: 40,
+        left: 20,
+    },
+    backButtonText: {
+        fontSize: 18,
+        color: "#007260",
+        marginLeft: 5,
     },
     profileContainer: {
         backgroundColor: "#ffffff",
@@ -178,4 +197,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default EmployeeProfile;
+export default EmployerProfile;

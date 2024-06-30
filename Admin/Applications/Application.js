@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatList, Button, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
 import COLORS from '../../constants/colors';
+// import EmployeeProfile from "./EmployeeProfile";
 
 const jobs = [
   { id: '1', title: 'Assistant Compliance', company: 'A Highly Reputed Construction Company', location: 'Kathmandu' },
@@ -16,7 +17,7 @@ const jobs = [
 ];
 
 const mockApplicants = [
-  { id: '1', name: 'John Doe', email: 'john@example.com', profileImage: require('../../assets/hero1.jpg') },
+  { id: '1', name: 'Akriti Chapagain', email: 'john@example.com', profileImage: require('../../assets/hero1.jpg') },
   { id: '2', name: 'Jane Smith', email: 'jane@example.com', profileImage: require('../../assets/hero2.jpg') },
   { id: '3', name: 'Michael Johnson', email: 'michael@example.com', profileImage: require('../../assets/hero3.jpg') },
   { id: '4', name: 'Emily Davis', email: 'emily@example.com', profileImage: require('../../assets/hero1.jpg') },
@@ -26,20 +27,9 @@ const mockApplicants = [
 const Home = ({ navigation }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeJob, setActiveJob] = useState(null);
-  const [activeApplicant, setActiveApplicant] = useState(null);
 
   const handleSearch = (text) => {
     setSearchTerm(text);
-  };
-
-  const handleAccept = () => {
-    Alert.alert('Application Accepted', `${activeApplicant.name} has been accepted for the position.`);
-    setActiveApplicant(null);
-  };
-
-  const handleReject = () => {
-    Alert.alert('Application Rejected', `${activeApplicant.name} has been rejected for the position.`);
-    setActiveApplicant(null);
   };
 
   const renderJobItem = ({ item }) => (
@@ -53,16 +43,14 @@ const Home = ({ navigation }) => {
   );
 
   const renderApplicantItem = ({ item }) => (
-    <TouchableOpacity onPress={() => setActiveApplicant(item)}>
+    <TouchableOpacity onPress={() => navigation.navigate('EmployerProfile', { applicant: item })}>
       <View style={styles.applicantCard}>
         <Image source={item.profileImage} style={styles.applicantImage} />
         <View style={styles.applicantInfo}>
           <Text style={styles.applicantName}>{item.name}</Text>
           <Text style={styles.applicantEmail}>{item.email}</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('EmployeeProfile', { applicant: item })}>
-          <Text style={styles.viewProfileText}>View Profile</Text>
-        </TouchableOpacity>
+        <Text style={styles.viewProfileText}>View Profile</Text>
       </View>
     </TouchableOpacity>
   );
@@ -91,31 +79,6 @@ const Home = ({ navigation }) => {
     </View>
   );
 
-  const renderApplicantProfile = () => (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => setActiveApplicant(null)}>
-        <Text style={styles.backButton}>Back to Applicants</Text>
-      </TouchableOpacity>
-      <Image source={activeApplicant.profileImage} style={styles.profileImage} />
-      <Text style={styles.name}>{activeApplicant.name}</Text>
-      <Text style={styles.email}>{activeApplicant.email}</Text>
-      <Text style={styles.phone}>Phone: 123-456-7890</Text>
-      <Text style={styles.experience}>Experience: 5 years</Text>
-      <Text style={styles.skills}>Skills: React Native, JavaScript, HTML, CSS</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={[styles.button, { backgroundColor: COLORS.primary }]} onPress={handleAccept}>
-          <Text style={styles.buttonText}>Accept</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: COLORS.secondary }]} onPress={handleReject}>
-          <Text style={styles.buttonText}>Reject</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, { backgroundColor: COLORS.grey }]} onPress={() => setActiveApplicant(null)}>
-          <Text style={styles.buttonText}>Close</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.inputContainer}>
@@ -126,7 +89,7 @@ const Home = ({ navigation }) => {
           placeholder="Search by Name, Gender, Job..."
         />
       </View>
-      {activeApplicant ? renderApplicantProfile() : activeJob ? renderApplicantList() : renderJobList()}
+      {activeJob ? renderApplicantList() : renderJobList()}
     </ScrollView>
   );
 };
@@ -209,38 +172,16 @@ const styles = StyleSheet.create({
   viewProfileText: {
     color: COLORS.primary,
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    alignSelf: 'center',
-    marginVertical: 20,
-  },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: COLORS.black,
-  },
-  email: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: COLORS.grey,
-  },
-  phone: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: COLORS.grey,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-  },
   backButton: {
     fontSize: 16,
     color: COLORS.primary,
     marginBottom: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: COLORS.black,
   },
 });
 
