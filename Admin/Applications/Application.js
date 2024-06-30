@@ -7,12 +7,18 @@ import {
   Image,
   RefreshControl,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
 import { UserContext } from "../../constants/UserContext";
+import SERVER from "../../constants/server";
 
-const Application = () => {
+// Placeholder image for applicants
+const applicantImage =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWJaa44hakF5skS3g1dAqjMEuMAR6MgAetFw&s";
+
+const Application = ({ navigation }) => {
   const { userData } = useContext(UserContext);
   const userId = userData.user.id; // Assuming you have the user ID
 
@@ -33,7 +39,7 @@ const Application = () => {
   const fetchApplications = async () => {
     try {
       const response = await fetch(
-        `http://192.168.0.108:8000/api/view/application/${userId}`
+        `${SERVER.primaryUrl}/view/application/${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch applications");
@@ -47,6 +53,12 @@ const Application = () => {
     }
   };
 
+  const handleViewCV = (applicantId) => {
+    // Handle view CV action, you might navigate to another screen or open a link
+    console.log(`View CV for applicant ID: ${applicantId}`);
+    navigation.navigate("EmployerProfile", { applicantId });
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -55,6 +67,19 @@ const Application = () => {
     );
   }
 
+  const getStatusBadge = (status) => {
+    switch (status.toLowerCase()) {
+      case "pending":
+        return { label: "Pending", color: COLORS.orange };
+      case "accepted":
+        return { label: "Accepted", color: COLORS.green };
+      case "rejected":
+        return { label: "Rejected", color: COLORS.red };
+      default:
+        return { label: "Unknown", color: COLORS.grey };
+    }
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -62,26 +87,64 @@ const Application = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {applications.map((application) => (
-        <View key={application.id} style={styles.applicationCard}>
-          <Text style={styles.jobTitle}>{application.job.job_title}</Text>
-          <Text style={styles.jobDetail}>
-            {application.job.job_description}
-          </Text>
-          <Text style={styles.applicantName}>
-            Applicant: {application.applicant.name}
-          </Text>
-          <Text style={styles.applicantDetail}>
-            Email: {application.applicant.email}
-          </Text>
-          <Text style={styles.applicantDetail}>
-            Contact: {application.applicant.contact}
-          </Text>
-          <Text style={styles.applicantStatus}>
-            Status: {application.applicant_status}
-          </Text>
+      <View style={styles.header}>
+        <Text style={styles.brandText}>JobNexus</Text>
+        <View style={styles.headerIcons}>
+          <Ionicons
+            name="person-circle-outline"
+            size={24}
+            color={COLORS.white}
+          />
+          <Ionicons
+            name="notifications-outline"
+            size={24}
+            color={COLORS.white}
+          />
+          <Ionicons
+            name="ellipsis-vertical-outline"
+            size={24}
+            color={COLORS.white}
+          />
         </View>
-      ))}
+      </View>
+      {applications.map((application) => {
+        const statusBadge = getStatusBadge(application.applicant_status);
+        return (
+          <View key={application.id} style={styles.applicationCard}>
+            <Image
+              source={{ uri: applicantImage }}
+              style={styles.applicantImage}
+            />
+            <View style={styles.applicantInfo}>
+              <Text style={styles.applicantName}>
+                {application.applicant.name}
+              </Text>
+              <Text style={styles.jobTitle}>{application.job.job_title}</Text>
+              <Text style={styles.jobDetail}>
+                {application.job.job_description}
+              </Text>
+              <View style={styles.statusRow}>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    { backgroundColor: statusBadge.color },
+                  ]}
+                >
+                  <Text style={styles.statusBadgeText}>
+                    {statusBadge.label}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.viewCVButton}
+                  onPress={() => handleViewCV(application.applicant.id)}
+                >
+                  <Text style={styles.viewCVButtonText}>View CV</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        );
+      })}
     </ScrollView>
   );
 };
@@ -90,7 +153,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightGrey,
-    padding: 10,
+    padding: 0,
+    marginTop: 30,
+  },
+  header: {
+    padding: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: COLORS.primary,
+    marginBottom: 10,
+  },
+  brandText: {
+    color: COLORS.white,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  headerIcons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 100,
   },
   loadingContainer: {
     flex: 1,
@@ -102,38 +184,63 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
     shadowColor: COLORS.black,
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 3,
   },
-  jobTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: COLORS.primary,
-    marginBottom: 5,
+  applicantImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
   },
-  jobDetail: {
-    fontSize: 14,
-    color: COLORS.darkGrey,
-    marginBottom: 5,
+  applicantInfo: {
+    flex: 1,
   },
   applicantName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: COLORS.secondary,
-    marginTop: 10,
+    color: COLORS.primary,
+    marginBottom: 5,
   },
-  applicantDetail: {
+  jobTitle: {
     fontSize: 14,
-    color: COLORS.grey,
+    color: COLORS.darkGrey,
   },
-  applicantStatus: {
+  jobDetail: {
+    fontSize: 12,
+    color: COLORS.grey,
+    marginBottom: 10,
+  },
+  statusRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  statusBadge: {
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+  },
+  statusBadgeText: {
+    fontSize: 12,
+    color: COLORS.white,
+    fontWeight: "bold",
+  },
+  viewCVButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 5,
+  },
+  viewCVButtonText: {
+    color: COLORS.white,
     fontSize: 14,
     fontWeight: "bold",
-    color: COLORS.green,
-    marginTop: 5,
   },
 });
 

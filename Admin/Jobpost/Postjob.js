@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { UserContext } from "../../constants/UserContext";
+import { Ionicons } from "@expo/vector-icons";
 
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
@@ -143,6 +144,26 @@ const Postjob = ({ navigation }) => {
       case 0:
         return (
           <>
+            <View style={styles.header}>
+              <Text style={styles.brandText}>JobNexus</Text>
+              <View style={styles.headerIcons}>
+                <Ionicons
+                  name="person-circle-outline"
+                  size={24}
+                  color={COLORS.white}
+                />
+                <Ionicons
+                  name="notifications-outline"
+                  size={24}
+                  color={COLORS.white}
+                />
+                <Ionicons
+                  name="ellipsis-vertical-outline"
+                  size={24}
+                  color={COLORS.white}
+                />
+              </View>
+            </View>
             <TextInput
               placeholder="Job Title *"
               placeholderTextColor={COLORS.bright}
@@ -304,6 +325,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
+  },
+  header: {
+    padding: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: COLORS.primary,
+    marginBottom: 10,
+  },
+  brandText: {
+    color: COLORS.white,
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  headerIcons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 100,
   },
   title: {
     fontSize: 24,

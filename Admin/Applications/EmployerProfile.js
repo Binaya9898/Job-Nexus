@@ -1,52 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Image,
   TouchableOpacity,
+  ScrollView,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
+import COLORS from "../../constants/colors";
 
-const EmployerProfile = () => {
+const EmployerProfile = ({ route }) => {
   const navigation = useNavigation();
+  const { applicantId } = route.params;
 
-  const employee = {
-    name: "Akriti CHapgain",
-    email: "john.doe@example.com",
-    contactNumber: "+1234567890",
-    profileImage: require("../../assets/hero1.jpg"),
-    linkedin: "https://www.linkedin.com/johndoe",
-    facebook: "https://www.facebook.com/johndoe",
-    details: [
-      { label: "Work Experience", text: "5 years", date: "2017 - Present" },
-      {
-        label: "Education",
-        text: "Bachelor's in Computer Science",
-        date: "2013 - 2017",
-      },
-      {
-        label: "Participation",
-        text: "Active member of tech community",
-        date: "Ongoing",
-      },
-      {
-        label: "Training",
-        text: "Certified in Agile methodologies",
-        date: "2020",
-      },
-      {
-        label: "sjjdkadjka",
-        text: "Certified in Agile methodologies",
-        date: "2020",
-      },
-    ],
+  const [employee, setEmployee] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchEmployeeData();
+  }, []);
+
+  const fetchEmployeeData = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.0.108:8000/api/checkEmployee/${applicantId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch employee data");
+      }
+      const data = await response.json();
+      if (data.exists) {
+        setEmployee(data.data);
+      } else {
+        throw new Error("Employee does not exist");
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEmailPress = () => {
-    Linking.openURL(`mailto:${employee.email}`);
+    if (employee && employee.user && employee.user.email) {
+      Linking.openURL(`mailto:${employee.user.email}`);
+    }
   };
 
   const handleSocialMediaPress = (url) => {
@@ -54,46 +57,98 @@ const EmployerProfile = () => {
   };
 
   const handleAcceptProfile = () => {
-    // Add your accept profile functionality here
     console.log("Accept Candidate");
   };
 
   const handleRejectProfile = () => {
-    // Add your reject profile functionality here
     console.log("Reject Candidate");
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>Error: {error}</Text>
+      </View>
+    );
+  }
+
+  if (!employee) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>No employee data available</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}
       >
-        <FontAwesome name="arrow-left" size={24} color="#007260" />
+        <FontAwesome name="arrow-left" size={24} color={COLORS.primary} />
         <Text style={styles.backButtonText}>Back</Text>
       </TouchableOpacity>
-      <View style={styles.profileContainer}>
-        <Image source={employee.profileImage} style={styles.profileImage} />
-        <Text style={styles.name}>{employee.name}</Text>
-        <TouchableOpacity
-          style={styles.contactContainer}
-          onPress={handleEmailPress}
-        >
-          <Text style={styles.contact}>{employee.email}</Text>
-          <Text style={styles.contact}>{employee.contactNumber}</Text>
-        </TouchableOpacity>
-        <View style={styles.detailsContainer}>
-          {employee.details.map((detail, index) => (
-            <View key={index} style={styles.detailItem}>
-              <Text style={styles.detailLabel}>{detail.label}</Text>
-              <Text style={styles.detailText}>{detail.text}</Text>
-              <Text style={styles.dateText}>{detail.date}</Text>
-            </View>
-          ))}
+
+      <View style={styles.headerContainer}>
+        <Image
+          source={{
+            uri: `https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png`,
+          }}
+          style={styles.profileImage}
+        />
+        <View style={styles.contactContainer}>
+          <Text style={styles.name}>{employee.user && employee.user.name}</Text>
+          <Text style={styles.contact}>
+            {employee.user && employee.user.email}
+          </Text>
+          <Text style={styles.contact}>
+            {employee.user && employee.user.contact}
+          </Text>
         </View>
-        <View style={styles.socialContainer}>
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <View style={styles.detailItem}>
+          <Text style={styles.detailLabel}>Work Experience</Text>
+          <Text style={styles.detailText}>
+            {employee.employee_work_experience}
+          </Text>
+        </View>
+        <View style={styles.detailItem}>
+          <Text style={styles.detailLabel}>Education</Text>
+          <Text style={styles.detailText}>{employee.employee_education}</Text>
+        </View>
+        <View style={styles.detailItem}>
+          <Text style={styles.detailLabel}>Participation</Text>
+          <Text style={styles.detailText}>
+            {employee.employee_participation}
+          </Text>
+        </View>
+        <View style={styles.detailItem}>
+          <Text style={styles.detailLabel}>Training</Text>
+          <Text style={styles.detailText}>{employee.employee_training}</Text>
+        </View>
+        <View style={styles.detailItem}>
+          <Text style={styles.detailLabel}>Description</Text>
+          <Text style={styles.detailText}>{employee.employee_description}</Text>
+        </View>
+      </View>
+
+      <View style={styles.socialContainer}>
+        {employee.employee_linkedin_link && (
           <TouchableOpacity
-            onPress={() => handleSocialMediaPress(employee.linkedin)}
+            onPress={() =>
+              handleSocialMediaPress(employee.employee_linkedin_link)
+            }
           >
             <FontAwesome
               name="linkedin"
@@ -102,8 +157,10 @@ const EmployerProfile = () => {
               style={styles.socialIcon}
             />
           </TouchableOpacity>
+        )}
+        {employee.employee_fb_link && (
           <TouchableOpacity
-            onPress={() => handleSocialMediaPress(employee.facebook)}
+            onPress={() => handleSocialMediaPress(employee.employee_fb_link)}
           >
             <FontAwesome
               name="facebook-square"
@@ -112,133 +169,154 @@ const EmployerProfile = () => {
               style={styles.socialIcon}
             />
           </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleAcceptProfile}>
-            <Text style={styles.buttonText}>Accept</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: "#D9534F" }]}
-            onPress={handleRejectProfile}
-          >
-            <Text style={styles.buttonText}>Reject</Text>
-          </TouchableOpacity>
-        </View>
+        )}
       </View>
-    </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.buttonAccept}
+          onPress={handleAcceptProfile}
+        >
+          <Text style={styles.buttonText}>Accept</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonReject}
+          onPress={handleRejectProfile}
+        >
+          <Text style={styles.buttonText}>Reject</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    flexGrow: 1,
     backgroundColor: "#f9f9f9",
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    alignItems: "center",
+    marginTop: 20,
   },
   backButton: {
     flexDirection: "row",
     alignItems: "center",
-    position: "absolute",
-    top: 40,
-    left: 20,
+    alignSelf: "flex-start",
+    marginBottom: 16,
   },
   backButtonText: {
     fontSize: 18,
-    color: "#007260",
-    marginLeft: 5,
+    color: COLORS.primary,
+    marginLeft: 8,
   },
-  profileContainer: {
-    backgroundColor: "#ffffff",
-    padding: 20,
-    borderRadius: 10,
+  headerContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    width: "70%",
+    marginBottom: 24,
+    width: "100%",
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 10,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
     elevation: 5,
   },
   profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 20,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginRight: 16,
+  },
+  contactContainer: {
+    flex: 1,
   },
   name: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  contactContainer: {
-    marginBottom: 20,
-    alignItems: "center",
+    marginBottom: 4,
   },
   contact: {
     fontSize: 16,
-    color: "#39B68D",
-    textAlign: "center",
+    color: "#555",
   },
   detailsContainer: {
-    marginTop: 20,
-    alignSelf: "stretch",
-    paddingHorizontal: 20,
-    textAlign: "center",
+    width: "100%",
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
+    marginBottom: 24,
   },
   detailItem: {
-    marginBottom: 15,
+    marginBottom: 16,
   },
   detailLabel: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
     color: "#333",
-    textAlign: "center",
+    marginBottom: 4,
   },
   detailText: {
     fontSize: 16,
-    marginBottom: 5,
-    color: "#666",
-    textAlign: "center",
-  },
-  dateText: {
-    fontSize: 14,
-    color: "#999",
-    textAlign: "center",
+    color: "#555",
   },
   socialContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 20,
+    marginBottom: 24,
   },
   socialIcon: {
-    marginHorizontal: 10,
+    marginHorizontal: 12,
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
     paddingHorizontal: 20,
-    marginTop: 20,
   },
-  button: {
-    backgroundColor: "#007260",
+  buttonAccept: {
+    backgroundColor: "#39B68D",
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 8,
-    marginHorizontal: 10,
+    flex: 1,
+    marginRight: 10,
+    alignItems: "center",
+  },
+  buttonReject: {
+    backgroundColor: "#D9534F",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    flex: 1,
+    alignItems: "center",
   },
   buttonText: {
-    color: "#ffffff",
+    color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
-    textAlign: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    fontSize: 18,
+    color: "#D9534F",
   },
 });
 
