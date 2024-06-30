@@ -30,12 +30,12 @@ const EmployeeProfile = () => {
     };
 
     const handleEditProfile = () => {
-        navigation.navigate('EditProfile', { employee });
+        navigation.navigate('Accept', { employee });
     };
 
-    const handleUpdateProfile = () => {
+    const handleRejectProfile = () => {
         // Add your update profile functionality here
-        console.log("Update Profile Pressed");
+        console.log("Reject Candidate");
     };
 
     return (
@@ -66,10 +66,10 @@ const EmployeeProfile = () => {
                 </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={handleEditProfile}>
-                        <Text style={styles.buttonText}>Edit Profile</Text>
+                        <Text style={styles.buttonText}>Accept</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
-                        <Text style={styles.buttonText}>Update Profile</Text>
+                        <Text style={styles.buttonText}>Reject</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -158,6 +158,9 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: "row",
+        justifyContent: "space-between",
+        width: '100%',
+        paddingHorizontal: 20,
         marginTop: 20,
     },
     button: {
