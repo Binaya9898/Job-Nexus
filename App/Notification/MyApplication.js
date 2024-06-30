@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,37 +8,41 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons"; // Import icon set
+import Icon from "react-native-vector-icons/MaterialIcons";
 import COLORS from "../../constants/colors";
 import SERVER from "../../constants/server";
+import { UserContext } from "../../constants/UserContext";
+import moment from "moment"; // Import moment for date formatting
 
 const MyApplications = () => {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { userData } = useContext(UserContext);
+  const empId = userData.user.id;
 
   useEffect(() => {
     fetchApplications();
   }, []);
 
   const fetchApplications = () => {
-    fetch(`${SERVER.primaryUrl}/application/${2}`)
+    fetch(`${SERVER.primaryUrl}/application/${empId}`)
       .then((response) => response.json())
       .then((data) => {
         setApplications(data.applications);
         setLoading(false);
-        setIsRefreshing(false); // Reset refreshing state after fetch
+        setIsRefreshing(false);
       })
       .catch((error) => {
         console.error("Error fetching applications:", error);
         setLoading(false);
-        setIsRefreshing(false); // Reset refreshing state on error
+        setIsRefreshing(false);
       });
   };
 
   const handleRefresh = () => {
-    setIsRefreshing(true); // Set refreshing state to true
-    fetchApplications(); // Fetch data again
+    setIsRefreshing(true);
+    fetchApplications();
   };
 
   if (loading) {
@@ -64,7 +68,6 @@ const MyApplications = () => {
       >
         <View style={styles.container}>
           <Text style={styles.header}>My Applications</Text>
-
           {applications.map((application) => (
             <View
               key={application.id}
@@ -79,14 +82,18 @@ const MyApplications = () => {
                 </Text>
                 <Icon
                   name={getStatusIcon(application.applicant_status)}
-                  size={80} // Set icon size to 80
+                  size={40}
                   color={getIconColor(application.applicant_status)}
                   style={styles.icon}
                 />
               </View>
-              <Text style={styles.status}>{application.applicant_status}</Text>
-              <Text style={styles.description}>
-                {application.applicant_description}
+              <Text style={styles.status}>
+                {application.applicant_status.charAt(0).toUpperCase() +
+                  application.applicant_status.slice(1)}
+              </Text>
+              <Text style={styles.date}>
+                Applied on:{" "}
+                {moment(application.created_at).format("MMMM Do YYYY, h:mm a")}
               </Text>
             </View>
           ))}
@@ -99,39 +106,39 @@ const MyApplications = () => {
 const getStatusStyle = (status) => {
   switch (status) {
     case "pending":
-      return { backgroundColor: COLORS.yellowLight };
+      return { backgroundColor: COLORS.warning };
     case "accepted":
-      return { backgroundColor: COLORS.greenLight };
+      return { backgroundColor: COLORS.complete };
     case "rejected":
-      return { backgroundColor: COLORS.redLight };
+      return { backgroundColor: COLORS.danger };
     default:
-      return { backgroundColor: COLORS.lightGrey }; // Default background color
+      return { backgroundColor: COLORS.lightGrey };
   }
 };
 
 const getStatusIcon = (status) => {
   switch (status) {
     case "pending":
-      return "hourglass-empty"; // Pending icon
+      return "hourglass-empty";
     case "accepted":
-      return "check-circle"; // Accepted icon
+      return "check-circle";
     case "rejected":
-      return "cancel"; // Rejected icon
+      return "cancel";
     default:
-      return "help-outline"; // Default icon
+      return "help-outline";
   }
 };
 
 const getIconColor = (status) => {
   switch (status) {
     case "pending":
-      return "purple"; // Yellow icon for pending
+      return "orange";
     case "accepted":
-      return "green"; // Green icon for accepted
+      return "green";
     case "rejected":
-      return "red"; // Red icon for rejected
+      return "red";
     default:
-      return COLORS.grey; // Default icon color
+      return "grey";
   }
 };
 
@@ -184,7 +191,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     marginBottom: 5,
   },
-  description: {
+  date: {
     fontSize: 16,
     color: COLORS.grey,
   },

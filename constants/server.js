@@ -4,9 +4,9 @@ const SERVER3 = {
   imageUrl: "http://192.168.1.65:8000",
 };
 const SERVER = {
-  secondaryUrl: "http://192.168.0.100:8000/api",
-  primaryUrl: "http://192.168.0.100:8000/api",
-  imageUrl: "http://192.168.0.100:8000",
+  secondaryUrl: "http://192.168.1.65:8000/api",
+  primaryUrl: "http://192.168.1.65:8000/api",
+  imageUrl: "http://192.168.1.65:8000",
 };
 const SERVER2 = {
   primaryUrl: "http://192.168.1.65:8000/api",

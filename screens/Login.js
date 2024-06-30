@@ -7,19 +7,20 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
 import SERVER from "../constants/server";
-
+import { UserContext } from "../constants/UserContext";
 const Login = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUserData } = useContext(UserContext);
 
   const handleLogin = async (email, password) => {
     const loginData = {
@@ -28,16 +29,13 @@ const Login = ({ navigation }) => {
     };
 
     try {
-      const response = await fetch(
-        "http://192.168.0.100:8000/api/login/mobile",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(loginData),
-        }
-      );
+      const response = await fetch(`${SERVER.primaryUrl}/login/mobile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
 
       // Check if the response is okay
       if (!response.ok) {
@@ -49,6 +47,7 @@ const Login = ({ navigation }) => {
 
       // Parse the response data
       const data = await response.json();
+      setUserData(data);
 
       console.log("Login Successful", data); // Log user data on successful login
       Alert.alert("Login Successful", "You have been logged in successfully");
@@ -56,7 +55,7 @@ const Login = ({ navigation }) => {
       // You can save the token or user data here if needed
       // For example, save to AsyncStorage or context
 
-      navigation.navigate("Forgotpw", { user: data.user }); // Navigate to the next screen with user data
+      navigation.navigate("Nav", { user: data.user }); // Navigate to the next screen with user data
     } catch (error) {
       console.error("Error:", error);
       Alert.alert(

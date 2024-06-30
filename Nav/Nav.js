@@ -34,7 +34,7 @@ const Nav = ({ route }) => {
       />
 
       <Tab.Screen
-        name={route}
+        name="Jobs"
         component={Jobs}
         options={{
           tabBarIcon: ({ color }) => (
