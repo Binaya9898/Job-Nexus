@@ -20,15 +20,15 @@ import * as ImagePicker from "expo-image-picker";
 const CompleteEmployerProfile = ({ route, navigation }) => {
   const { id } = route.params; // Extract id from route params
   const [address, setAddress] = useState("");
+  const [slug, setSlug] = useState("");
+  const [status, setStatus] = useState("Inactive"); // Default to "Inactive"
+  const [companyName, setCompanyName] = useState("");
+  const [panVat, setPanVat] = useState("");
+  const [certificate, setCertificate] = useState("");
   const [description, setDescription] = useState("");
-  const [education, setEducation] = useState("");
-  const [workExperience, setWorkExperience] = useState("");
-  const [participation, setParticipation] = useState("");
-  const [training, setTraining] = useState("");
-  const [fbLink, setFbLink] = useState("");
-  const [linkedinLink, setLinkedinLink] = useState("");
+  const [website, setWebsite] = useState("");
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState("");
 
   const pickImage = async () => {
     let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -49,12 +49,12 @@ const CompleteEmployerProfile = ({ route, navigation }) => {
         ? uri.split("/").pop().split("?")[0].split("#")[0]
         : "Unknown";
       console.log("File Name:", fileName);
-      setImage(fileName);
+      setImage(uri);
     }
   };
 
   const handleCompleteProfile = () => {
-    if (!address || !description) {
+    if (!address || !description || !companyName || !panVat) {
       Alert.alert("Error", "Please fill in all required fields.");
       return;
     }
@@ -62,17 +62,18 @@ const CompleteEmployerProfile = ({ route, navigation }) => {
     setLoading(true);
 
     const profileData = {
-      user_id: "50",
-      employer_address: "address",
-      employer_company_name: "companyName",
-      employer_pan_vat: "panVat",
-      //   employer_certificate: "certificate",
-      employer_description: "description",
-      company_website: "website",
-      employer_status: "Inactive",
-      employer_slug: "asd",
-      //   employer_image: "image",
+      user_id: id,
+      employer_address: address,
+      employer_slug: slug,
+      employer_status: status,
+      employer_company_name: companyName,
+      employer_pan_vat: panVat,
+      employer_certificate: certificate,
+      employer_image: "image1.jpg",
+      employer_description: description,
+      company_website: website,
     };
+
     console.log(profileData);
     const parsedData = JSON.stringify(profileData);
     console.log("Parsed Data is: " + parsedData);
@@ -88,13 +89,13 @@ const CompleteEmployerProfile = ({ route, navigation }) => {
       .then((data) => {
         setLoading(false);
         console.log("User Added Successfully", data);
-        Alert.alert("Added Successfully");
+        Alert.alert("Profile Completed Successfully");
         navigation.navigate("Login"); // Navigate to Home on success
       })
       .catch((error) => {
         setLoading(false);
         console.error("Error is:", error);
-        Alert.alert("Error", "Failed to register user.");
+        Alert.alert("Error", "Failed to complete profile.");
       });
   };
 
@@ -145,6 +146,58 @@ const CompleteEmployerProfile = ({ route, navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
+              <Ionicons name="link-outline" size={24} color={COLORS.primary} />
+              <TextInput
+                placeholder="Slug *"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setSlug(text)}
+                style={styles.input}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="briefcase-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+              <TextInput
+                placeholder="Company Name *"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setCompanyName(text)}
+                style={styles.input}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="document-text-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+              <TextInput
+                placeholder="PAN/VAT *"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setPanVat(text)}
+                style={styles.input}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Ionicons
+                name="document-outline"
+                size={24}
+                color={COLORS.primary}
+              />
+              <TextInput
+                placeholder="Certificate"
+                placeholderTextColor={COLORS.grey}
+                onChangeText={(text) => setCertificate(text)}
+                style={styles.input}
+              />
+            </View>
+
+            <View style={styles.inputContainer}>
               <Ionicons
                 name="information-circle-outline"
                 size={24}
@@ -159,73 +212,11 @@ const CompleteEmployerProfile = ({ route, navigation }) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Ionicons
-                name="school-outline"
-                size={24}
-                color={COLORS.primary}
-              />
+              <Ionicons name="globe-outline" size={24} color={COLORS.primary} />
               <TextInput
-                placeholder="Education"
+                placeholder="Website"
                 placeholderTextColor={COLORS.grey}
-                onChangeText={(text) => setEducation(text)}
-                style={styles.input}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Ionicons
-                name="briefcase-outline"
-                size={24}
-                color={COLORS.primary}
-              />
-              <TextInput
-                placeholder="Work Experience"
-                placeholderTextColor={COLORS.grey}
-                onChangeText={(text) => setWorkExperience(text)}
-                style={styles.input}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Ionicons
-                name="people-outline"
-                size={24}
-                color={COLORS.primary}
-              />
-              <TextInput
-                placeholder="Participation"
-                placeholderTextColor={COLORS.grey}
-                onChangeText={(text) => setParticipation(text)}
-                style={styles.input}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Ionicons name="medal-outline" size={24} color={COLORS.primary} />
-              <TextInput
-                placeholder="Training"
-                placeholderTextColor={COLORS.grey}
-                onChangeText={(text) => setTraining(text)}
-                style={styles.input}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Ionicons name="logo-facebook" size={24} color={COLORS.primary} />
-              <TextInput
-                placeholder="Facebook Link"
-                placeholderTextColor={COLORS.grey}
-                onChangeText={(text) => setFbLink(text)}
-                style={styles.input}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Ionicons name="logo-linkedin" size={24} color={COLORS.primary} />
-              <TextInput
-                placeholder="LinkedIn Link"
-                placeholderTextColor={COLORS.grey}
-                onChangeText={(text) => setLinkedinLink(text)}
+                onChangeText={(text) => setWebsite(text)}
                 style={styles.input}
               />
             </View>

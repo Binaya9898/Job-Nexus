@@ -61,6 +61,7 @@ export default function ApplicationForm({ route, navigation }) {
       job_id: job.id,
       applicant_description: description,
       applicant_status: "pending",
+      employer_id: job.job_posted_by,
     };
 
     fetch(`${SERVER.primaryUrl}/application/save`, {

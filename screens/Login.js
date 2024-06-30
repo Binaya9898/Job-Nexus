@@ -15,6 +15,7 @@ import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
 import SERVER from "../constants/server";
 import { UserContext } from "../constants/UserContext";
+
 const Login = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -37,25 +38,25 @@ const Login = ({ navigation }) => {
         body: JSON.stringify(loginData),
       });
 
-      // Check if the response is okay
       if (!response.ok) {
-        const errorData = await response.json(); // Get additional error details
+        const errorData = await response.json();
         throw new Error(
           `HTTP error! Status: ${response.status} - ${errorData.message}`
         );
       }
 
-      // Parse the response data
       const data = await response.json();
       setUserData(data);
 
-      console.log("Login Successful", data); // Log user data on successful login
+      console.log("Login Successful", data);
       Alert.alert("Login Successful", "You have been logged in successfully");
 
-      // You can save the token or user data here if needed
-      // For example, save to AsyncStorage or context
-
-      navigation.navigate("Nav", { user: data.user }); // Navigate to the next screen with user data
+      // Navigate based on user role
+      if (data.user.role === "admin") {
+        navigation.navigate("Employernav");
+      } else {
+        navigation.navigate("Nav");
+      }
     } catch (error) {
       console.error("Error:", error);
       Alert.alert(
@@ -152,7 +153,7 @@ const Login = ({ navigation }) => {
             <TextInput
               placeholder="Enter your password"
               placeholderTextColor={COLORS.black}
-              secureTextEntry={isPasswordShown}
+              secureTextEntry={!isPasswordShown}
               onChangeText={(text) => setPassword(text)}
               style={{
                 width: "100%",
@@ -166,7 +167,7 @@ const Login = ({ navigation }) => {
                 right: 12,
               }}
             >
-              {isPasswordShown == true ? (
+              {isPasswordShown ? (
                 <Ionicons name="eye-off" size={24} color={COLORS.black} />
               ) : (
                 <Ionicons name="eye" size={24} color={COLORS.black} />
@@ -311,7 +312,7 @@ const Login = ({ navigation }) => {
           <Text style={{ fontSize: 16, color: COLORS.black }}>
             Don't have an account ?{" "}
           </Text>
-          <Pressable onPress={() => navigation.navigate("Employernav")}>
+          <Pressable onPress={() => navigation.navigate("Register")}>
             <Text
               style={{
                 fontSize: 16,

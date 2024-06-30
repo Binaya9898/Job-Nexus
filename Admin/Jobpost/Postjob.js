@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker"; // Ensure correct import
+import { Picker } from "@react-native-picker/picker";
+import { UserContext } from "../../constants/UserContext";
 
 import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
@@ -20,64 +21,78 @@ import SERVER from "../../constants/server";
 const Postjob = ({ navigation }) => {
   const [job_title, setJobTitle] = useState("");
   const [job_category, setJobCategory] = useState("");
-  const [categories, setCategories] = useState([]); // Initialize as empty array
-  const [loading, setLoading] = useState(true); // State for loading
-  const [job_address, setAddress] = useState("");
-  const [job_company_name, setCompanyName] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [job_experience, setExperience] = useState("");
   const [job_max_salary, setMaxSalary] = useState("");
   const [job_min_salary, setMinSalary] = useState("");
-  const [job_contact, setContact] = useState("");
   const [job_validity, setValidity] = useState("");
   const [job_description, setDescription] = useState("");
   const [job_requirements, setRequirements] = useState("");
   const [job_type, setJobType] = useState("");
   const [job_hour, setJobHour] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+  const [data, setData] = useState({});
 
   const [date, setDate] = useState(new Date());
-  const [show, setShow] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const { userData } = useContext(UserContext);
+
+  const user_id = userData.user.id;
 
   useEffect(() => {
-    // Fetch categories when the component mounts
+    fetchCategories();
+    fetchEmployerData(user_id);
+  }, [user_id]);
+
+  const fetchCategories = () => {
     fetch(`${SERVER.primaryUrl}/category`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        if (data) {
-          setCategories(data);
-        } else {
-          setCategories([]); // Ensure it is set to an empty array if no data
-        }
+        setCategories(data || []);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching categories:", error);
         Alert.alert("Error", "Failed to fetch categories.");
         setLoading(false);
-        setCategories([]); // Ensure it is set to an empty array on error
+        setCategories([]);
       });
-  }, []);
+  };
+
+  const fetchEmployerData = (user_id) => {
+    fetch(`http://192.168.1.65:8000/api/employer/mobile/${user_id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        console.log("Employer Data:", data);
+      })
+      .catch((error) => {
+        console.error("Error fetching employer data:", error);
+        Alert.alert("Error", "Failed to fetch employer data.");
+      });
+  };
 
   const handlePostJob = () => {
     const jobData = {
       job_title,
       job_category,
-      job_address,
-      job_company_name,
+      job_address: data.employer_address || "",
+      job_company_name: data.employer_company_name || "",
       job_experience,
       job_max_salary,
       job_min_salary,
       job_slug: job_title.toLowerCase().replace(/ /g, "-"),
       job_status: "Open",
-      job_contact,
+      job_contact: data.user ? data.user.contact : "",
       job_validity,
       job_requirements,
       job_description,
       job_type,
       job_hour,
+      job_posted_by: data.user.id,
     };
-    console.log(jobData);
+
     fetch(`${SERVER.primaryUrl}/job/save`, {
       method: "POST",
       headers: {
@@ -89,15 +104,16 @@ const Postjob = ({ navigation }) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json();
       })
       .then((json) => {
         console.log("Job posted successfully", json);
         navigation.navigate("Success", {
           title: "Job posted successfully",
           description: "Your job details have been successfully posted.",
-          navigation2: "Employernav",
+          navigation2: "Employernav", // Check if navigation2 is intended to be used twice
           buttonText1: "View List",
-          navigation2: "Postjob",
+          navigation2: "Postjob", // Ensure correct navigation key
           buttonText2: "Post More",
         });
       })
@@ -107,15 +123,15 @@ const Postjob = ({ navigation }) => {
       });
   };
 
-  const onChange = (event, selectedDate) => {
+  const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(false);
+    setShowDatePicker(false);
     setDate(currentDate);
     setValidity(currentDate.toISOString().split("T")[0]); // Set the date in your desired format
   };
 
   const showDatepicker = () => {
-    setShow(true);
+    setShowDatePicker(true);
   };
 
   const renderFields = () => {
@@ -130,14 +146,14 @@ const Postjob = ({ navigation }) => {
             <TextInput
               placeholder="Job Title *"
               placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setJobTitle(text)}
+              onChangeText={setJobTitle}
               style={styles.input}
             />
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={job_category}
                 style={styles.picker}
-                onValueChange={(itemValue) => setJobCategory(itemValue)}
+                onValueChange={setJobCategory}
               >
                 <Picker.Item label="Select Category *" value="" />
                 {categories.map((category) => (
@@ -149,92 +165,81 @@ const Postjob = ({ navigation }) => {
                 ))}
               </Picker>
             </View>
-            <TextInput
-              placeholder="Address *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setAddress(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Company Name *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setCompanyName(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Experience Required *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setExperience(text)}
-              style={styles.input}
-            />
-          </>
-        );
-      case 1:
-        return (
-          <>
+
+            <Picker
+              selectedValue={job_experience}
+              style={styles.picker}
+              onValueChange={setExperience}
+            >
+              <Picker.Item label="Experience Required *" value="" />
+              <Picker.Item label="6 months" value="6 months" />
+              <Picker.Item label="1 year" value="1 year" />
+              <Picker.Item label="2 years" value="2 years" />
+              <Picker.Item label="3 years" value="3 years" />
+              <Picker.Item label="4 years" value="4 years" />
+              <Picker.Item label="5 years" value="5 years" />
+            </Picker>
             <TextInput
               placeholder="Minimum Salary *"
               placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setMinSalary(text)}
+              onChangeText={setMinSalary}
               style={styles.input}
               keyboardType="numeric"
             />
             <TextInput
               placeholder="Maximum Salary *"
               placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setMaxSalary(text)}
+              onChangeText={setMaxSalary}
               style={styles.input}
               keyboardType="numeric"
             />
-            <TextInput
-              placeholder="Contact *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setContact(text)}
-              style={styles.input}
-            />
+          </>
+        );
+      case 1:
+        return (
+          <>
             <TouchableOpacity onPress={showDatepicker} style={styles.input}>
               <Text style={styles.dateText}>
                 {job_validity || "Validity Period *"}
               </Text>
             </TouchableOpacity>
-            {show && (
+            {showDatePicker && (
               <DateTimePicker
                 testID="dateTimePicker"
                 value={date}
                 mode="date"
                 display="default"
-                onChange={onChange}
+                onChange={onChangeDate}
               />
             )}
             <TextInput
               placeholder="Job Description *"
               placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setDescription(text)}
+              onChangeText={setDescription}
               style={[styles.input, styles.textArea]}
               multiline
             />
             <TextInput
               placeholder="Job Requirements *"
               placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setRequirements(text)}
+              onChangeText={setRequirements}
               style={[styles.input, styles.textArea]}
               multiline
             />
-          </>
-        );
-      case 2:
-        return (
-          <>
-            <TextInput
-              placeholder="Job Type *"
-              placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setJobType(text)}
-              style={styles.input}
-            />
+
+            <Picker
+              selectedValue={job_type}
+              style={styles.picker}
+              onValueChange={setJobType}
+            >
+              <Picker.Item label="Job Type *" value="" />
+              <Picker.Item label="Part Time" value="Part Time" />
+              <Picker.Item label="Full Time" value="Full Time" />
+            </Picker>
             <TextInput
               placeholder="Job Hours *"
               placeholderTextColor={COLORS.bright}
-              onChangeText={(text) => setJobHour(text)}
+              onChangeText={setJobHour}
               style={styles.input}
             />
           </>
@@ -258,14 +263,14 @@ const Postjob = ({ navigation }) => {
                 style={styles.paginationButton}
               />
             )}
-            {currentPage < 2 && (
+            {currentPage < 1 && (
               <Button
                 title="Next"
                 onPress={() => setCurrentPage(currentPage + 1)}
                 style={styles.paginationButton}
               />
             )}
-            {currentPage === 2 && (
+            {currentPage === 1 && (
               <Button
                 title="Post Job"
                 onPress={handlePostJob}
@@ -326,14 +331,11 @@ const styles = StyleSheet.create({
   paginationButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 20,
   },
   paginationButton: {
     flex: 1,
     marginHorizontal: 5,
-  },
-  submitButton: {
-    flex: 1,
-    marginTop: 20,
   },
   pickerContainer: {
     height: 50,
