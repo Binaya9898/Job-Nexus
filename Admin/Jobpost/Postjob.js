@@ -165,7 +165,7 @@ const Postjob = ({ navigation }) => {
                   <Picker.Item
                     key={category.id}
                     label={category.category_title}
-                    value={category.id}
+                    value={category.category_value}
                   />
                 ))}
               </Picker>

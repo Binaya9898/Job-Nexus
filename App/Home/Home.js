@@ -82,11 +82,11 @@ const Home = ({ navigation }) => {
     }
   };
 
-  const fetchJobs = async (categoryTitle = "") => {
+  const fetchJobs = async (categoryId = "") => {
     setLoadingJobs(true);
-    const endpoint = categoryTitle
-      ? SERVER.primaryUrl + `/jobs?job_category=${categoryTitle}`
-      : SERVER.primaryUrl + "/job-api";
+    const endpoint = categoryId
+      ? `${SERVER.primaryUrl}/job/category/mobile/${categoryId}`
+      : `${SERVER.primaryUrl}/job-api`;
 
     try {
       const response = await fetch(endpoint);
@@ -101,7 +101,7 @@ const Home = ({ navigation }) => {
 
   const handleCategoryPress = (category) => {
     setHeader(category.category_title + " Jobs");
-    fetchJobs(category.category_title);
+    fetchJobs(category.id); // Assuming category.id is the category ID
   };
 
   const onRefresh = async () => {
