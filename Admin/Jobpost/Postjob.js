@@ -34,6 +34,7 @@ const Postjob = ({ navigation }) => {
   const [job_hour, setJobHour] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [data, setData] = useState({});
+  const [submitting, setSubmitting] = useState(false); // New state for submitting indicator
 
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -75,6 +76,8 @@ const Postjob = ({ navigation }) => {
   };
 
   const handlePostJob = () => {
+    setSubmitting(true); // Set submitting state to true
+
     const jobData = {
       job_title,
       job_category,
@@ -109,18 +112,19 @@ const Postjob = ({ navigation }) => {
       })
       .then((json) => {
         console.log("Job posted successfully", json);
-        navigation.navigate("Success", {
+        navigation.navigate("Success1", {
           title: "Job posted successfully",
           description: "Your job details have been successfully posted.",
-          navigation2: "Employernav", // Check if navigation2 is intended to be used twice
+          navigation1: "Notification",
           buttonText1: "View List",
-          navigation2: "Postjob", // Ensure correct navigation key
-          buttonText2: "Post More",
         });
       })
       .catch((error) => {
         console.error("Error:", error);
         Alert.alert("Error", "Failed to post job.");
+      })
+      .finally(() => {
+        setSubmitting(false); // Set submitting state back to false
       });
   };
 
@@ -299,6 +303,13 @@ const Postjob = ({ navigation }) => {
               />
             )}
           </View>
+          {submitting && (
+            <ActivityIndicator
+              size="large"
+              color={COLORS.primary}
+              style={{ marginTop: 20 }}
+            />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

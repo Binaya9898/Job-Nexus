@@ -11,6 +11,7 @@ import {
   RefreshControl,
   FlatList,
   Dimensions,
+  BackHandler, // Step 1: Import BackHandler
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import SERVER from "../../constants/server";
@@ -47,7 +48,17 @@ const Home = ({ navigation }) => {
       );
     }, 3000);
 
-    return () => clearInterval(intervalId);
+    // Step 2: Add back press listener
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress
+    );
+
+    return () => {
+      // Step 3: Remove back press listener on component unmount
+      backHandler.remove();
+      clearInterval(intervalId);
+    };
   }, []);
 
   useEffect(() => {
@@ -98,6 +109,29 @@ const Home = ({ navigation }) => {
     await fetchCategories();
     await fetchJobs();
     setRefreshing(false);
+  };
+
+  const handleBackPress = () => {
+    // Step 4: Handle back press event (prompt for logout)
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: () => {
+            navigation.navigate("Welcome"); // Navigate to Welcome screen on logout
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+    return true; // Return true to prevent default back navigation
   };
 
   return (

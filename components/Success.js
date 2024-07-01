@@ -1,5 +1,12 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
+import React, { useEffect } from "react";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Image,
+  Text,
+  BackHandler,
+} from "react-native";
 import COLORS from "../constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -23,6 +30,17 @@ const Success = () => {
   const handleMore = () => {
     navigation.navigate(navigation2);
   };
+
+  useEffect(() => {
+    const backAction = () => true; // Return true to disable back navigation
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <LinearGradient
