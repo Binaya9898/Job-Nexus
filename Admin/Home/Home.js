@@ -8,12 +8,13 @@ import {
   RefreshControl,
   Alert,
   BackHandler,
+  TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import COLORS from "../../constants/colors";
 import { UserContext } from "../../constants/UserContext";
 import SERVER from "../../constants/server";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 const Home = () => {
   const { userData, logout } = useContext(UserContext); // Assuming logout function is provided
@@ -132,6 +133,7 @@ const Home = () => {
       value: getTotalJobs(),
       icon: "briefcase-outline",
       color: COLORS.blue,
+      navigateTo: "TotalJob",
     },
     {
       title: "Pending Jobs",
@@ -156,6 +158,7 @@ const Home = () => {
       value: getTotalApplications(),
       icon: "people-outline",
       color: COLORS.purple,
+      navigateTo: "TotalApplication", // Navigation target screen name
     },
     {
       title: "Pending Applications",
@@ -210,6 +213,20 @@ const Home = () => {
     }, [])
   );
 
+  // Function to handle press on statistic items
+  const handleStatisticPress = (navigateTo) => {
+    switch (navigateTo) {
+      case "TotalJob":
+        navigation.navigate("TotalJob"); // Navigate to TotalJob
+        break;
+      case "TotalApplication":
+        navigation.navigate("TotalApplication"); // Navigate to TotalApplication
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -259,16 +276,17 @@ const Home = () => {
       {/* Statistics Grid */}
       <View style={styles.grid}>
         {statistics.map((stat, index) => (
-          <View
+          <TouchableOpacity
             key={index}
             style={[styles.gridItem, { backgroundColor: stat.color }]}
+            onPress={() => handleStatisticPress(stat.navigateTo)}
           >
             <View style={styles.iconContainer}>
               <Ionicons name={stat.icon} size={40} color={COLORS.white} />
             </View>
             <Text style={styles.gridTitle}>{stat.title}</Text>
             <Text style={styles.gridValue}>{stat.value}</Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
     </ScrollView>

@@ -25,6 +25,8 @@ import { UserProvider } from "./constants/UserContext";
 import EmployerProfile from "./Admin/Applications/EmployerProfile";
 import ForgotPassword from "./screens/ForgotPassword";
 import Application from "./Admin/Applications/Application";
+import TotalApplication from "./Admin/Applications/TotalApplication";
+import TotalJob from "./Admin/Jobs/TotalJob";
 
 const Stack = createNativeStackNavigator();
 
@@ -61,6 +63,8 @@ export default function App() {
           <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
           <Stack.Screen name="EmployerProfile" component={EmployerProfile} />
           <Stack.Screen name="Application" component={Application} />
+          <Stack.Screen name="TotalApplication" component={TotalApplication} />
+          <Stack.Screen name="TotalJob" component={TotalJob} />
           <Stack.Screen
             name="CompleteEmployerProfile"
             component={CompleteEmployerProfile}
