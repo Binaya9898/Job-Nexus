@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -35,23 +36,42 @@ const EmployerSignup = ({ navigation }) => {
       return;
     }
 
+    // Validate password criteria
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (!passwordPattern.test(password)) {
+      Alert.alert(
+        "Password Requirements",
+        "Password must be at least 8 characters long, contain at least one uppercase letter, and one number."
+      );
+      return;
+    }
+
+    // Validate phone number
+    const phonePattern = /^\d{10}$/;
+    if (!phonePattern.test(contact)) {
+      Alert.alert(
+        "Phone Number Requirements",
+        "Phone number must be exactly 10 digits."
+      );
+      return;
+    }
+
     setLoading(true);
 
-    const employeeData = {
+    const employerData = {
       name,
       email,
       password,
       contact,
       role,
     };
-    console.log(employeeData);
 
     fetch(`${SERVER.primaryUrl}/user/save`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(employeeData),
+      body: JSON.stringify(employerData),
     })
       .then((response) => response.json()) // Parse the JSON response
       .then((data) => {
@@ -63,12 +83,13 @@ const EmployerSignup = ({ navigation }) => {
         const { id } = data;
         console.log("Id should be: " + id);
 
-        // Pass user_id to CompleteProfile
+        // Pass user_id to CompleteEmployerProfile
         navigation.navigate("CompleteEmployerProfile", { id });
       })
       .catch((error) => {
+        setLoading(false);
         console.error("Error:", error);
-        Alert.alert("Error", "Failed to post job.");
+        Alert.alert("Error", "Failed to register employer.");
       });
   };
 
@@ -87,7 +108,7 @@ const EmployerSignup = ({ navigation }) => {
           </View>
 
           <View style={styles.container}>
-            <Text style={styles.title}>Employeer Registration</Text>
+            <Text style={styles.title}>Employer Registration</Text>
 
             <View style={styles.inputContainer}>
               <Ionicons
@@ -151,6 +172,7 @@ const EmployerSignup = ({ navigation }) => {
                 placeholderTextColor={COLORS.grey}
                 onChangeText={(text) => setContact(text)}
                 style={styles.input}
+                keyboardType="phone-pad"
               />
             </View>
 
@@ -164,6 +186,11 @@ const EmployerSignup = ({ navigation }) => {
           </View>
         </LinearGradient>
       </ScrollView>
+      {loading && (
+        <View style={styles.loadingIndicator}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -192,7 +219,6 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     textAlign: "center",
   },
-
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -206,6 +232,12 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     marginLeft: 10,
+  },
+  loadingIndicator: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

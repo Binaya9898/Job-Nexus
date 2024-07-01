@@ -58,7 +58,7 @@ const CompleteEmployerProfile = ({ route, navigation }) => {
     const profileData = {
       user_id: id,
       employer_address: address,
-      employer_slug: slug,
+      employer_slug: companyName + id,
       employer_status: status,
       employer_company_name: companyName,
       employer_pan_vat: panVat,
@@ -136,16 +136,6 @@ const CompleteEmployerProfile = ({ route, navigation }) => {
                 placeholder="Address *"
                 placeholderTextColor={COLORS.grey}
                 onChangeText={(text) => setAddress(text)}
-                style={styles.input}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Ionicons name="link-outline" size={24} color={COLORS.primary} />
-              <TextInput
-                placeholder="Slug *"
-                placeholderTextColor={COLORS.grey}
-                onChangeText={(text) => setSlug(text)}
                 style={styles.input}
               />
             </View>

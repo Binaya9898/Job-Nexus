@@ -23,6 +23,7 @@ const Home = () => {
     email: userData.user.email,
     phone: userData.user.contact,
     status: "Active", // Default value, replace with actual data
+    image: "",
   });
   const [jobData, setJobData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -75,6 +76,7 @@ const Home = () => {
         email: data.user.email,
         phone: data.user.contact,
         status: data.employer_status,
+        image: data.employer_image,
       });
     } catch (error) {
       console.error(error);
@@ -166,7 +168,12 @@ const Home = () => {
           </View>
         </View>
         <View style={styles.banner}>
-          <Image source={userImage} style={styles.userImage} />
+          <Image
+            source={{
+              uri: `${SERVER.imageUrl}/images/employer/profile/${userInfo.image}`,
+            }}
+            style={styles.userImage}
+          />
           <View style={styles.userInfo}>
             <Text style={styles.userName}>{userInfo.name}</Text>
             <Text style={styles.userDetail}>{userInfo.address}</Text>

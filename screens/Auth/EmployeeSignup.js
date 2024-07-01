@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   StyleSheet,
+  ActivityIndicator, // Import ActivityIndicator
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,52 +25,94 @@ const EmployeeSignup = ({ navigation }) => {
   const [role, setRole] = useState("user");
   const [loading, setLoading] = useState(false);
 
-  const handleRegisterNow = () => {
-    if (!name || !email || !password || !contact) {
-      Alert.alert("Error", "Please fill in all required fields.");
-      return;
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    let valid = true;
+    let errors = {};
+
+    if (!name.trim()) {
+      errors.name = "Name is required";
+      valid = false;
+    }
+
+    if (!email.trim()) {
+      errors.email = "Email is required";
+      valid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = "Email address is invalid";
+      valid = false;
+    }
+
+    if (!password) {
+      errors.password = "Password is required";
+      valid = false;
+    } else if (password.length < 8) {
+      errors.password = "Password must be at least 8 characters";
+      valid = false;
+    } else if (!/[A-Z]/.test(password)) {
+      errors.password = "Password must contain at least one uppercase letter";
+      valid = false;
+    } else if (!/\d/.test(password)) {
+      errors.password = "Password must contain at least one number";
+      valid = false;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
-      return;
+      errors.confirmPassword = "Passwords do not match";
+      valid = false;
     }
 
-    setLoading(true);
+    if (!contact.trim()) {
+      errors.contact = "Contact number is required";
+      valid = false;
+    } else if (!/^\d{10}$/.test(contact)) {
+      errors.contact = "Contact number must be exactly 10 digits";
+      valid = false;
+    }
 
-    const employeeData = {
-      name,
-      email,
-      password,
-      contact,
-      role,
-    };
+    setErrors(errors);
+    return valid;
+  };
 
-    fetch(`${SERVER.primaryUrl}/user/save`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(employeeData),
-    })
-      .then((response) => response.json()) // Parse the JSON response
-      .then((data) => {
-        setLoading(false);
-        console.log("User Added Successfully", data);
-        Alert.alert("Added Successfully");
+  const handleRegisterNow = () => {
+    if (validate()) {
+      setLoading(true);
 
-        // Extract user_id from the response data
-        const { id } = data;
-        console.log("Id should be: " + id);
+      const employeeData = {
+        name,
+        email,
+        password,
+        contact,
+        role,
+      };
 
-        // Pass user_id to CompleteProfile
-        navigation.navigate("CompleteProfile", { id });
+      fetch(`${SERVER.primaryUrl}/user/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(employeeData),
       })
-      .catch((error) => {
-        setLoading(false);
-        console.error("Error:", error);
-        Alert.alert("Error", "Failed to register user.");
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          setLoading(false);
+          console.log("User Added Successfully", data);
+          Alert.alert("Added Successfully");
+
+          const { id } = data;
+          console.log("Id should be: " + id);
+
+          navigation.navigate("CompleteProfile", { id });
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error:", error);
+          Alert.alert("Error", "Failed to register user.");
+        });
+    } else {
+      Alert.alert("Error", "Please fix the errors in the form.");
+    }
   };
 
   return (
@@ -100,8 +143,10 @@ const EmployeeSignup = ({ navigation }) => {
                 placeholderTextColor={COLORS.grey}
                 onChangeText={(text) => setName(text)}
                 style={styles.input}
+                editable={!loading} // Disable input while loading
               />
             </View>
+            {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
 
             <View style={styles.inputContainer}>
               <Ionicons name="mail-outline" size={24} color={COLORS.primary} />
@@ -111,8 +156,12 @@ const EmployeeSignup = ({ navigation }) => {
                 onChangeText={(text) => setEmail(text)}
                 style={styles.input}
                 keyboardType="email-address"
+                editable={!loading} // Disable input while loading
               />
             </View>
+            {errors.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )}
 
             <View style={styles.inputContainer}>
               <Ionicons
@@ -126,8 +175,12 @@ const EmployeeSignup = ({ navigation }) => {
                 onChangeText={(text) => setPassword(text)}
                 style={styles.input}
                 secureTextEntry
+                editable={!loading} // Disable input while loading
               />
             </View>
+            {errors.password && (
+              <Text style={styles.errorText}>{errors.password}</Text>
+            )}
 
             <View style={styles.inputContainer}>
               <Ionicons
@@ -141,26 +194,40 @@ const EmployeeSignup = ({ navigation }) => {
                 onChangeText={(text) => setConfirmPassword(text)}
                 style={styles.input}
                 secureTextEntry
+                editable={!loading} // Disable input while loading
               />
             </View>
+            {errors.confirmPassword && (
+              <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+            )}
 
             <View style={styles.inputContainer}>
               <Ionicons name="call-outline" size={24} color={COLORS.primary} />
               <TextInput
-                placeholder="Contact"
+                placeholder="Contact *"
                 placeholderTextColor={COLORS.grey}
                 onChangeText={(text) => setContact(text)}
                 style={styles.input}
+                keyboardType="number-pad"
+                maxLength={10}
+                editable={!loading} // Disable input while loading
               />
             </View>
+            {errors.contact && (
+              <Text style={styles.errorText}>{errors.contact}</Text>
+            )}
 
-            <Button
-              title={loading ? "Registering..." : "Register Now"}
-              onPress={handleRegisterNow}
-              filled
-              disabled={loading}
-              style={{ marginTop: 20 }}
-            />
+            {loading ? (
+              <ActivityIndicator size="large" color={COLORS.primary} />
+            ) : (
+              <Button
+                title="Register Now"
+                onPress={handleRegisterNow}
+                filled
+                disabled={loading}
+                style={{ marginTop: 20 }}
+              />
+            )}
           </View>
         </LinearGradient>
       </ScrollView>
@@ -192,7 +259,6 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     textAlign: "center",
   },
-
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -201,10 +267,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 50,
     paddingHorizontal: 15,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   input: {
     flex: 1,
+    marginLeft: 10,
+  },
+  errorText: {
+    color: "red",
+    marginBottom: 10,
     marginLeft: 10,
   },
 });
