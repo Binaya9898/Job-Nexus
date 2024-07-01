@@ -1,18 +1,18 @@
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
-  Image,
-  Pressable,
   TextInput,
   TouchableOpacity,
   Alert,
+  Image,
+  Pressable,
 } from "react-native";
-import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import COLORS from "../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import Button from "../components/Button";
+import COLORS from "../constants/colors";
 import SERVER from "../constants/server";
 import { UserContext } from "../constants/UserContext";
 
@@ -39,10 +39,7 @@ const Login = ({ navigation }) => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          `HTTP error! Status: ${response.status} - ${errorData.message}`
-        );
+        throw new Error("Invalid credentials. Please try again.");
       }
 
       const data = await response.json();
@@ -58,7 +55,7 @@ const Login = ({ navigation }) => {
         navigation.navigate("Nav");
       }
     } catch (error) {
-      console.error("Error:", error);
+      // console.error("Error:", error);
       Alert.alert(
         "Login Failed",
         error.message ||
