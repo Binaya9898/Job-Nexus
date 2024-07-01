@@ -15,7 +15,21 @@ import Button from "../../components/Button";
 import COLORS from "../../constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import SERVER from "../../constants/server";
-import * as ImagePicker from "expo-image-picker";
+
+// Static imports for avatars
+import avatar1 from "../../assets/avatar/avatar1.png";
+import avatar2 from "../../assets/avatar/avatar2.jpg";
+import avatar3 from "../../assets/avatar/avatar3.png";
+import avatar4 from "../../assets/avatar/avatar4.png";
+import avatar5 from "../../assets/avatar/avatar5.png";
+
+const avatarOptions = [
+  { id: 1, name: "avatar1.png", image: avatar1 },
+  { id: 2, name: "avatar2.jpg", image: avatar2 },
+  { id: 3, name: "avatar3.png", image: avatar3 },
+  { id: 4, name: "avatar4.png", image: avatar4 },
+  { id: 5, name: "avatar5.png", image: avatar5 },
+];
 
 const CompleteProfile = ({ route, navigation }) => {
   const { id } = route.params; // Extract id from route params
@@ -30,27 +44,8 @@ const CompleteProfile = ({ route, navigation }) => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState("");
 
-  const pickImage = async () => {
-    let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!result.granted) {
-      Alert.alert("Permission to access camera roll is required!");
-      return;
-    }
-
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: false,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!pickerResult.cancelled) {
-      const uri = pickerResult.assets[0]?.uri || pickerResult.uri;
-      const fileName = uri
-        ? uri.split("/").pop().split("?")[0].split("#")[0]
-        : "Unknown";
-      console.log("File Name:", fileName);
-      setImage(fileName);
-    }
+  const handleAvatarSelect = (avatarName) => {
+    setImage(avatarName);
   };
 
   const handleCompleteProfile = () => {
@@ -71,8 +66,8 @@ const CompleteProfile = ({ route, navigation }) => {
       employee_training: training,
       employee_fb_link: fbLink,
       employee_linkedin_link: linkedinLink,
-      employee_slug: "asd",
-      employee_status: "asd",
+      employee_slug: "slug" + id,
+      employee_status: "verified",
       employee_image: image,
     };
     console.log(profileData);
@@ -119,20 +114,21 @@ const CompleteProfile = ({ route, navigation }) => {
           <View style={styles.container}>
             <Text style={styles.title}>Complete Your Profile</Text>
 
-            <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-              {image ? (
-                <Image source={{ uri: image }} style={styles.imagePreview} />
-              ) : (
-                <Ionicons
-                  name="camera-outline"
-                  size={30}
-                  color={COLORS.primary}
-                />
-              )}
-              <Text style={styles.imagePickerText}>
-                {image ? "Change Image" : "Add Image"}
-              </Text>
-            </TouchableOpacity>
+            <Text style={styles.label}>Select Avatar:</Text>
+            <View style={styles.avatarContainer}>
+              {avatarOptions.map((avatar) => (
+                <TouchableOpacity
+                  key={avatar.id}
+                  style={[
+                    styles.avatarOption,
+                    image === avatar.name && styles.avatarSelected,
+                  ]}
+                  onPress={() => handleAvatarSelect(avatar.name)}
+                >
+                  <Image source={avatar.image} style={styles.avatarImage} />
+                </TouchableOpacity>
+              ))}
+            </View>
 
             <View style={styles.inputContainer}>
               <Ionicons name="home-outline" size={24} color={COLORS.primary} />
@@ -274,20 +270,29 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     textAlign: "center",
   },
-  imagePicker: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginVertical: 15,
-  },
-  imagePreview: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
     marginBottom: 10,
   },
-  imagePickerText: {
-    color: COLORS.primary,
-    textAlign: "center",
+  avatarContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 20,
+  },
+  avatarOption: {
+    borderWidth: 2,
+    borderColor: "transparent",
+    borderRadius: 10,
+    padding: 5,
+  },
+  avatarSelected: {
+    borderColor: COLORS.primary,
+  },
+  avatarImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   inputContainer: {
     flexDirection: "row",
@@ -302,6 +307,10 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     marginLeft: 10,
+  },
+  imagePickerText: {
+    color: COLORS.primary,
+    textAlign: "center",
   },
 });
 

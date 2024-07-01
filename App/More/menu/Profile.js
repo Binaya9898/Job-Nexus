@@ -48,7 +48,10 @@ const Profile = () => {
           email: data.data.user.email || "",
           contactNumber: data.data.user.contact || "",
           profileImage: data.data.employee_image
-            ? { uri: `${SERVER.primaryUrl}/${data.data.employee_image}` }
+            ? {
+                // uri: `${SERVER.imageUrl}/images/employee/profile${data.data.employee_image}`,
+                uri: `${SERVER.imageUrl}/images/employee/profile/avatar3.png`,
+              }
             : require("../../../assets/hero1.jpg"),
           linkedin: data.data.employee_linkedin_link
             ? `https://${data.data.employee_linkedin_link}`

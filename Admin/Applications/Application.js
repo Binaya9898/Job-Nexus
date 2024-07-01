@@ -46,6 +46,7 @@ const Application = ({ navigation }) => {
       }
       const data = await response.json();
       setApplications(data);
+      console.log("application id tanni " + applications);
     } catch (error) {
       console.error(error);
     } finally {
@@ -53,10 +54,10 @@ const Application = ({ navigation }) => {
     }
   };
 
-  const handleViewCV = (applicantId) => {
+  const handleViewCV = (applicantId, id) => {
     // Handle view CV action, you might navigate to another screen or open a link
     console.log(`View CV for applicant ID: ${applicantId}`);
-    navigation.navigate("EmployerProfile", { applicantId });
+    navigation.navigate("EmployerProfile", { applicantId, id });
   };
 
   if (loading) {
@@ -136,7 +137,9 @@ const Application = ({ navigation }) => {
                 </View>
                 <TouchableOpacity
                   style={styles.viewCVButton}
-                  onPress={() => handleViewCV(application.applicant.id)}
+                  onPress={() =>
+                    handleViewCV(application.applicant.id, application.id)
+                  }
                 >
                   <Text style={styles.viewCVButtonText}>View CV</Text>
                 </TouchableOpacity>

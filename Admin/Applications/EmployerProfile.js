@@ -8,14 +8,17 @@ import {
   ScrollView,
   Linking,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
+import SERVER from "../../constants/server";
 
 const EmployerProfile = ({ route }) => {
   const navigation = useNavigation();
   const { applicantId } = route.params;
+  const { id } = route.params;
 
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +31,7 @@ const EmployerProfile = ({ route }) => {
   const fetchEmployeeData = async () => {
     try {
       const response = await fetch(
-        `http://192.168.0.108:8000/api/checkEmployee/${applicantId}`
+        `http://192.168.1.65:8000/api/checkEmployee/${applicantId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch employee data");
@@ -56,12 +59,41 @@ const EmployerProfile = ({ route }) => {
     Linking.openURL(url);
   };
 
-  const handleAcceptProfile = () => {
-    console.log("Accept Candidate");
+  const handleAcceptProfile = async () => {
+    console.log("change huna parni id" + id);
+    try {
+      const response = await fetch(
+        `http://192.168.1.65:8000/api/accept/application/${id}`,
+        {
+          method: "GET",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to accept application");
+      }
+      Alert.alert("Success", "Application accepted successfully!");
+      navigation.navigate("Application");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
   };
 
-  const handleRejectProfile = () => {
-    console.log("Reject Candidate");
+  const handleRejectProfile = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.1.65:8000/api/reject/application/${id}`,
+        {
+          method: "GET",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to reject application");
+      }
+      Alert.alert("Success", "Application rejected successfully!");
+      navigation.navigate("Application");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
   };
 
   if (loading) {
@@ -101,7 +133,7 @@ const EmployerProfile = ({ route }) => {
       <View style={styles.headerContainer}>
         <Image
           source={{
-            uri: `https://w7.pngwing.com/pngs/340/946/png-transparent-avatar-user-computer-icons-software-developer-avatar-child-face-heroes.png`,
+            uri: `${SERVER.imageUrl}/images/employee/profile/avatar3.png`,
           }}
           style={styles.profileImage}
         />

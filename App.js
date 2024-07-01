@@ -24,6 +24,7 @@ import CompleteEmployerProfile from "./screens/Auth/CompleteEmployerProfile";
 import { UserProvider } from "./constants/UserContext";
 import EmployerProfile from "./Admin/Applications/EmployerProfile";
 import ForgotPassword from "./screens/ForgotPassword";
+import Application from "./Admin/Applications/Application";
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,7 @@ export default function App() {
           <Stack.Screen name="JobDetails" component={JobDetails} />
           <Stack.Screen name="CompleteProfile" component={CompleteProfile} />
           <Stack.Screen name="EmployerProfile" component={EmployerProfile} />
+          <Stack.Screen name="Application" component={Application} />
           <Stack.Screen
             name="CompleteEmployerProfile"
             component={CompleteEmployerProfile}
