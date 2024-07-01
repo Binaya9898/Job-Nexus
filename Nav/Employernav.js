@@ -49,7 +49,11 @@ const Employernav = () => {
         component={Application}
         options={{
           tabBarIcon: ({ color }) => (
-            <Ionicons name="heart-outline" color={"#39B68D"} size={26} />
+            <Ionicons
+              name="document-text-outline"
+              color={COLORS.primary}
+              size={26}
+            />
           ),
         }}
       />
@@ -70,7 +74,7 @@ const Employernav = () => {
 
       <Tab.Screen
         name="Profile"
-        component={More}
+        component={Home}
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons

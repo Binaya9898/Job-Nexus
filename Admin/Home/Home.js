@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,19 @@ import {
   ScrollView,
   Image,
   RefreshControl,
+  Alert,
+  BackHandler,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "../../constants/colors";
-import userImage from "../../assets/hero1.jpg"; // Replace with your user image
 import { UserContext } from "../../constants/UserContext";
 import SERVER from "../../constants/server";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+
 const Home = () => {
-  const { userData } = useContext(UserContext);
+  const { userData, logout } = useContext(UserContext); // Assuming logout function is provided
   const userId = userData.user.id; // Assuming you have the user ID
+  const navigation = useNavigation();
 
   const [userInfo, setUserInfo] = useState({
     name: userData.user.name,
@@ -22,21 +26,24 @@ const Home = () => {
     companyName: "Example Company", // Default value, replace with actual data
     email: userData.user.email,
     phone: userData.user.contact,
-    status: "Active", // Default value, replace with actual data
-    image: "",
+    status: "Active",
+    image: "", // Default value, replace with actual data
   });
   const [jobData, setJobData] = useState([]);
+  const [applicationData, setApplicationData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchJobData();
     fetchUserInfo(); // Fetch user info on component mount
+    fetchApplicationData();
   }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
     fetchJobData(); // Refresh job data
     fetchUserInfo(); // Refresh user info
+    fetchApplicationData();
     setRefreshing(false);
   };
 
@@ -49,9 +56,7 @@ const Home = () => {
         throw new Error("Failed to fetch job data");
       }
       const data = await response.json();
-      // console.log("Job API Response:", data);
       setJobData(data);
-      console.log("Auna parni data " + jobData.length);
     } catch (error) {
       console.error(error);
     }
@@ -66,8 +71,6 @@ const Home = () => {
         throw new Error("Failed to fetch user data");
       }
       const data = await response.json();
-      console.log("User API Response:", data);
-
       // Update userInfo state with fetched data
       setUserInfo({
         name: data.user.name,
@@ -83,6 +86,21 @@ const Home = () => {
     }
   };
 
+  const fetchApplicationData = async () => {
+    try {
+      const response = await fetch(
+        `${SERVER.primaryUrl}/application/list/mobile/${userId}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch application data");
+      }
+      const data = await response.json();
+      setApplicationData(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   // Functions to calculate job counts based on status from jobData
   const getTotalJobs = () => jobData.length;
   const getPendingJobs = () =>
@@ -91,6 +109,21 @@ const Home = () => {
     jobData.filter((job) => job.job_status === "rejected").length;
   const getVerifiedJobs = () =>
     jobData.filter((job) => job.job_status === "verified").length;
+
+  // Functions to calculate application counts based on status from applicationData
+  const getTotalApplications = () => applicationData.length;
+  const getPendingApplications = () =>
+    applicationData.filter(
+      (application) => application.applicant_status === "pending"
+    ).length;
+  const getRejectedApplications = () =>
+    applicationData.filter(
+      (application) => application.applicant_status === "rejected"
+    ).length;
+  const getVerifiedApplications = () =>
+    applicationData.filter(
+      (application) => application.applicant_status === "accepted"
+    ).length;
 
   // Statistics data with dynamic values
   const statistics = [
@@ -119,24 +152,63 @@ const Home = () => {
       color: COLORS.green,
     },
     {
-      title: "Total Applicants",
-      value: 300, // Replace with actual data from jobData
+      title: "Total Applications",
+      value: getTotalApplications(),
       icon: "people-outline",
       color: COLORS.purple,
     },
     {
-      title: "Accepted Applicants",
-      value: 150, // Replace with actual data from jobData
-      icon: "person-add-outline",
-      color: COLORS.teal,
+      title: "Pending Applications",
+      value: getPendingApplications(),
+      icon: "time-outline",
+      color: COLORS.orange,
     },
     {
-      title: "Rejected Applicants",
-      value: 50, // Replace with actual data from jobData
-      icon: "person-remove-outline",
+      title: "Rejected Applications",
+      value: getRejectedApplications(),
+      icon: "close-circle-outline",
       color: COLORS.brown,
     },
+    {
+      title: "Verified Applications",
+      value: getVerifiedApplications(),
+      icon: "checkmark-circle-outline",
+      color: COLORS.teal,
+    },
   ];
+
+  // Handle back button press
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert(
+          "Logout",
+          "Do you want to logout?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            {
+              text: "Yes",
+              onPress: () => {
+                // logout(); // Call the logout function
+                navigation.navigate("Welcome"); // Navigate to Welcome screen
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+        return true; // Prevent default back button behavior
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+      };
+    }, [])
+  );
 
   return (
     <ScrollView

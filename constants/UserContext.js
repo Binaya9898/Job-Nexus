@@ -5,8 +5,13 @@ import React, { createContext, useState } from "react";
 export const UserContext = createContext();
 
 // Create a provider component
-export const UserProvider = ({ children }) => {
+export const UserProvider = ({ children, navigation }) => {
   const [userData, setUserData] = useState(null);
+
+  const logout = () => {
+    setUserData(null);
+    navigation.navigate("Login");
+  };
 
   return (
     <UserContext.Provider value={{ userData, setUserData }}>

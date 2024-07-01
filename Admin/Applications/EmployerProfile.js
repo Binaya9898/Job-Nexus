@@ -23,6 +23,7 @@ const EmployerProfile = ({ route }) => {
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false); // State for accept/reject loading
 
   useEffect(() => {
     fetchEmployeeData();
@@ -60,7 +61,7 @@ const EmployerProfile = ({ route }) => {
   };
 
   const handleAcceptProfile = async () => {
-    console.log("change huna parni id" + id);
+    setActionLoading(true); // Start loading
     try {
       const response = await fetch(
         `http://192.168.1.65:8000/api/accept/application/${id}`,
@@ -72,13 +73,16 @@ const EmployerProfile = ({ route }) => {
         throw new Error("Failed to accept application");
       }
       Alert.alert("Success", "Application accepted successfully!");
-      navigation.navigate("Application");
+      navigation.navigate("Home");
     } catch (error) {
       Alert.alert("Error", error.message);
+    } finally {
+      setActionLoading(false); // Stop loading
     }
   };
 
   const handleRejectProfile = async () => {
+    setActionLoading(true); // Start loading
     try {
       const response = await fetch(
         `http://192.168.1.65:8000/api/reject/application/${id}`,
@@ -90,9 +94,11 @@ const EmployerProfile = ({ route }) => {
         throw new Error("Failed to reject application");
       }
       Alert.alert("Success", "Application rejected successfully!");
-      navigation.navigate("Application");
+      navigation.navigate("Home");
     } catch (error) {
       Alert.alert("Error", error.message);
+    } finally {
+      setActionLoading(false); // Stop loading
     }
   };
 
@@ -121,111 +127,131 @@ const EmployerProfile = ({ route }) => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <FontAwesome name="arrow-left" size={24} color={COLORS.primary} />
-        <Text style={styles.backButtonText}>Back</Text>
-      </TouchableOpacity>
-
-      <View style={styles.headerContainer}>
-        <Image
-          source={{
-            uri: `${SERVER.imageUrl}/images/employee/profile/avatar3.png`,
-          }}
-          style={styles.profileImage}
-        />
-        <View style={styles.contactContainer}>
-          <Text style={styles.name}>{employee.user && employee.user.name}</Text>
-          <Text style={styles.contact}>
-            {employee.user && employee.user.email}
-          </Text>
-          <Text style={styles.contact}>
-            {employee.user && employee.user.contact}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Work Experience</Text>
-          <Text style={styles.detailText}>
-            {employee.employee_work_experience}
-          </Text>
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Education</Text>
-          <Text style={styles.detailText}>{employee.employee_education}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Participation</Text>
-          <Text style={styles.detailText}>
-            {employee.employee_participation}
-          </Text>
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Training</Text>
-          <Text style={styles.detailText}>{employee.employee_training}</Text>
-        </View>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Description</Text>
-          <Text style={styles.detailText}>{employee.employee_description}</Text>
-        </View>
-      </View>
-
-      <View style={styles.socialContainer}>
-        {employee.employee_linkedin_link && (
-          <TouchableOpacity
-            onPress={() =>
-              handleSocialMediaPress(employee.employee_linkedin_link)
-            }
-          >
-            <FontAwesome
-              name="linkedin"
-              size={30}
-              color="#0077B5"
-              style={styles.socialIcon}
-            />
-          </TouchableOpacity>
-        )}
-        {employee.employee_fb_link && (
-          <TouchableOpacity
-            onPress={() => handleSocialMediaPress(employee.employee_fb_link)}
-          >
-            <FontAwesome
-              name="facebook-square"
-              size={30}
-              color="#4267B2"
-              style={styles.socialIcon}
-            />
-          </TouchableOpacity>
-        )}
-      </View>
-
-      <View style={styles.buttonContainer}>
+    <View style={styles.mainContainer}>
+      <ScrollView contentContainerStyle={styles.container}>
         <TouchableOpacity
-          style={styles.buttonAccept}
-          onPress={handleAcceptProfile}
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
         >
-          <Text style={styles.buttonText}>Accept</Text>
+          <FontAwesome name="arrow-left" size={24} color={COLORS.primary} />
+          <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttonReject}
-          onPress={handleRejectProfile}
-        >
-          <Text style={styles.buttonText}>Reject</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+
+        <View style={styles.headerContainer}>
+          <Image
+            source={{
+              uri:
+                // employee.employee_image ||
+                `${SERVER.imageUrl}/images/employee/profile/${employee.employee_image}` ||
+                `${SERVER.imageUrl}/images/employee/profile/avatar1.png`,
+            }}
+            style={styles.profileImage}
+          />
+          <View style={styles.contactContainer}>
+            <Text style={styles.name}>
+              {employee.user && employee.user.name}
+            </Text>
+            <Text style={styles.contact}>
+              {employee.user && employee.user.email}
+            </Text>
+            <Text style={styles.contact}>
+              {employee.user && employee.user.contact}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.detailsContainer}>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Work Experience</Text>
+            <Text style={styles.detailText}>
+              {employee.employee_work_experience}
+            </Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Education</Text>
+            <Text style={styles.detailText}>{employee.employee_education}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Participation</Text>
+            <Text style={styles.detailText}>
+              {employee.employee_participation}
+            </Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Training</Text>
+            <Text style={styles.detailText}>{employee.employee_training}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Description</Text>
+            <Text style={styles.detailText}>
+              {employee.employee_description}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.socialContainer}>
+          {employee.employee_linkedin_link && (
+            <TouchableOpacity
+              onPress={() =>
+                handleSocialMediaPress(employee.employee_linkedin_link)
+              }
+            >
+              <FontAwesome
+                name="linkedin"
+                size={30}
+                color="#0077B5"
+                style={styles.socialIcon}
+              />
+            </TouchableOpacity>
+          )}
+          {employee.employee_fb_link && (
+            <TouchableOpacity
+              onPress={() => handleSocialMediaPress(employee.employee_fb_link)}
+            >
+              <FontAwesome
+                name="facebook-square"
+                size={30}
+                color="#4267B2"
+                style={styles.socialIcon}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.buttonAccept}
+            onPress={handleAcceptProfile}
+            disabled={actionLoading} // Disable button when loading
+          >
+            <Text style={styles.buttonText}>Accept</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.buttonReject}
+            onPress={handleRejectProfile}
+            disabled={actionLoading} // Disable button when loading
+          >
+            <Text style={styles.buttonText}>Reject</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      {actionLoading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: "#f9f9f9",
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: "#f9f9f9",
     paddingHorizontal: 16,
     paddingVertical: 24,
     alignItems: "center",
@@ -349,6 +375,16 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 18,
     color: "#D9534F",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.3)", // Semi-transparent background
   },
 });
 

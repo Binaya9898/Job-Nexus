@@ -143,27 +143,7 @@ const Postjob = ({ navigation }) => {
     switch (currentPage) {
       case 0:
         return (
-          <>
-            <View style={styles.header}>
-              <Text style={styles.brandText}>JobNexus</Text>
-              <View style={styles.headerIcons}>
-                <Ionicons
-                  name="person-circle-outline"
-                  size={24}
-                  color={COLORS.white}
-                />
-                <Ionicons
-                  name="notifications-outline"
-                  size={24}
-                  color={COLORS.white}
-                />
-                <Ionicons
-                  name="ellipsis-vertical-outline"
-                  size={24}
-                  color={COLORS.white}
-                />
-              </View>
-            </View>
+          <View style={styles.container}>
             <TextInput
               placeholder="Job Title *"
               placeholderTextColor={COLORS.bright}
@@ -214,7 +194,7 @@ const Postjob = ({ navigation }) => {
               style={styles.input}
               keyboardType="numeric"
             />
-          </>
+          </View>
         );
       case 1:
         return (
@@ -272,6 +252,26 @@ const Postjob = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.brandText}>JobNexus</Text>
+        <View style={styles.headerIcons}>
+          <Ionicons
+            name="person-circle-outline"
+            size={24}
+            color={COLORS.white}
+          />
+          <Ionicons
+            name="notifications-outline"
+            size={24}
+            color={COLORS.white}
+          />
+          <Ionicons
+            name="ellipsis-vertical-outline"
+            size={24}
+            color={COLORS.white}
+          />
+        </View>
+      </View>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.card}>
           <Text style={styles.title}>Post a Job</Text>
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,

@@ -34,7 +34,7 @@ export default function Jobs({ navigation }) {
       const data = JSON.parse(responseText);
       const jobsWithImages = data.map((job) => ({
         ...job,
-        image: job.employer ? job.employer.employer_image : "",
+        image: job.employer ? job.employer.employer_image : "avatar5.png",
         isFavorite: false, // Add isFavorite property
         empName: job.employer
           ? job.employer.employer_first_name
@@ -106,7 +106,9 @@ export default function Jobs({ navigation }) {
     <View style={styles.jobItem}>
       <Image
         source={{
-          uri: `${SERVER.imageUrl}/images/employer/profile/${item.image}`,
+          uri:
+            `${SERVER.imageUrl}/images/employer/profile/${item.image}` ||
+            `${SERVER.imageUrl}/images/employer/profile/avatar1.png`,
         }}
         style={styles.image}
       />
