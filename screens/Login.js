@@ -176,7 +176,7 @@ const Login = ({ navigation }) => {
           </View>
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate("Forgotpw")}>
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
           <Text
             style={{
               fontSize: 14,

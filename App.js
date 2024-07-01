@@ -23,6 +23,7 @@ import CompleteProfile from "./screens/Auth/CompleteProfile";
 import CompleteEmployerProfile from "./screens/Auth/CompleteEmployerProfile";
 import { UserProvider } from "./constants/UserContext";
 import EmployerProfile from "./Admin/Applications/EmployerProfile";
+import ForgotPassword from "./screens/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -50,7 +51,8 @@ export default function App() {
           <Stack.Screen name="Success" component={Success} />
           <Stack.Screen name="Success1" component={Success1} />
           <Stack.Screen name="Postjob" component={Postjob} />
-          <Stack.Screen name="Forgotpw" component={Forgotpw} />
+          <Stack.Screen name="Forgotpw" component={ForgotPassword} />
+          <Stack.Screen name="ForgotPassword" component={Forgotpw} />
           <Stack.Screen name="Recoverotp" component={Recoverotp} />
           <Stack.Screen name="Createnewpw" component={Createnewpw} />
           <Stack.Screen name="ApplicationForm" component={ApplicationForm} />

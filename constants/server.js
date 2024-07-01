@@ -3,12 +3,12 @@ const SERVER3 = {
   secondaryUrl: "http://127.0.0.1:8000/api",
   imageUrl: "http://192.168.1.65:8000",
 };
-const SERVER = {
+const SERVER2 = {
   secondaryUrl: "http://192.168.0.108:8000/api",
   primaryUrl: "http://192.168.0.108:8000/api",
   imageUrl: "http://192.168.0.108:8000",
 };
-const SERVER2 = {
+const SERVER = {
   primaryUrl: "http://192.168.1.65:8000/api",
   secondaryUrl: "http://192.168.1.65:8000",
   imageUrl: "http://192.168.1.65:8000",
